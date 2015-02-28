@@ -273,7 +273,7 @@
 - (UILabel *)totalLabel {
     if (!_totalLabel) {
         _totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, -kScreenHeight/2.0f)];
-        [_totalLabel setTextColor:[UIColor champagne]];
+        [_totalLabel setTextColor:[UIColor rubyRed]];
         [_totalLabel setShadowColor:[UIColor lightGray]];
         [_totalLabel setShadowOffset:CGSizeMake(-1.0f, -1.0f)];
         [_totalLabel setAlpha:0.3f];

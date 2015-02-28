@@ -48,7 +48,9 @@
 - (void)changeShowDiceTotal:(BOOL)showDiceTotal;
 - (int)numberOfDice;
 - (int)numberOfDiceSides;
+- (float)sizeOfDiceDots;
 - (void)setNumberOfDice:(int)numberOfDice;
 - (void)setNumberOfDiceSides:(int)numberOfDiceSides;
+- (void)setSizeOfDiceDots:(float)sizeOfDiceDots;
 
 @end

@@ -14,6 +14,7 @@
 @property int value;
 @property BOOL selected, selectable;
 @property (nonatomic, strong) UILabel *valueLabel;
+@property (nonatomic, strong) UIView *shadingView;
 
 - (void)randomize;
 - (void)drawSpots;

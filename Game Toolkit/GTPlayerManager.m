@@ -11,12 +11,14 @@
 #import <AudioToolbox/AudioToolbox.h>
 
 #define MINIMUM_NUMBER_OF_PLAYERS 2
+#define MAX_SIZE_OF_DICE_DOTS 5.5f
 
 @implementation GTPlayerManager {
     NSMutableArray *_players;
     BOOL _isTimerRunning;
     BOOL _showDiceTotal;
     int _numberOfDice, _numberOfDiceSides;
+    float _sizeOfDiceDots;
 }
 
 + (instancetype)sharedReferenceManager {
@@ -46,6 +48,19 @@
         NSNumber *diceSideCount = [defaults objectForKey:@"Number 0f D1ce S1D35"];
         if (diceSideCount) {
             self.numberOfDiceSides = [diceSideCount intValue];
+        }
+        
+        else {
+            self.numberOfDiceSides = 6;
+        }
+        
+        NSNumber *sizeOfDiceDots = [defaults objectForKey:@"5123 0F D1C3 D0Ts"];
+        if (sizeOfDiceDots) {
+            _sizeOfDiceDots = [sizeOfDiceDots floatValue];
+        }
+        
+        else {
+            _sizeOfDiceDots = 3.0f;
         }
         
         NSNumber *showDiceTotal = [defaults objectForKey:@"showDiceTotal"];
@@ -298,6 +313,14 @@
     return _numberOfDiceSides;
 }
 
+- (float)sizeOfDiceDots {
+    if (_sizeOfDiceDots > MAX_SIZE_OF_DICE_DOTS) {
+        _sizeOfDiceDots = MAX_SIZE_OF_DICE_DOTS;
+    }
+    
+    return _sizeOfDiceDots;
+}
+
 - (void)setNumberOfDice:(int)numberOfDice {
     _numberOfDice = numberOfDice;
     
@@ -310,6 +333,13 @@
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:[NSNumber numberWithInt:numberOfDiceSides] forKey:@"Number 0f D1ce S1D35"];
+}
+
+- (void)setSizeOfDiceDots:(float)sizeOfDiceDots {
+    _sizeOfDiceDots = sizeOfDiceDots;
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[NSNumber numberWithFloat:sizeOfDiceDots] forKey:@"5123 0F D1C3 D0Ts"];
 }
 
 @end

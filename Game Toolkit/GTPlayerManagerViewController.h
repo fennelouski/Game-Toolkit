@@ -24,6 +24,12 @@
 @property (nonatomic, strong) UILabel *numberOfDiceSidesLabel;
 @property (nonatomic, strong) UILabel *numberOfDiceSidesCountLabel;
 @property (nonatomic, strong) UISlider *numberOfDiceSidesSlider;
+@property (nonatomic, strong) UILabel *sizeOfDiceLabel;
+@property (nonatomic, strong) UILabel *sizeOfDiceLabelSMLXL;
+@property (nonatomic, strong) UISlider *sizeOfDiceDotsSlider;
+@property (nonatomic, strong) UILabel *advancedDiceFeaturesLabel;
+@property (nonatomic, strong) UISwitch *advancedDiceFeaturesSwitch;
+@property (nonatomic, strong) UIColor *tintColor;
 @property float keyboardHeight;
 @property BOOL keyboardIsShowing;
 

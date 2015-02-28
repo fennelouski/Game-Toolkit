@@ -24,6 +24,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.tintColor = [UIColor rubyRed];
     [self.view setBackgroundColor:[UIColor white]];
     [self.view addSubview:self.playerTableView];
     [self.view addSubview:self.headerToolbar];
@@ -107,7 +108,7 @@
         [textField setAutocorrectionType:UITextAutocorrectionTypeNo];
         [textField setReturnKeyType:UIReturnKeyDone];
         [textField setTag:i];
-        [textField setTintColor:[UIColor rubyRed]];
+        [textField setTintColor:self.tintColor];
         [self.textFields addObject:textField];
     }
 }
@@ -145,7 +146,7 @@
         _resetButton = [[UIButton alloc] initWithFrame:CGRectZero];
         [_resetButton setTitle:@"Reset" forState:UIControlStateNormal];
         [_resetButton setTitleColor:[UIColor white] forState:UIControlStateNormal];
-        [_resetButton setBackgroundColor:[UIColor rubyRed]];
+        [_resetButton setBackgroundColor:self.tintColor];
         [_resetButton addTarget:self action:@selector(resetButtonTouched) forControlEvents:UIControlEventTouchUpInside];
     }
     
@@ -157,7 +158,7 @@
         _resetScoreButton = [[UIButton alloc] initWithFrame:CGRectZero];
         [_resetScoreButton setTitle:@"Reset Scores" forState:UIControlStateNormal];
         [_resetScoreButton setTitleColor:[UIColor white] forState:UIControlStateNormal];
-        [_resetScoreButton setBackgroundColor:[UIColor rubyRed]];
+        [_resetScoreButton setBackgroundColor:self.tintColor];
         [_resetScoreButton addTarget:self action:@selector(resetScoresButtonTouched) forControlEvents:UIControlEventTouchUpInside];
     }
     
@@ -169,7 +170,7 @@
         _resetTimeButton = [[UIButton alloc] initWithFrame:CGRectZero];
         [_resetTimeButton setTitle:@"Reset Timers" forState:UIControlStateNormal];
         [_resetTimeButton setTitleColor:[UIColor white] forState:UIControlStateNormal];
-        [_resetTimeButton setBackgroundColor:[UIColor rubyRed]];
+        [_resetTimeButton setBackgroundColor:self.tintColor];
         [_resetTimeButton addTarget:self action:@selector(resetTimerButtonTouched) forControlEvents:UIControlEventTouchUpInside];
     }
     
@@ -181,7 +182,7 @@
         _resetDiceButton = [[UIButton alloc] initWithFrame:CGRectZero];
         [_resetDiceButton setTitle:@"Reset Dice" forState:UIControlStateNormal];
         [_resetDiceButton setTitleColor:[UIColor white] forState:UIControlStateNormal];
-        [_resetDiceButton setBackgroundColor:[UIColor rubyRed]];
+        [_resetDiceButton setBackgroundColor:self.tintColor];
         [_resetDiceButton addTarget:self action:@selector(resetDiceButtonTouched) forControlEvents:UIControlEventTouchUpInside];
     }
     
@@ -238,7 +239,7 @@
         [_diceCountSlider setMinimumValue:1.0f];
         [_diceCountSlider setMaximumValue:(floorf(((kScreenHeight + kScreenWidth) / 44.3f) / 5)) * 5];
         [_diceCountSlider setValue:[[GTPlayerManager sharedReferenceManager] numberOfDice]];
-        [_diceCountSlider setMinimumTrackTintColor:[UIColor rubyRed]];
+        [_diceCountSlider setMinimumTrackTintColor:self.tintColor];
         
         [_diceCountSlider addTarget:self action:@selector(sliderTouched:) forControlEvents:UIControlEventTouchDragInside];
         [_diceCountSlider addTarget:self action:@selector(sliderTouched:) forControlEvents:UIControlEventTouchUpInside];
@@ -261,7 +262,7 @@
 - (UISwitch *)showDiceTotalSwitch {
     if (!_showDiceTotalSwitch) {
         _showDiceTotalSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(kScreenWidth - 40.0f, 0.0f, 40.0f, kScreenWidth)];
-        [_showDiceTotalSwitch setOnTintColor:[UIColor rubyRed]];
+        [_showDiceTotalSwitch setOnTintColor:self.tintColor];
         [_showDiceTotalSwitch setOn:[[GTPlayerManager sharedReferenceManager] showDiceTotal] animated:YES];
         [_showDiceTotalSwitch addTarget:self action:@selector(switchShowDice) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -302,13 +303,118 @@
         [_numberOfDiceSidesSlider setMinimumValue:2.0f];
         [_numberOfDiceSidesSlider setMaximumValue:20.0f];
         [_numberOfDiceSidesSlider setValue:[[GTPlayerManager sharedReferenceManager] numberOfDiceSides] animated:YES];
-        [_numberOfDiceSidesSlider setMinimumTrackTintColor:[UIColor rubyRed]];
+        [_numberOfDiceSidesSlider setMinimumTrackTintColor:self.tintColor];
         
         [_numberOfDiceSidesSlider addTarget:self action:@selector(sliderTouched:) forControlEvents:UIControlEventTouchDragInside];
         [_numberOfDiceSidesSlider addTarget:self action:@selector(sliderTouched:) forControlEvents:UIControlEventTouchUpInside];
     }
     
     return _numberOfDiceSidesSlider;
+}
+
+- (UILabel *)sizeOfDiceLabel {
+    if (!_sizeOfDiceLabel) {
+        _sizeOfDiceLabel = [[UILabel alloc] initWithFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth, CELL_HEIGHT)];
+        [_sizeOfDiceLabel setTextAlignment:NSTextAlignmentLeft];
+        [_sizeOfDiceLabel setTextColor:[UIColor darkTextColor]];
+        
+        [_sizeOfDiceLabel setText:@"Size of dots on dice"];
+        
+        if (self.diceCountSlider.value <= 1) {
+            [_sizeOfDiceLabel setText:@"Size of dots on die"];
+        }
+    }
+    
+    return _sizeOfDiceLabel;
+}
+
+- (UILabel *)sizeOfDiceLabelSMLXL {
+    if (!_sizeOfDiceLabelSMLXL) {
+        _sizeOfDiceLabelSMLXL = [[UILabel alloc] initWithFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth - BUFFER * 2, CELL_HEIGHT)];
+        [_sizeOfDiceLabelSMLXL setText:[self sizeOfDotsLabelText]];
+        [_sizeOfDiceLabelSMLXL setTextAlignment:NSTextAlignmentRight];
+        [_sizeOfDiceLabelSMLXL setTextColor:[UIColor darkTextColor]];
+    }
+    
+    return _sizeOfDiceLabelSMLXL;
+}
+
+- (UISlider *)sizeOfDiceDotsSlider {
+    if (!_sizeOfDiceDotsSlider) {
+        _sizeOfDiceDotsSlider = [[UISlider alloc] initWithFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth - BUFFER * 2, CELL_HEIGHT)];
+        [_sizeOfDiceDotsSlider setMinimumValue:-1.0f];
+        [_sizeOfDiceDotsSlider setMaximumValue:5.1f];
+        [_sizeOfDiceDotsSlider setValue:[[GTPlayerManager sharedReferenceManager] sizeOfDiceDots] animated:YES];
+        [_sizeOfDiceDotsSlider setMinimumTrackTintColor:self.tintColor];
+        
+        [_sizeOfDiceDotsSlider addTarget:self action:@selector(sliderTouched:) forControlEvents:UIControlEventTouchDragInside];
+        [_sizeOfDiceDotsSlider addTarget:self action:@selector(sliderTouched:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    return _sizeOfDiceDotsSlider;
+}
+
+- (UILabel *)advancedDiceFeaturesLabel {
+    if (!_advancedDiceFeaturesLabel) {
+        _advancedDiceFeaturesLabel = [[UILabel alloc] initWithFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth, CELL_HEIGHT)];
+        [_advancedDiceFeaturesLabel setTextAlignment:NSTextAlignmentLeft];
+        [_advancedDiceFeaturesLabel setTextColor:[UIColor darkTextColor]];
+        [_advancedDiceFeaturesLabel setText:@"Advanced Dice Features"];
+    }
+    
+    return _advancedDiceFeaturesLabel;
+}
+
+- (UISwitch *)advancedDiceFeaturesSwitch {
+    if (!_advancedDiceFeaturesSwitch) {
+        _advancedDiceFeaturesSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(kScreenWidth - 40.0f, 0.0f, 40.0f, kScreenWidth)];
+        [_advancedDiceFeaturesSwitch setOnTintColor:self.tintColor];
+        [_advancedDiceFeaturesSwitch setOn:NO animated:YES];
+        [_advancedDiceFeaturesSwitch addTarget:self action:@selector(updateViews) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    return _advancedDiceFeaturesSwitch;
+}
+
+#pragma mark - Size of Dots Label Text
+
+- (NSString *)sizeOfDotsLabelText {
+    int sizeOfDots = [[GTPlayerManager sharedReferenceManager] sizeOfDiceDots];
+    
+    switch (sizeOfDots) {
+        case -1:
+            return @"Tiny";
+            break;
+            
+        case 0:
+            return @"Extra-Small";
+            break;
+            
+        case 1:
+            return @"Small";
+            break;
+            
+        case 2:
+            return @"Medium";
+            break;
+            
+        case 3:
+            return @"Large";
+            break;
+            
+        case 4:
+            return @"Extra-Large";
+            break;
+            
+        case 5:
+            return @"Comically Large";
+            break;
+            
+        default:
+            break;
+    }
+    
+    return @"";
 }
 
 #pragma mark - Table View Data Source and Delegate Methods
@@ -351,7 +457,14 @@
             
             // dice
         case 5:
-            numberOfRows = 5;
+            if (self.advancedDiceFeaturesSwitch.on) {
+                numberOfRows = 8;
+            }
+            
+            else {
+                numberOfRows = 4;
+            }
+
             break;
             
             // reset dice
@@ -440,8 +553,24 @@
             [self.diceCountSlider setValue:[[GTPlayerManager sharedReferenceManager] numberOfDice] animated:YES];
         }
         
-        // number of sides on dice label
+        // show dice total
         else if ([indexPath row] == 2) {
+            [cell addSubview:self.showDiceTotalLabel];
+            [cell addSubview:self.showDiceTotalSwitch];
+            
+            [self.showDiceTotalSwitch setFrame:CGRectMake(kScreenWidth - 70.0f, 4.0f, 40.0f, kScreenWidth)];
+        }
+        
+        // advanced features switch
+        else if ([indexPath row] == 3) {
+            [cell addSubview:self.advancedDiceFeaturesLabel];
+            [cell addSubview:self.advancedDiceFeaturesSwitch];
+            
+            [self.advancedDiceFeaturesSwitch setFrame:CGRectMake(kScreenWidth - 70.0f, 4.0f, 40.0f, kScreenWidth)];
+        }
+        
+        // number of sides on dice label
+        else if ([indexPath row] == 4) {
             [cell addSubview:self.numberOfDiceSidesLabel];
             [cell addSubview:self.numberOfDiceSidesCountLabel];
             
@@ -452,19 +581,30 @@
         }
         
         // number of sides on dice slider
-        else if ([indexPath row] == 3) {
+        else if ([indexPath row] == 5) {
             [cell addSubview:self.numberOfDiceSidesSlider];
             
             [self.numberOfDiceSidesSlider setValue:[[GTPlayerManager sharedReferenceManager] numberOfDiceSides] animated:YES];
             [self.numberOfDiceSidesSlider setFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth - BUFFER * 2.0f, CELL_HEIGHT)];
         }
         
-        // show dice total
-        else if ([indexPath row] == 4) {
-            [cell addSubview:self.showDiceTotalLabel];
-            [cell addSubview:self.showDiceTotalSwitch];
+        // size of dice label
+        else if ([indexPath row] == 6) {
+            [cell addSubview:self.sizeOfDiceLabel];
+            [cell addSubview:self.sizeOfDiceLabelSMLXL];
             
-            [self.showDiceTotalSwitch setFrame:CGRectMake(kScreenWidth - 70.0f, 4.0f, 40.0f, kScreenWidth)];
+            [self.sizeOfDiceLabel setFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth - BUFFER * 2.0f, CELL_HEIGHT)];
+            [self.sizeOfDiceLabelSMLXL setFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth - BUFFER * 2.0f, CELL_HEIGHT)];
+            
+            [self.sizeOfDiceLabelSMLXL setText:[self sizeOfDotsLabelText]];
+        }
+        
+        // size of dice slider
+        else if ([indexPath row] == 7) {
+            [cell addSubview:self.sizeOfDiceDotsSlider];
+            
+            [self.sizeOfDiceDotsSlider setValue:[[GTPlayerManager sharedReferenceManager] sizeOfDiceDots] animated:YES];
+            [self.sizeOfDiceDotsSlider setFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth - BUFFER * 2.0f, CELL_HEIGHT)];
         }
     }
     
@@ -634,6 +774,11 @@
         [self.numberOfDiceSidesCountLabel setText:[NSString stringWithFormat:@"%d", (int)self.numberOfDiceSidesSlider.value]];
         [[GTPlayerManager sharedReferenceManager] setNumberOfDiceSides:self.numberOfDiceSidesSlider.value];
     }
+    
+    else if ([slider isEqual:self.sizeOfDiceDotsSlider]) {
+        [self.sizeOfDiceLabelSMLXL setText:[self sizeOfDotsLabelText]];
+        [[GTPlayerManager sharedReferenceManager] setSizeOfDiceDots:self.sizeOfDiceDotsSlider.value];
+    }
 }
 
 - (void)flashButton:(UIView *)button {
@@ -641,7 +786,7 @@
         [button setBackgroundColor:[UIColor red]];
     }completion:^(BOOL finished){
         [UIView animateWithDuration:0.18f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
-            [button setBackgroundColor:[UIColor rubyRed]];
+            [button setBackgroundColor:self.tintColor];
         }completion:^(BOOL finished){}];
     }];
 }
