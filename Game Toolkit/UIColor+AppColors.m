@@ -10,6 +10,8 @@
 #import "NSString+AppFunctions.h"
 
 #define SHOW_LOGS NO
+#define DESELECTED_BRIGHTNESS 0.4f
+#define SELECTED_BRIGHTNESS 0.75f
 
 @implementation UIColor (AppColors)
 
@@ -198,10 +200,12 @@
 // random colors
 
 + (UIColor *)randomPastelColor {
-    return [UIColor colorWithHue:arc4random()%255/255.0f saturation:(arc4random()%200 + 55)/255.0f brightness:((arc4random()%100) + 155.0f)/255.0f alpha:1.0f];
+    float randomBrightness = (9500.0f - (arc4random()%1000)) / 10000.0f;
+    return [[UIColor randomDarkColor] makeBrightnessOf:randomBrightness];
 }
 
 + (UIColor *)randomDarkColor {
+    [UIColor colorWithRed:arc4random()%50/255.0f + 10.0f green:arc4random()%50/255.0f + 10.0f blue:arc4random()%50/255.0f + 10.0f alpha:1.0f];
     return [UIColor colorWithHue:arc4random()%255/255.0f saturation:(arc4random()%200 + 55)/255.0f brightness:((arc4random()%200) + 55.0f)/555.0f alpha:1.0f];
 }
 
@@ -243,6 +247,78 @@
 
 + (NSString *)randomColorNameWithColor:(UIColor *)color {
     return [color randomColorName];
+}
+
++ (UIColor *)randomDarkColorFromString:(NSString *)string {
+    if (string.length == 0) {
+        return [UIColor black];
+    }
+    
+    NSDictionary *whiteList = @{@"Player 2" : [UIColor darkRed],
+                                @"Player 3" : [UIColor darkGreen],
+                                @"Player 4" : [UIColor gray],
+                                @"Player 5" : [UIColor purpleNavy],
+                                @"Player 6" : [UIColor orangeCrayola],
+                                @"Player 7" : [UIColor lightCoral],
+                                @"Player 8" : [UIColor seashell],
+                                @"Player 9" : [UIColor darkBlue],
+                                @"Girl" : [UIColor carmine],
+                                @"Boy" : [UIColor denim],
+                                @"Women" : [UIColor carmine],
+                                @"Men" : [UIColor denim],
+                                @"Nathan" : [UIColor royalBlue],
+                                @"Paul" : [UIColor darkGreenX11],
+                                @"Katie" : [UIColor calPolyGreen],
+                                @"Ryan" : [UIColor orangePeel]
+                                };
+    for (NSString *key in [whiteList allKeys]) {
+        if ([[string lowercaseString] isEqualToString:[key lowercaseString]]) {
+            return [[[whiteList objectForKey:key] makeBrightnessOf:SELECTED_BRIGHTNESS] makeBrightnessOf:DESELECTED_BRIGHTNESS];
+        }
+    }
+
+    for (NSString *key in [whiteList allKeys]) {
+        if ([[string lowercaseString] rangeOfString:[key lowercaseString]].location != NSNotFound) {
+            return [[whiteList objectForKey:key] makeBrightnessOf:DESELECTED_BRIGHTNESS];
+        }
+    }
+    
+    NSString *subString1 = [string substringToIndex:string.length/3];
+    NSString *subString2 = [string substringWithRange:NSMakeRange(string.length/3, string.length/3)];
+    NSString *subString3 = [string substringFromIndex:string.length * 0.667f];
+    
+    
+    int blueValueInt = [subString1 intValue];
+    for (int i = 0; i < subString1.length && subString1.length > 0; i++) {
+        char character = [subString1 characterAtIndex:i];
+        blueValueInt += (((int)character%2) + 1) * ((((int)character%12) + 1) * (((int)character%7) + 1)) * ((((int)character%12) + 1) * (((int)character%7) + 1));
+    }
+    
+    int redValueInt = [subString2 intValue];
+    for (int i = 0; i < subString2.length && subString2.length > 0; i++) {
+        char character = [subString2 characterAtIndex:i];
+        redValueInt *= (((int)character%2) + 1) * (((int)character%17) + 1) * (((int)character%8) + 1) * ((int)character%19);
+    }
+
+    int greenValueInt = [subString3 intValue];
+    for (int i = 0; i < subString3.length && subString3.length > 0; i++) {
+        char character = [subString3 characterAtIndex:i];
+        greenValueInt += (((int)character%2) + 1) * (((int)character%13) + 1) * (((int)character%11) + 1);
+    }
+    
+    redValueInt %= 30;
+    greenValueInt %= 40;
+    blueValueInt %= 50;
+    
+    redValueInt += 30;
+    greenValueInt += 45;
+    blueValueInt += 40;
+    
+    float redValue = (float)redValueInt/180.0f;
+    float greenValue = (float)greenValueInt/255.0f;
+    float blueValue = (float)blueValueInt/270.0f;
+    
+    return [UIColor colorWithRed:redValue green:greenValue blue:blueValue alpha:1.0f];
 }
 
 - (NSString *)randomColorName {
@@ -1308,7 +1384,7 @@
             // convert the next full month date from ChineseDate to GregorianComps
             NSDateComponents *springEquinoGregorianComps = [gregorian components:unitFlags fromDate:springEquinoGregorianDate];
             
-            NSLog(@"springEquinoGregorian is %ld %ld %ld",[springEquinoGregorianComps year], [springEquinoGregorianComps month], [springEquinoGregorianComps day]);
+            NSLog(@"springEquinoGregorian is %ld %ld %ld",(long)[springEquinoGregorianComps year], (long)[springEquinoGregorianComps month], (long)[springEquinoGregorianComps day]);
             
             NSInteger weekday = [springEquinoGregorianComps weekday];
             NSDate *easterSundayGregorianDateTemp = springEquinoGregorianDate;

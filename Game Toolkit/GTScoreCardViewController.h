@@ -8,16 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-@interface GTScoreCardViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIAlertViewDelegate>
+@interface GTScoreCardViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 
-@property (nonatomic, strong) NSMutableArray *players;
 @property (nonatomic, strong) NSMutableArray *playerTables;
 @property (nonatomic, strong) UIScrollView *tableScrollView;
-@property (nonatomic, strong) UIView *currentFirstResponder;
+@property (nonatomic, strong) UITextField *currentFirstResponder;
 @property (nonatomic, strong) UIToolbar *accessoryView;
 @property (nonatomic, strong) UIButton *negativeButton, *saveButton;
-@property (nonatomic, strong) NSMutableArray *headerSubviews;
+@property (nonatomic, strong) NSMutableArray *headerSubviews, *textFields;
 @property (nonatomic, strong) UIToolbar *headerToolbar;
 @property float cellWidth, keyboardHeight;
+@property BOOL firstResponderLoopCheck;
 
 @end

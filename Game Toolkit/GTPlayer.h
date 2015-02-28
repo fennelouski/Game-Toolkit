@@ -13,11 +13,15 @@
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSDate *mostRecentStartTime;
 @property (nonatomic, strong) NSMutableArray *moveTimes;
+@property (nonatomic, strong) UIColor *color;
 @property BOOL isTurn;
 @property NSTimeInterval timeRemaining;
 @property (nonatomic, strong) NSMutableArray *scoreHistory;
 @property int currentScore, pendingScore;
+@property BOOL isPendingNegative;
 
+
+- (instancetype)initWithName:(NSString *)name;
 - (void)commitPendingScore;
 
 @end

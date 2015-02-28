@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface GTTimePickerView : UIPickerView
+@interface GTTimePickerView : UIPickerView <UIPickerViewDelegate, UIPickerViewDataSource>
+
+@property NSTimeInterval time;
+@property (nonatomic, strong) NSString *timeString;
+@property (nonatomic, strong) UILabel *hourLabel, *minuteLabel, *secondLabel;
 
 @end

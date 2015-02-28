@@ -37,6 +37,7 @@
 + (NSString *)randomColorName;
 - (NSString *)randomColorName;
 + (NSString *)randomColorNameWithColor:(UIColor *)color;
++ (UIColor *)randomDarkColorFromString:(NSString *)string;
 
 // shades of colors
 + (NSDictionary *)whiteShades;

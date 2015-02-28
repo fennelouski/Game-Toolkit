@@ -10,4 +10,13 @@
 
 @interface GTDieView : UIView
 
+@property int maximumChanges;
+@property int value;
+@property BOOL selected, selectable;
+@property (nonatomic, strong) UILabel *valueLabel;
+
+- (void)randomize;
+- (void)drawSpots;
+- (void)dieTapped;
+
 @end

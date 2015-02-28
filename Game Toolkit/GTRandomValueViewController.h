@@ -10,4 +10,12 @@
 
 @interface GTRandomValueViewController : UIViewController
 
+@property (nonatomic, strong) UIToolbar *headerToolbar;
+@property (nonatomic, strong) NSMutableArray *dice;
+@property (nonatomic, strong) UITapGestureRecognizer *doubleTap;
+@property (nonatomic, strong) UISwipeGestureRecognizer *swipeUp, *swipeDown;
+@property (nonatomic, strong) UILabel *totalLabel;
+@property NSInteger lastNumberOfDice, lastNumberOfDiceSides;
+@property BOOL showInstructions;
+
 @end

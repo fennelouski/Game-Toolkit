@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GTPlayer.h"
 
 @interface GTPlayerTimeButton : UIButton
+
+@property (nonatomic, strong) GTPlayer *player;
+@property (nonatomic, strong) UILabel *nameLabel, *timeLabel;
+@property (nonatomic, strong) UIFont *font;
 
 @end

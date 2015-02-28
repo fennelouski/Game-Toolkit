@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GTPlayerManager.h"
 
-@interface GTTimerViewController : UIViewController
+@interface GTTimerViewController : UIViewController <GTPlayerManagerDelegate, GTPlayerManagerTimerDelegate>
+
+@property (nonatomic, strong) NSMutableDictionary *playerButtons;
+@property (nonatomic, strong) UIToolbar *headerToolbar;
 
 @end

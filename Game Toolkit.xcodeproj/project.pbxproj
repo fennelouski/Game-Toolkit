@@ -7,14 +7,37 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		90116E121A8B014700AD0F94 /* GTTimerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90116E111A8B014700AD0F94 /* GTTimerViewController.m */; };
+		90116E151A8B30FF00AD0F94 /* GTPlayerTimeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 90116E141A8B30FF00AD0F94 /* GTPlayerTimeButton.m */; };
+		90B178281A8BDE88006C4610 /* GTTimePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B178271A8BDE88006C4610 /* GTTimePickerView.m */; };
+		90D25A891A8C68B9004E18C4 /* GTRandomValueViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90D25A881A8C68B9004E18C4 /* GTRandomValueViewController.m */; };
+		90D25A8C1A8C691A004E18C4 /* GTDieView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90D25A8B1A8C691A004E18C4 /* GTDieView.m */; };
+		90D25A8E1A8D4E35004E18C4 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90D25A8D1A8D4E35004E18C4 /* Media.xcassets */; };
+		90D25A9A1A8D4FA4004E18C4 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90D25A901A8D4FA4004E18C4 /* Default-568h@2x.png */; };
+		90D25A9B1A8D4FA4004E18C4 /* Default-667h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90D25A911A8D4FA4004E18C4 /* Default-667h@2x.png */; };
+		90D25A9C1A8D4FA4004E18C4 /* Default-Landscape-736h@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90D25A921A8D4FA4004E18C4 /* Default-Landscape-736h@3x.png */; };
+		90D25A9D1A8D4FA4004E18C4 /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 90D25A931A8D4FA4004E18C4 /* Default-Landscape.png */; };
+		90D25A9E1A8D4FA4004E18C4 /* Default-Landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90D25A941A8D4FA4004E18C4 /* Default-Landscape@2x.png */; };
+		90D25A9F1A8D4FA4004E18C4 /* Default-Portrait-736h@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90D25A951A8D4FA4004E18C4 /* Default-Portrait-736h@3x.png */; };
+		90D25AA01A8D4FA4004E18C4 /* Default-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 90D25A961A8D4FA4004E18C4 /* Default-Portrait.png */; };
+		90D25AA11A8D4FA4004E18C4 /* Default-Portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90D25A971A8D4FA4004E18C4 /* Default-Portrait@2x.png */; };
+		90D25AA21A8D4FA4004E18C4 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 90D25A981A8D4FA4004E18C4 /* Default.png */; };
+		90D25AA31A8D4FA4004E18C4 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90D25A991A8D4FA4004E18C4 /* Default@2x.png */; };
+		90D25AA51A8D50CA004E18C4 /* Images-2.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90D25AA41A8D50CA004E18C4 /* Images-2.xcassets */; };
+		90D25AA71A8DD4D7004E18C4 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90D25AA61A8DD4D7004E18C4 /* AudioToolbox.framework */; };
 		90E83BFC1A80797700626CE2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E83BFB1A80797700626CE2 /* main.m */; };
 		90E83BFF1A80797700626CE2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E83BFE1A80797700626CE2 /* AppDelegate.m */; };
-		90E83C021A80797700626CE2 /* FirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E83C011A80797700626CE2 /* FirstViewController.m */; };
-		90E83C051A80797700626CE2 /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E83C041A80797700626CE2 /* SecondViewController.m */; };
 		90E83C081A80797700626CE2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90E83C061A80797700626CE2 /* Main.storyboard */; };
 		90E83C0A1A80797700626CE2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90E83C091A80797700626CE2 /* Images.xcassets */; };
 		90E83C0D1A80797700626CE2 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 90E83C0B1A80797700626CE2 /* LaunchScreen.xib */; };
 		90E83C191A80797700626CE2 /* Game_ToolkitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E83C181A80797700626CE2 /* Game_ToolkitTests.m */; };
+		90E83C2C1A80799900626CE2 /* GTScoreCardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E83C231A80799900626CE2 /* GTScoreCardViewController.m */; };
+		90E83C2D1A80799900626CE2 /* GTPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E83C251A80799900626CE2 /* GTPlayer.m */; };
+		90E83C2E1A80799900626CE2 /* GTPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E83C271A80799900626CE2 /* GTPlayerView.m */; };
+		90E83C2F1A80799900626CE2 /* UIColor+AppColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E83C291A80799900626CE2 /* UIColor+AppColors.m */; };
+		90E83C301A80799900626CE2 /* NSString+AppFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E83C2B1A80799900626CE2 /* NSString+AppFunctions.m */; };
+		90E83C331A807AE600626CE2 /* GTPlayerManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E83C321A807AE600626CE2 /* GTPlayerManagerViewController.m */; };
+		90E83C391A807BEE00626CE2 /* GTPlayerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E83C381A807BEE00626CE2 /* GTPlayerManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,21 +51,54 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		90116E101A8B014700AD0F94 /* GTTimerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTTimerViewController.h; sourceTree = "<group>"; };
+		90116E111A8B014700AD0F94 /* GTTimerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTTimerViewController.m; sourceTree = "<group>"; };
+		90116E131A8B30FF00AD0F94 /* GTPlayerTimeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTPlayerTimeButton.h; sourceTree = "<group>"; };
+		90116E141A8B30FF00AD0F94 /* GTPlayerTimeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTPlayerTimeButton.m; sourceTree = "<group>"; };
+		90B178261A8BDE88006C4610 /* GTTimePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTTimePickerView.h; sourceTree = "<group>"; };
+		90B178271A8BDE88006C4610 /* GTTimePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTTimePickerView.m; sourceTree = "<group>"; };
+		90D25A871A8C68B9004E18C4 /* GTRandomValueViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTRandomValueViewController.h; sourceTree = "<group>"; };
+		90D25A881A8C68B9004E18C4 /* GTRandomValueViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTRandomValueViewController.m; sourceTree = "<group>"; };
+		90D25A8A1A8C691A004E18C4 /* GTDieView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTDieView.h; sourceTree = "<group>"; };
+		90D25A8B1A8C691A004E18C4 /* GTDieView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTDieView.m; sourceTree = "<group>"; };
+		90D25A8D1A8D4E35004E18C4 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Media.xcassets; path = Icons/Media.xcassets; sourceTree = "<group>"; };
+		90D25A901A8D4FA4004E18C4 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		90D25A911A8D4FA4004E18C4 /* Default-667h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-667h@2x.png"; sourceTree = "<group>"; };
+		90D25A921A8D4FA4004E18C4 /* Default-Landscape-736h@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape-736h@3x.png"; sourceTree = "<group>"; };
+		90D25A931A8D4FA4004E18C4 /* Default-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape.png"; sourceTree = "<group>"; };
+		90D25A941A8D4FA4004E18C4 /* Default-Landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x.png"; sourceTree = "<group>"; };
+		90D25A951A8D4FA4004E18C4 /* Default-Portrait-736h@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait-736h@3x.png"; sourceTree = "<group>"; };
+		90D25A961A8D4FA4004E18C4 /* Default-Portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait.png"; sourceTree = "<group>"; };
+		90D25A971A8D4FA4004E18C4 /* Default-Portrait@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x.png"; sourceTree = "<group>"; };
+		90D25A981A8D4FA4004E18C4 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		90D25A991A8D4FA4004E18C4 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		90D25AA41A8D50CA004E18C4 /* Images-2.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Images-2.xcassets"; sourceTree = "<group>"; };
+		90D25AA61A8DD4D7004E18C4 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		90E83BF61A80797700626CE2 /* Game Toolkit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Game Toolkit.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		90E83BFA1A80797700626CE2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		90E83BFB1A80797700626CE2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		90E83BFD1A80797700626CE2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		90E83BFE1A80797700626CE2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		90E83C001A80797700626CE2 /* FirstViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirstViewController.h; sourceTree = "<group>"; };
-		90E83C011A80797700626CE2 /* FirstViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FirstViewController.m; sourceTree = "<group>"; };
-		90E83C031A80797700626CE2 /* SecondViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SecondViewController.h; sourceTree = "<group>"; };
-		90E83C041A80797700626CE2 /* SecondViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
 		90E83C071A80797700626CE2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		90E83C091A80797700626CE2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		90E83C0C1A80797700626CE2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		90E83C121A80797700626CE2 /* Game ToolkitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Game ToolkitTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		90E83C171A80797700626CE2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		90E83C181A80797700626CE2 /* Game_ToolkitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Game_ToolkitTests.m; sourceTree = "<group>"; };
+		90E83C221A80799900626CE2 /* GTScoreCardViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTScoreCardViewController.h; sourceTree = "<group>"; };
+		90E83C231A80799900626CE2 /* GTScoreCardViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTScoreCardViewController.m; sourceTree = "<group>"; };
+		90E83C241A80799900626CE2 /* GTPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTPlayer.h; sourceTree = "<group>"; };
+		90E83C251A80799900626CE2 /* GTPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTPlayer.m; sourceTree = "<group>"; };
+		90E83C261A80799900626CE2 /* GTPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTPlayerView.h; sourceTree = "<group>"; };
+		90E83C271A80799900626CE2 /* GTPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTPlayerView.m; sourceTree = "<group>"; };
+		90E83C281A80799900626CE2 /* UIColor+AppColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+AppColors.h"; sourceTree = "<group>"; };
+		90E83C291A80799900626CE2 /* UIColor+AppColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+AppColors.m"; sourceTree = "<group>"; };
+		90E83C2A1A80799900626CE2 /* NSString+AppFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+AppFunctions.h"; sourceTree = "<group>"; };
+		90E83C2B1A80799900626CE2 /* NSString+AppFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+AppFunctions.m"; sourceTree = "<group>"; };
+		90E83C311A807AE600626CE2 /* GTPlayerManagerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTPlayerManagerViewController.h; sourceTree = "<group>"; };
+		90E83C321A807AE600626CE2 /* GTPlayerManagerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTPlayerManagerViewController.m; sourceTree = "<group>"; };
+		90E83C371A807BEE00626CE2 /* GTPlayerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTPlayerManager.h; sourceTree = "<group>"; };
+		90E83C381A807BEE00626CE2 /* GTPlayerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTPlayerManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +106,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90D25AA71A8DD4D7004E18C4 /* AudioToolbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,9 +120,79 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		90BD2E141A9F8800007080A5 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				90E83C221A80799900626CE2 /* GTScoreCardViewController.h */,
+				90E83C231A80799900626CE2 /* GTScoreCardViewController.m */,
+				90116E101A8B014700AD0F94 /* GTTimerViewController.h */,
+				90116E111A8B014700AD0F94 /* GTTimerViewController.m */,
+				90D25A871A8C68B9004E18C4 /* GTRandomValueViewController.h */,
+				90D25A881A8C68B9004E18C4 /* GTRandomValueViewController.m */,
+				90E83C311A807AE600626CE2 /* GTPlayerManagerViewController.h */,
+				90E83C321A807AE600626CE2 /* GTPlayerManagerViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		90BD2E151A9F8818007080A5 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				90E83C241A80799900626CE2 /* GTPlayer.h */,
+				90E83C251A80799900626CE2 /* GTPlayer.m */,
+				90E83C371A807BEE00626CE2 /* GTPlayerManager.h */,
+				90E83C381A807BEE00626CE2 /* GTPlayerManager.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		90BD2E161A9F8830007080A5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				90D25A8A1A8C691A004E18C4 /* GTDieView.h */,
+				90D25A8B1A8C691A004E18C4 /* GTDieView.m */,
+				90E83C261A80799900626CE2 /* GTPlayerView.h */,
+				90E83C271A80799900626CE2 /* GTPlayerView.m */,
+				90B178261A8BDE88006C4610 /* GTTimePickerView.h */,
+				90B178271A8BDE88006C4610 /* GTTimePickerView.m */,
+				90116E131A8B30FF00AD0F94 /* GTPlayerTimeButton.h */,
+				90116E141A8B30FF00AD0F94 /* GTPlayerTimeButton.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		90BD2E171A9F8836007080A5 /* Helper Categories */ = {
+			isa = PBXGroup;
+			children = (
+				90E83C281A80799900626CE2 /* UIColor+AppColors.h */,
+				90E83C291A80799900626CE2 /* UIColor+AppColors.m */,
+				90E83C2A1A80799900626CE2 /* NSString+AppFunctions.h */,
+				90E83C2B1A80799900626CE2 /* NSString+AppFunctions.m */,
+			);
+			name = "Helper Categories";
+			sourceTree = "<group>";
+		};
+		90D25A8F1A8D4FA4004E18C4 /* iphone */ = {
+			isa = PBXGroup;
+			children = (
+				90D25A901A8D4FA4004E18C4 /* Default-568h@2x.png */,
+				90D25A911A8D4FA4004E18C4 /* Default-667h@2x.png */,
+				90D25A921A8D4FA4004E18C4 /* Default-Landscape-736h@3x.png */,
+				90D25A931A8D4FA4004E18C4 /* Default-Landscape.png */,
+				90D25A941A8D4FA4004E18C4 /* Default-Landscape@2x.png */,
+				90D25A951A8D4FA4004E18C4 /* Default-Portrait-736h@3x.png */,
+				90D25A961A8D4FA4004E18C4 /* Default-Portrait.png */,
+				90D25A971A8D4FA4004E18C4 /* Default-Portrait@2x.png */,
+				90D25A981A8D4FA4004E18C4 /* Default.png */,
+				90D25A991A8D4FA4004E18C4 /* Default@2x.png */,
+			);
+			path = iphone;
+			sourceTree = "<group>";
+		};
 		90E83BED1A80797700626CE2 = {
 			isa = PBXGroup;
 			children = (
+				90D25AA61A8DD4D7004E18C4 /* AudioToolbox.framework */,
 				90E83BF81A80797700626CE2 /* Game Toolkit */,
 				90E83C151A80797700626CE2 /* Game ToolkitTests */,
 				90E83BF71A80797700626CE2 /* Products */,
@@ -86,13 +213,16 @@
 			children = (
 				90E83BFD1A80797700626CE2 /* AppDelegate.h */,
 				90E83BFE1A80797700626CE2 /* AppDelegate.m */,
-				90E83C001A80797700626CE2 /* FirstViewController.h */,
-				90E83C011A80797700626CE2 /* FirstViewController.m */,
-				90E83C031A80797700626CE2 /* SecondViewController.h */,
-				90E83C041A80797700626CE2 /* SecondViewController.m */,
+				90BD2E141A9F8800007080A5 /* Controllers */,
+				90BD2E161A9F8830007080A5 /* Views */,
+				90BD2E151A9F8818007080A5 /* Model */,
+				90BD2E171A9F8836007080A5 /* Helper Categories */,
 				90E83C061A80797700626CE2 /* Main.storyboard */,
 				90E83C091A80797700626CE2 /* Images.xcassets */,
+				90D25A8D1A8D4E35004E18C4 /* Media.xcassets */,
+				90D25A8F1A8D4FA4004E18C4 /* iphone */,
 				90E83C0B1A80797700626CE2 /* LaunchScreen.xib */,
+				90D25AA41A8D50CA004E18C4 /* Images-2.xcassets */,
 				90E83BF91A80797700626CE2 /* Supporting Files */,
 			);
 			path = "Game Toolkit";
@@ -173,9 +303,11 @@
 				TargetAttributes = {
 					90E83BF51A80797700626CE2 = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = EJLR2RPSV2;
 					};
 					90E83C111A80797700626CE2 = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = EJLR2RPSV2;
 						TestTargetID = 90E83BF51A80797700626CE2;
 					};
 				};
@@ -205,7 +337,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				90E83C081A80797700626CE2 /* Main.storyboard in Resources */,
+				90D25A9B1A8D4FA4004E18C4 /* Default-667h@2x.png in Resources */,
 				90E83C0D1A80797700626CE2 /* LaunchScreen.xib in Resources */,
+				90D25AA51A8D50CA004E18C4 /* Images-2.xcassets in Resources */,
+				90D25AA11A8D4FA4004E18C4 /* Default-Portrait@2x.png in Resources */,
+				90D25A8E1A8D4E35004E18C4 /* Media.xcassets in Resources */,
+				90D25A9E1A8D4FA4004E18C4 /* Default-Landscape@2x.png in Resources */,
+				90D25A9A1A8D4FA4004E18C4 /* Default-568h@2x.png in Resources */,
+				90D25AA21A8D4FA4004E18C4 /* Default.png in Resources */,
+				90D25A9F1A8D4FA4004E18C4 /* Default-Portrait-736h@3x.png in Resources */,
+				90D25A9D1A8D4FA4004E18C4 /* Default-Landscape.png in Resources */,
+				90D25A9C1A8D4FA4004E18C4 /* Default-Landscape-736h@3x.png in Resources */,
+				90D25AA01A8D4FA4004E18C4 /* Default-Portrait.png in Resources */,
+				90D25AA31A8D4FA4004E18C4 /* Default@2x.png in Resources */,
 				90E83C0A1A80797700626CE2 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -224,10 +368,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				90E83C051A80797700626CE2 /* SecondViewController.m in Sources */,
+				90B178281A8BDE88006C4610 /* GTTimePickerView.m in Sources */,
+				90E83C2F1A80799900626CE2 /* UIColor+AppColors.m in Sources */,
+				90E83C301A80799900626CE2 /* NSString+AppFunctions.m in Sources */,
 				90E83BFF1A80797700626CE2 /* AppDelegate.m in Sources */,
-				90E83C021A80797700626CE2 /* FirstViewController.m in Sources */,
+				90E83C331A807AE600626CE2 /* GTPlayerManagerViewController.m in Sources */,
+				90E83C2E1A80799900626CE2 /* GTPlayerView.m in Sources */,
+				90E83C2C1A80799900626CE2 /* GTScoreCardViewController.m in Sources */,
+				90E83C391A807BEE00626CE2 /* GTPlayerManager.m in Sources */,
 				90E83BFC1A80797700626CE2 /* main.m in Sources */,
+				90D25A891A8C68B9004E18C4 /* GTRandomValueViewController.m in Sources */,
+				90D25A8C1A8C691A004E18C4 /* GTDieView.m in Sources */,
+				90116E151A8B30FF00AD0F94 /* GTPlayerTimeButton.m in Sources */,
+				90E83C2D1A80799900626CE2 /* GTPlayer.m in Sources */,
+				90116E121A8B014700AD0F94 /* GTTimerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,9 +457,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "1f259c54-7b48-441c-a4f0-d9156fa27eed";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -339,8 +494,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "5aec38a4-9f78-4211-9d21-f3d6fb47584b";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -351,9 +507,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = "Game Toolkit/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "1f259c54-7b48-441c-a4f0-d9156fa27eed";
 			};
 			name = Debug;
 		};
@@ -361,9 +521,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = "Game Toolkit/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "5aec38a4-9f78-4211-9d21-f3d6fb47584b";
 			};
 			name = Release;
 		};
@@ -371,6 +535,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -382,6 +548,7 @@
 				INFOPLIST_FILE = "Game ToolkitTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Game Toolkit.app/Game Toolkit";
 			};
 			name = Debug;
@@ -390,6 +557,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -397,6 +566,7 @@
 				INFOPLIST_FILE = "Game ToolkitTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Game Toolkit.app/Game Toolkit";
 			};
 			name = Release;
@@ -420,6 +590,7 @@
 				90E83C1E1A80797700626CE2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		90E83C1F1A80797700626CE2 /* Build configuration list for PBXNativeTarget "Game ToolkitTests" */ = {
 			isa = XCConfigurationList;
@@ -428,6 +599,7 @@
 				90E83C211A80797700626CE2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

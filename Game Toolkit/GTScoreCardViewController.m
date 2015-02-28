@@ -9,6 +9,7 @@
 #import "GTScoreCardViewController.h"
 #import "GTPlayer.h"
 #import "UIColor+AppColors.h"
+#import "GTPlayerManager.h"
 
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
 #define kStatusBarHeight (([[UIApplication sharedApplication] statusBarFrame].size.height == 20.0f) ? 20.0f : (([[UIApplication sharedApplication] statusBarFrame].size.height == 40.0f) ? 20.0f : 0.0f))
@@ -17,76 +18,81 @@
 #define HEADER_HEIGHT CELL_HEIGHT + kStatusBarHeight
 #define CELL_BUFFER 20.0f
 #define STARTING_CELL_WIDTH 80.0f
+#define FOOTER_HEIGHT 49.0f
 
 @implementation GTScoreCardViewController
 
 - (void)viewDidLoad {
-    self.headerSubviews = [[NSMutableArray alloc] init];
-    [self.view setBackgroundColor:[UIColor white]];
+//    [self.view setBackgroundColor:[UIColor white]];
+//    [self.view addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Green Background"]]];
     
-    GTPlayer *player1 = [[GTPlayer alloc] init];
-    player1.name = @"Nathan";
-    
-    GTPlayer *player2 = [[GTPlayer alloc] init];
-    player2.name = @"Katie";
-    
-    GTPlayer *player3 = [[GTPlayer alloc] init];
-    player3.name = @"Player 3";
-    
-    GTPlayer *player4 = [[GTPlayer alloc] init];
-    player4.name = @"Player 4";
-    
-    self.players = [[NSMutableArray alloc] initWithArray:@[player1, player2, player3, player4]];
-    
-    for (int i = 0; i < 0; i++) {
-        for (GTPlayer *player in self.players) {
-            NSNumber *score = [NSNumber numberWithInt:arc4random()%15 - 2];
-            if (arc4random()%4 != 10) {
-                [[player scoreHistory] addObject:score];
-            }
-        }
-    }
-    
-    self.playerTables = [[NSMutableArray alloc] init];
-    
-    float tableXPosition = 0.0f;
-    self.cellWidth = STARTING_CELL_WIDTH;
-    while (self.players.count * self.cellWidth < kScreenWidth) {
-        self.cellWidth++;
-    }
-    for (int i = 0 ; i < self.players.count ; i++) {
-        UITableView *playerTable = [[UITableView alloc] initWithFrame:CGRectMake(tableXPosition, 0.0f, self.cellWidth, kScreenHeight)];
-        [playerTable setDelegate:self];
-        [playerTable setDataSource:self];
-        [playerTable setTag:i];
-        [playerTable setBounces:YES];
-        [self.playerTables addObject:playerTable];
-        if (i + 1 < self.players.count) [playerTable setShowsVerticalScrollIndicator:NO];
-        tableXPosition += self.cellWidth;
-        
-        GTPlayer *player = [self.players objectAtIndex:i];
-        
-        UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, kStatusBarHeight, self.cellWidth, CELL_HEIGHT)];
-        [nameLabel setTextAlignment:NSTextAlignmentCenter];
-        [nameLabel setTextColor:[UIColor randomDarkColor]];
-        [nameLabel setText:player.name];
-        
-        [self.headerSubviews addObject:nameLabel];
-    }
-    
-    [self layoutTables];
-    
-    [self.tableScrollView setContentSize:CGSizeMake(tableXPosition, kScreenHeight)];
-    
+    UIToolbar *headerBackground = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f, 0.0f, kScreenWidth + kScreenHeight, kStatusBarHeight + kScreenHeight + kScreenWidth)];
+    [self.view addSubview:headerBackground];
     [self.view addSubview:self.tableScrollView];
-    [self.view addSubview:self.headerToolbar];
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self  selector:@selector(updateViews)    name:UIDeviceOrientationDidChangeNotification  object:nil];
     [nc addObserver:self selector:@selector(updateViews) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     [nc addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardWillShowNotification object:nil];
-    [nc addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardWillChangeFrameNotification object:nil];
-    [nc addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardWillHideNotification object:nil];
+//    [nc addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidChangeFrameNotification object:nil];
+    [nc addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
+    
+    self.textFields = [[NSMutableArray alloc] initWithCapacity:1000];
+    for (int i = 0; i < 1000; i++) {
+        UITextField *scoreTextField = [[UITextField alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.cellWidth - CELL_BUFFER, CELL_HEIGHT)];
+        [scoreTextField setPlaceholder:@"####"];
+        [scoreTextField setTextColor:[UIColor darkTextColor]];
+        [scoreTextField setKeyboardType:UIKeyboardTypePhonePad];
+        [scoreTextField setDelegate:self];
+        [scoreTextField setTextAlignment:NSTextAlignmentRight];
+        [scoreTextField setTag:i];
+        [scoreTextField setInputAccessoryView:self.accessoryView];
+        [self.textFields addObject:scoreTextField];
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    if (self.headerSubviews) {
+        for (UIView *subview in self.headerSubviews) {
+            [subview removeFromSuperview];
+        }
+    }
+    self.headerSubviews = [[NSMutableArray alloc] init];
+    self.playerTables = [[NSMutableArray alloc] init];
+    
+    float tableXPosition = 0.0f;
+    self.cellWidth = STARTING_CELL_WIDTH;
+    while ([[[GTPlayerManager sharedReferenceManager] players] count] * self.cellWidth < kScreenWidth) {
+        self.cellWidth++;
+    }
+    for (int i = 0 ; i < [[[GTPlayerManager sharedReferenceManager] players] count]; i++) {
+        UITableView *playerTable = [[UITableView alloc] initWithFrame:CGRectMake(tableXPosition, self.headerToolbar.frame.size.height, self.cellWidth, kScreenHeight)];
+        [playerTable setBackgroundColor:[UIColor clearColor]];
+        [playerTable setDelegate:self];
+        [playerTable setDataSource:self];
+        [playerTable setTag:i];
+        [playerTable setBounces:NO];
+        [self.playerTables addObject:playerTable];
+        if (i + 1 < [[[GTPlayerManager sharedReferenceManager] players] count]) [playerTable setShowsVerticalScrollIndicator:NO];
+        
+        
+        GTPlayer *player = [[[GTPlayerManager sharedReferenceManager] players] objectAtIndex:i];
+        
+        UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(tableXPosition, kStatusBarHeight, self.cellWidth, CELL_HEIGHT)];
+        [nameLabel setTextAlignment:NSTextAlignmentCenter];
+        [nameLabel setTextColor:[UIColor randomDarkColorFromString:player.name]];
+        [nameLabel setText:player.name];
+        
+        [self.headerSubviews addObject:nameLabel];
+        
+        tableXPosition += self.cellWidth;
+    }
+    
+    [self layoutTables];
+    
+    [self.tableScrollView setContentSize:CGSizeMake(tableXPosition, kScreenHeight)];
     
     [self updateViews];
 }
@@ -95,17 +101,27 @@
     for (UITableView *tableView in self.playerTables) {
         [self.tableScrollView addSubview:tableView];
     }
+
+    [self.tableScrollView addSubview:self.headerToolbar];
 }
 
 - (void)updateViews {
     [UIView animateWithDuration:0.35f animations:^{
         [self.tableScrollView setFrame:CGRectMake(0.0, 0.0f, kScreenWidth, kScreenHeight)];
-        
         float tableXPosition = 0.0f;
         self.cellWidth = STARTING_CELL_WIDTH;
-        while (self.players.count * self.cellWidth < kScreenWidth) self.cellWidth++;
+        while ([[[GTPlayerManager sharedReferenceManager] players] count] * self.cellWidth < kScreenWidth) self.cellWidth++;
+        [self.tableScrollView setContentSize:CGSizeMake([[[GTPlayerManager sharedReferenceManager] players] count] * self.cellWidth, kScreenHeight)];
         for (UITableView *tableView in self.playerTables) {
-            [tableView setContentInset:UIEdgeInsetsMake(CELL_HEIGHT + kStatusBarHeight, 0.0f, self.keyboardHeight, 0.0f)];
+            if (kScreenHeight > kScreenWidth) {
+                [tableView setContentInset:UIEdgeInsetsMake(CELL_HEIGHT + kStatusBarHeight, 0.0f, self.keyboardHeight, 0.0f)];
+            }
+            
+            else {
+                [tableView setContentInset:UIEdgeInsetsMake(CELL_HEIGHT + kStatusBarHeight, 0.0f, FOOTER_HEIGHT, 0.0f)];
+                [self.currentFirstResponder resignFirstResponder];
+            }
+            
             [tableView setFrame:CGRectMake(tableXPosition, 0.0f, self.cellWidth, kScreenHeight)];
             [tableView reloadData];
             tableXPosition += self.cellWidth;
@@ -117,7 +133,7 @@
             [self.headerToolbar addSubview:headerLabel];
         }
         
-        [self.headerToolbar setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, HEADER_HEIGHT)];
+        [self.headerToolbar setFrame:CGRectMake(0.0f, 0.0f, (self.tableScrollView.contentSize.width > kScreenWidth) ? self.tableScrollView.contentSize.width : kScreenWidth, HEADER_HEIGHT)];
         [self.saveButton setCenter:CGPointMake(kScreenWidth - self.saveButton.frame.size.width/2.0f, CELL_HEIGHT/2.0f)];
     }];
 }
@@ -128,7 +144,9 @@
     if (!_tableScrollView) {
         _tableScrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
         [_tableScrollView setShowsVerticalScrollIndicator:NO];
-        [_tableScrollView setBounces:NO];
+        [_tableScrollView setBounces:YES];
+        [_tableScrollView setScrollsToTop:YES];
+        [_tableScrollView setBackgroundColor:[UIColor clearColor]];
     }
     
     return _tableScrollView;
@@ -180,29 +198,47 @@
 
 - (void)negativeButtonTouched {
     [self.negativeButton setSelected:!self.negativeButton.selected];
+    if (self.negativeButton.selected) {
+        [self.currentFirstResponder setTextColor:[UIColor red]];
+    }
+    else {
+        [self.currentFirstResponder setTextColor:[UIColor darkTextColor]];
+    }
 }
 
 - (void)saveButtonTouched {
-    [self.currentFirstResponder resignFirstResponder];
-    
     BOOL shouldCommit = NO;
-    for (GTPlayer *player in self.players) {
-        if (player.pendingScore > 0) {
+    for (GTPlayer *player in [[GTPlayerManager sharedReferenceManager] players]) {
+        if (abs(player.pendingScore) > 0) {
             shouldCommit = YES;
         }
     }
     
     if (!shouldCommit) {
+        for (UITableView *tableView in self.playerTables) {
+            [tableView reloadData];
+        }
+        
         return;
     }
     
-    for (GTPlayer *player in self.players) {
+    [self.currentFirstResponder resignFirstResponder];
+    
+    for (GTPlayer *player in [[GTPlayerManager sharedReferenceManager] players]) {
         [player commitPendingScore];
     }
     
+    int keepingTrack = 0;
+    for (UITextField *textField in self.textFields) {
+        [textField setText:@""];
+        keepingTrack++;
+    }
+
     for (UITableView *tableView in self.playerTables) {
         [tableView reloadData];
     }
+    
+    [self.negativeButton setSelected:NO];
 }
 
 #pragma mark - Table View Delegate and Data Source Methods
@@ -214,9 +250,9 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     NSInteger numberOfRows = 0;
     
-    for (int i = 0; i < self.playerTables.count && i < self.players.count; i++) {
+    for (int i = 0; i < self.playerTables.count && i < [[[GTPlayerManager sharedReferenceManager] players] count]; i++) {
         if ([tableView isEqual:[self.playerTables objectAtIndex:i]]) {
-            GTPlayer *player = [self.players objectAtIndex:i];
+            GTPlayer *player = [[[GTPlayerManager sharedReferenceManager] players] objectAtIndex:i];
             
             if ([[player scoreHistory] count] == 1) {
                 numberOfRows = 1;
@@ -250,19 +286,21 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.cellWidth, CELL_HEIGHT)];
     
-    for (int i = 0; i < self.playerTables.count && i < self.players.count; i++) {
+    for (int i = 0; i < self.playerTables.count && i < [[[GTPlayerManager sharedReferenceManager] players] count]; i++) {
         if ([tableView isEqual:[self.playerTables objectAtIndex:i]]) {
-            GTPlayer *player = [self.players objectAtIndex:i];
+            GTPlayer *player = [[[GTPlayerManager sharedReferenceManager] players] objectAtIndex:i];
             UILabel *lineLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.cellWidth - CELL_BUFFER, CELL_HEIGHT)];
             [lineLabel setTextAlignment:NSTextAlignmentRight];
             [lineLabel setTextColor:[UIColor darkTextColor]];
             
+            // first row
             if ([player.scoreHistory count] > 0 && [indexPath row] == 0) {
                 [lineLabel setText:[NSString stringWithFormat:@"%d", [[[player scoreHistory] objectAtIndex:0] intValue]]];
+                [lineLabel setTextColor:[UIColor darkGrayColor]];
                 [cell addSubview:lineLabel];
             }
             
-            // check if it's a total row
+            // total row
             else if ([indexPath row] % 2 == 0) {
                 
                 int totalScore = 0;
@@ -272,10 +310,12 @@
                 }
                 
                 [lineLabel setText:[NSString stringWithFormat:@"%d", totalScore]];
+                if (totalScore > 0) [lineLabel setTextColor:[UIColor black]];
                 [cell addSubview:lineLabel];
                 [cell setBackgroundColor:[[UIColor red] makeBrightnessOf:0.95f]];
             }
             
+            // scoring row
             else if ([indexPath row] % 2 == 1) {
                 int scoreIndex = (int)(([indexPath row] + 1)/2);
                 int score = 0;
@@ -284,10 +324,11 @@
                 }
                 
                 else {
-                    NSLog(@"scoreIndex: %d\t\t%ld", scoreIndex, [[player scoreHistory] count]);
+                    NSLog(@"scoreIndex: %d\t\t%ld", scoreIndex, (unsigned long)[[player scoreHistory] count]);
                 }
                 
                 [lineLabel setText:[NSString stringWithFormat:@"%d", score]];
+                [lineLabel setTextColor:[UIColor darkGrayColor]];
                 [cell addSubview:lineLabel];
             }
             
@@ -300,9 +341,9 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.cellWidth, HEADER_HEIGHT)];
     
-    for (int i = 0; i < self.playerTables.count && i < self.players.count; i++) {
+    for (int i = 0; i < self.playerTables.count && i < [[[GTPlayerManager sharedReferenceManager] players] count]; i++) {
         if ([tableView isEqual:[self.playerTables objectAtIndex:i]]) {
-            GTPlayer *player = [self.players objectAtIndex:i];
+            GTPlayer *player = [[[GTPlayerManager sharedReferenceManager] players] objectAtIndex:i];
             
             UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, kStatusBarHeight, self.cellWidth, CELL_HEIGHT)];
             [nameLabel setTextAlignment:NSTextAlignmentCenter];
@@ -320,21 +361,16 @@
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.cellWidth, CELL_HEIGHT)];
     GTPlayer *player;
-    for (int i = 0; i < self.playerTables.count && i < self.players.count; i++) {
+    for (int i = 0; i < self.playerTables.count && i < [[[GTPlayerManager sharedReferenceManager] players] count]; i++) {
         if ([tableView isEqual:[self.playerTables objectAtIndex:i]]) {
-            player = [self.players objectAtIndex:i];
+            player = [[[GTPlayerManager sharedReferenceManager] players] objectAtIndex:i];
         }
     }
     
-    UITextField *scoreTextField = [[UITextField alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.cellWidth - CELL_BUFFER, CELL_HEIGHT)];
-    [scoreTextField setPlaceholder:@"##"];
-    [scoreTextField setTextColor:[UIColor darkTextColor]];
-    [scoreTextField setKeyboardType:UIKeyboardTypePhonePad];
-    [scoreTextField setDelegate:self];
-    [scoreTextField setTextAlignment:NSTextAlignmentRight];
-    [scoreTextField setTag:tableView.tag];
-    [scoreTextField setInputAccessoryView:self.accessoryView];
+    UITextField *scoreTextField = [self.textFields objectAtIndex:tableView.tag];
+    [scoreTextField setFrame:CGRectMake(0.0f, 0.0f, self.cellWidth - CELL_BUFFER, CELL_HEIGHT)];
     if (abs(player.pendingScore) > 0) [scoreTextField setText:[NSString stringWithFormat:@"%d", player.pendingScore]];
+
     [footerView addSubview:scoreTextField];
     [footerView setBackgroundColor:[UIColor colorWithRed:0.95f green:0.95f blue:0.95f alpha:1.0f]];
     
@@ -362,26 +398,74 @@
 
 - (void)keyboardDidShow:(NSNotification *)notification {
     self.keyboardHeight = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
+    
     [self updateViews];
 }
 
 - (void)keyboardDidHide:(NSNotification *)notification {
-    self.keyboardHeight = 0.0f;
+    self.keyboardHeight = FOOTER_HEIGHT;
+    
     [self updateViews];
 }
 
 #pragma mark - Text Field Delegate Methods
 
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    if (kScreenWidth < kScreenHeight) {
-        return YES;
-    }
-    
-    return NO;
-}
-
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
     self.currentFirstResponder = textField;
+    [self performSelector:@selector(letsJustTryThis) withObject:self afterDelay:0.18f];
+    [textField setDelegate:self];
+    if (self.negativeButton.selected) {
+        [textField setTextColor:[UIColor red]];
+    }
+    
+    else {
+        [textField setTextColor:[UIColor darkTextColor]];
+    }
+    
+    for (UITableView *tableView in self.playerTables) {
+        float tableContentHeight = tableView.contentSize.height;
+        float tableHeight = tableView.frame.size.height - tableView.contentInset.top - tableView.contentInset.bottom;
+        float offsetAmount = tableHeight - tableContentHeight;
+        
+        if (offsetAmount > 0.0f) {
+            offsetAmount = 0.0f;
+        }
+        
+//        [tableView setContentOffset:CGPointMake(0.0f, tableView.contentOffset.y - offsetAmount) animated:YES];
+    }
+    
+    [self scrollToLastRow];
+    
+//    NSLog(@"%f", self.keyboardHeight);
+}
+
+- (void)scrollToLastRow {
+    if (self.playerTables.count > 0) {
+        UITableView *tableView = [self.playerTables firstObject];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self tableView:tableView numberOfRowsInSection:0] - 1 inSection:0];
+        [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        if ([indexPath row] * CELL_HEIGHT > self.tableScrollView.contentSize.height) {
+//            [tableView setContentOffset:CGPointMake(tableView.contentOffset.x, tableView.contentOffset.y - CELL_HEIGHT) animated:YES];
+        }
+    }
+}
+
+// when a text field begins editing, it's set as the currentFirstResponder so there's a strong reference to it
+// I couldn't figure out why it wasn't allowing me to type, so I came up with the idea of re-setting it as the first responder a moment after it's already the first responder
+// apparently, this works and does NOT create an inifinite loop
+- (void)letsJustTryThis {
+    [self.currentFirstResponder becomeFirstResponder];
+}
+
+- (void)checkForFirstResponder {
+    [self.currentFirstResponder becomeFirstResponder];
+    
+    [self performSelector:@selector(flipFirstResponderLoopCheck) withObject:self afterDelay:0.2f];
+}
+
+- (void)flipFirstResponderLoopCheck {
+    [self.currentFirstResponder becomeFirstResponder];
+    self.firstResponderLoopCheck = NO;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -391,29 +475,36 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-    if (textField.tag < self.players.count) {
-        GTPlayer *player = [self.players objectAtIndex:textField.tag];
-        if (self.negativeButton.selected) {
-            [player setPendingScore:[textField.text intValue] * -1];
-        }
-        
-        else {
-            [player setPendingScore:[textField.text intValue]];
-        }
+    if (textField.tag < [[[GTPlayerManager sharedReferenceManager] players] count]) {
+        GTPlayer *player = [[[GTPlayerManager sharedReferenceManager] players] objectAtIndex:textField.tag];
+        [player setPendingScore:[textField.text intValue]];
+        [player setIsPendingNegative:self.negativeButton.selected];
     }
     
     else {
-        NSLog(@"Add %@ to Player %ld...which is not in self.players", textField.text, (long)textField.tag);
+        NSLog(@"Add %@ to Player %ld...which is not in [[GTPlayerManager sharedReferenceManager] players]", textField.text, (long)textField.tag);
     }
+    
+    [self.negativeButton setSelected:NO];
+    [self scrollToLastRow];
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     NSCharacterSet *decimalCharacterSet = [NSCharacterSet decimalDigitCharacterSet];
     if (string.length < 1 || ([decimalCharacterSet characterIsMember:[string characterAtIndex:0]] && string.length == 1)) {
+        [self performSelector:@selector(updatePending) withObject:self afterDelay:0.1f];
         return YES;
     }
     
     return NO;
+}
+
+- (void)updatePending {
+    for (int i = 0; i < [[[GTPlayerManager sharedReferenceManager] players] count]; i++) {
+        GTPlayer *player = [[[GTPlayerManager sharedReferenceManager] players] objectAtIndex:i];
+        UITextField *scoreTextField = [self.textFields objectAtIndex:i];
+        [player setPendingScore:[scoreTextField.text intValue]];
+    }
 }
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -428,22 +519,34 @@
     return YES;
 }
 
-
 - (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event {
     if (motion == UIEventSubtypeMotionShake ) {
-//        for (GTPlayer *player in self.players) {
-//            NSNumber *lastScore = [[player scoreHistory] lastObject];
-//            if (abs([lastScore intValue]) > 0) {
-//                [[player scoreHistory] removeObject:lastScore];
-//            }
-//            
-//            [player setPendingScore:[lastScore intValue]];
-//        }
-//        
-//        for (UITableView *tableView in self.playerTables) {
-//            [tableView reloadData];
-//        }
+        NSMutableArray *players = [NSMutableArray arrayWithArray:[[GTPlayerManager sharedReferenceManager] players]];;
+        NSMutableString *playerString = [[NSMutableString alloc] init];
+        int currentPlayerCount = 1;
+        while (players.count > 0) {
+            GTPlayer *currentPlayer = [players objectAtIndex:arc4random()%players.count];
+            [playerString appendFormat:@"%d. %@\n", currentPlayerCount, currentPlayer.name];
+            [players removeObject:currentPlayer];
+            currentPlayerCount++;
+        }
+        
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Random order of players" message:[playerString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+            
+        }];
+        [alertController addAction:okAction];
+        
+        UIAlertAction *newOrderAction = [UIAlertAction actionWithTitle:@"New Order" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+            [self motionBegan:motion withEvent:event];
+        }];
+        [alertController addAction:newOrderAction];
+        
+        [self presentViewController:alertController animated:YES completion:^{
+            
+        }];
     }
 }
+
 
 @end
