@@ -109,7 +109,7 @@
     
     float sideDistance = 4.6f;
     float marginRatio = 1.2f;
-    float sideNumator = sideDistance - marginRatio;
+    float sideNumator = sideDistance - marginRatio - 0.08f;
     float dotSize = self.frame.size.height / (9.0f - [[GTPlayerManager sharedReferenceManager] sizeOfDiceDots] * 1.2f);
     float cornerRadius = dotSize/1.89f;
     
