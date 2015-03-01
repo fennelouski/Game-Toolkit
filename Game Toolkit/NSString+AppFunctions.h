@@ -12,5 +12,7 @@
 
 - (NSString *)portmonteau;
 + (NSString *)portmonteau:(NSString *)input;
+- (NSString *)areOrIs;
++ (NSString *)areOrIs:(NSString *)input;
 
 @end

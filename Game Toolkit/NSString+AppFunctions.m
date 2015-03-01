@@ -71,4 +71,29 @@
     return [input portmonteau];
 }
 
+- (NSString *)areOrIs {
+    NSArray *areWords = @[@"women",
+                          @"men",
+                          @"boys",
+                          @"guys",
+                          @"girls",
+                          @"kids",
+                          @"adults",
+                          @"people",
+                          @"animals"];
+    NSString *lowerCaseInput = [self lowercaseString];
+    
+    for (NSString *comparisonWord in areWords) {
+        if ([lowerCaseInput isEqualToString:comparisonWord]) {
+            return @"are";
+        }
+    }
+    
+    return @"is";
+}
+
++ (NSString *)areOrIs:(NSString *)input {
+    return [input areOrIs];
+}
+
 @end
