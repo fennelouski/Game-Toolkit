@@ -63,6 +63,10 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
+    if (self.value > [[GTPlayerManager sharedReferenceManager] numberOfDiceSides]) {
+        self.value %= [[GTPlayerManager sharedReferenceManager] numberOfDiceSides] + 1;
+    }
+    
     [self setBackgroundColor:[[GTPlayerManager sharedReferenceManager] diceColor]];
     [self.layer setBorderColor:[[GTPlayerManager sharedReferenceManager] diceBorderColor].CGColor];
     [self.layer addSublayer:self.gradientLayer];

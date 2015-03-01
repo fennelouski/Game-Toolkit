@@ -793,6 +793,7 @@
     return YES;
 }
 
+// this goes through each textfield and adds the ones with names to the player manager and removes the deleted names
 - (void)filterThroughTextFields {
     BOOL shouldReset = NO;
 
