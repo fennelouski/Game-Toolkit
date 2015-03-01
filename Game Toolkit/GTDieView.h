@@ -14,7 +14,7 @@
 @property int value;
 @property BOOL selected, selectable;
 @property (nonatomic, strong) UILabel *valueLabel;
-@property (nonatomic, strong) UIView *shadingView;
+@property (nonatomic, strong) UIView *deselectedView;
 @property (nonatomic, strong) CAGradientLayer *gradientLayer;
 @property CGRect defaultFrame;
 @property float theta;
