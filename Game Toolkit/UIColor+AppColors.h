@@ -56,6 +56,8 @@
 // Holiday Colors
 + (NSArray *)holidayColorsForToday;
 + (NSArray *)holidayColorsForDate:(NSDate *)date;
++ (NSArray *)strictHolidayColorsForToday;
++ (NSArray *)strictHolidayColorsForDate:(NSDate *)date;
 
 // sets of colors that are different for two players
 + (NSArray *)player1Colors;

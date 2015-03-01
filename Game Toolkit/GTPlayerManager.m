@@ -88,7 +88,11 @@
                                                                       @"Yellow" : [UIColor yellowPantone],
                                                                       @"Black" : [UIColor black],
                                                                       @"Orange" : [UIColor persimmon],
-                                                                      @"Pink" : [UIColor pink]}];
+                                                                      @"Pink" : [UIColor brinkPink]}];
+        
+        if ([UIColor strictHolidayColorsForToday]) {
+            [_diceColors setObject:[[UIColor strictHolidayColorsForToday] firstObject] forKey:@"Holiday"];
+        }
         
         
         NSString *nameOfDiceColor = [defaults objectForKey:COLOR_OF_DICE_KEY];
@@ -409,6 +413,10 @@
 - (UIColor *)diceDotsColor {
     if ([_diceColorName isEqual:@"White"]) {
         return [UIColor black];
+    }
+    
+    else if ([_diceColorName isEqual:@"Holiday"]) {
+        return [[UIColor holidayColorsForToday] objectAtIndex:1];
     }
     
     return [UIColor white];
