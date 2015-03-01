@@ -14,12 +14,14 @@
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
 #define kStatusBarHeight (([[UIApplication sharedApplication] statusBarFrame].size.height == 20.0f) ? 20.0f : (([[UIApplication sharedApplication] statusBarFrame].size.height == 40.0f) ? 20.0f : 0.0f))
 #define kScreenHeight (([[UIApplication sharedApplication] statusBarFrame].size.height > 20.0f) ? [UIScreen mainScreen].bounds.size.height - 20.0f : [UIScreen mainScreen].bounds.size.height)
+#define ANIMATION_DURATION 0.35f
 #define CELL_HEIGHT 44.0f
 #define BUFFER 20.0f
 #define FOOTER_HEIGHT 49.0f
 #define PICKER_HEIGHT 216.0f
 #define WAIT_TIME 4.0f
 #define LONG_WAIT_TIME 600.0f
+#define ANIMATION_ITERATIONS 120
 
 @implementation GTRandomValueViewController
 
@@ -31,6 +33,7 @@
     [self setNeedsStatusBarAppearanceUpdate];
     [self.view addSubview:self.totalLabel];
     [self.view addGestureRecognizer:self.doubleTap];
+    self.animatingScore = NO;
     
     [self setUpDice];
     
@@ -152,11 +155,19 @@
     NSInteger dieNumber = 0, totalDice = self.dice.count;
     int diceTotal = 0;
     for (GTDieView *die in self.dice) {
-        if (![die selected] || die.frame.origin.x + die.frame.size.width > kScreenWidth || die.frame.origin.y + die.frame.size.height + FOOTER_HEIGHT > kScreenHeight || die.frame.origin.x + die.frame.size.width / 2.0f < 0.0f || die.frame.origin.y + die.frame.size.height / 2.0f < 0.0f) {
+        if (![die selected] ||
+            die.frame.origin.x + die.frame.size.width > kScreenWidth ||
+            die.frame.origin.y + die.frame.size.height + FOOTER_HEIGHT > kScreenHeight ||
+            die.frame.origin.x + die.frame.size.width / 2.0f < 0.0f ||
+            die.frame.origin.y + die.frame.size.height / 2.0f < 0.0f) {
+            
             float dieSize = (kScreenWidth + kScreenHeight) / (4.0f + (totalDice / 1.5f));
             [die setFrame:[self frameForDice:dieNumber totalDice:totalDice]];
             CGPoint center = die.center;
-            [die setFrame:CGRectMake(0.0f, 0.0f, dieSize, dieSize)];
+            [die setFrame:CGRectMake(0.0f,
+                                     0.0f,
+                                     dieSize,
+                                     dieSize)];
             [die setCenter:center];
             [die drawSpots];
         }
@@ -272,7 +283,7 @@
 - (UILabel *)totalLabel {
     if (!_totalLabel) {
         _totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, -kScreenHeight/2.0f)];
-        [_totalLabel setTextColor:[UIColor rubyRed]];
+        [_totalLabel setTextColor:[[GTPlayerManager sharedReferenceManager] diceDotsColor]];
         [_totalLabel setShadowColor:[UIColor lightGray]];
         [_totalLabel setShadowOffset:CGSizeMake(-1.0f, -1.0f)];
         [_totalLabel setAlpha:0.3f];
@@ -348,8 +359,7 @@
 }
 
 - (void)rollDice {
-    
-    [UIView animateWithDuration:0.35f animations:^{
+    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
         [self layoutDice];
     }];
     
@@ -358,15 +368,16 @@
     }
     
     if (self.dice.count > 1 && [[GTPlayerManager sharedReferenceManager] showDiceTotal]) {
-        [self totalDiceCount:[NSNumber numberWithInt:120]];
+        [self.totalLabel setTextColor:[[GTPlayerManager sharedReferenceManager] diceDotsColor]];
+        [self totalDiceCount:[NSNumber numberWithInt:ANIMATION_ITERATIONS]];
         
         [self.totalLabel setCenter:CGPointMake(kScreenWidth/2.0f, -kScreenHeight/2.0f)];
         [self.totalLabel setAlpha:0.0f];
-        [UIView animateWithDuration:0.35f delay:0.8f options:UIViewAnimationOptionCurveEaseOut animations:^{
+        [UIView animateWithDuration:ANIMATION_DURATION delay:0.8f options:UIViewAnimationOptionCurveEaseOut animations:^{
             [self.totalLabel setCenter:CGPointMake(kScreenWidth/2.0f, kScreenHeight/2.0f)];
             [self.totalLabel setAlpha:1.0f];
         } completion:^(BOOL finished){
-            [UIView animateWithDuration:0.35f animations:^{
+            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                 [self.totalLabel setAlpha:1.0f];
             }];
         }];
@@ -384,7 +395,7 @@
 
 - (void)totalDiceCount:(NSNumber *)count {
     if ([count intValue] > 0) {
-        [self performSelector:@selector(totalDiceCount:) withObject:[NSNumber numberWithInt:[count intValue] - 1] afterDelay:0.0167f];
+        [self performSelector:@selector(totalDiceCount:) withObject:[NSNumber numberWithInt:[count intValue] - 1] afterDelay:2.0f/(float)ANIMATION_ITERATIONS];
         [self totalDice];
     }
     

@@ -16,6 +16,6 @@
 @property (nonatomic, strong) UISwipeGestureRecognizer *swipeUp, *swipeDown;
 @property (nonatomic, strong) UILabel *totalLabel;
 @property NSInteger lastNumberOfDice, lastNumberOfDiceSides;
-@property BOOL showInstructions;
+@property BOOL showInstructions, animatingScore;
 
 @end

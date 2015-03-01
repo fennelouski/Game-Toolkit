@@ -14,6 +14,10 @@
 #define kScreenHeight (([[UIApplication sharedApplication] statusBarFrame].size.height > 20.0f) ? [UIScreen mainScreen].bounds.size.height - 20.0f : [UIScreen mainScreen].bounds.size.height)
 #define FONT_SIZE_RATIO 1.8f
 #define CORNER_RADIUS_RATIO 5.0f
+#define degreesToRadians(x) (M_PI * (x) / 180.0)
+#define kAnimationRotateDeg 0.5f
+#define kAnimationTranslateX 2.0f
+#define kAnimationTranslateY 2.0f
 
 @implementation GTDieView
 
@@ -37,6 +41,9 @@
         [self addGestureRecognizer:tap];
         
         [self addSubview:self.shadingView];
+        
+        self.defaultFrame = frame;
+        self.theta = 0.0f;
     }
     
     return self;
@@ -48,6 +55,8 @@
     self.maximumChanges = arc4random()%12 + 8;
     if (!self.selected) {
         [self animateSpots:[NSNumber numberWithInt:0]];
+        float randomDelay = ((float)(arc4random()%50))/100.0f;
+        [self performSelector:@selector(startJiggling) withObject:self afterDelay:randomDelay];
     }
 }
 
@@ -56,6 +65,8 @@
     
     [self setBackgroundColor:[[GTPlayerManager sharedReferenceManager] diceColor]];
     [self.layer setBorderColor:[[GTPlayerManager sharedReferenceManager] diceBorderColor].CGColor];
+    [self.layer addSublayer:self.gradientLayer];
+    [self.gradientLayer setFrame:self.bounds];
 }
 
 - (void)animateSpots:(NSNumber *)changesMade {
@@ -74,6 +85,10 @@
             NSNumber *changesToBeMade = [NSNumber numberWithInt:changesMadeInt + 1];
             [self animateSpots:changesToBeMade];
         }];
+    }
+    
+    else {
+        [self performSelector:@selector(stopJiggling) withObject:self afterDelay:0.2f];
     }
 }
 
@@ -197,7 +212,7 @@
     
     if (self.selected) {
         float grayValue = ((float)((arc4random()%20) + 35.0f) / 100.0f);
-        [self.shadingView setBackgroundColor:[UIColor colorWithWhite:grayValue alpha:0.3f]];
+        [self.shadingView setBackgroundColor:[UIColor colorWithWhite:grayValue alpha:0.97f]];
     }
     
     else {
@@ -208,7 +223,33 @@
     self.selectable = YES;
 }
 
-- (void) touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event {
+- (void)startJiggling {
+    NSInteger randomInt = arc4random_uniform(500);
+    float r = (randomInt/500.0)+0.5;
+    
+    CGAffineTransform leftWobble = CGAffineTransformMakeRotation(degreesToRadians((kAnimationRotateDeg * -1.0) - r ));
+    CGAffineTransform rightWobble = CGAffineTransformMakeRotation(degreesToRadians(kAnimationRotateDeg + r ));
+    
+    self.transform = leftWobble;  // starting point
+    
+    [[self layer] setAnchorPoint:CGPointMake(0.5, 0.5)];
+    
+    [UIView animateWithDuration:0.1
+                          delay:0
+                        options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionRepeat | UIViewAnimationOptionAutoreverse
+                     animations:^{
+                         [UIView setAnimationRepeatCount:NSNotFound];
+                         self.transform = rightWobble; }
+                     completion:nil];
+}
+- (void)stopJiggling {
+    [self.layer removeAllAnimations];
+    self.transform = CGAffineTransformIdentity;
+}
+
+#pragma mark - User Interaction
+
+- (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event {
     self.selectable = NO;
     UITouch *touch = [touches anyObject];
     CGPoint location = [touch locationInView:self];
@@ -243,7 +284,7 @@
 - (UIView *)shadingView {
     if (!_shadingView) {
         _shadingView = [[UILabel alloc] initWithFrame:self.bounds];
-        [_shadingView setAlpha:0.5f];
+        [_shadingView setAlpha:0.7f];
         [_shadingView.layer setCornerRadius:5.0f];
         [_shadingView setBackgroundColor:[UIColor colorWithWhite:0.5f alpha:0.0f]];
         [_shadingView setClipsToBounds:YES];
@@ -251,5 +292,43 @@
     
     return _shadingView;
 }
+
+- (CAGradientLayer *)gradientLayer {
+    if (!_gradientLayer) {
+        _gradientLayer = [self lightBlueGradient];
+        [_gradientLayer setFrame:self.bounds];
+    }
+    
+    return _gradientLayer;
+}
+
+#pragma mark - gradient
+
+- (CAGradientLayer *)lightBlueGradient {
+    NSArray *colors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1.0f alpha:0.41f].CGColor, (id)[UIColor colorWithWhite:0.9f alpha:0.0f].CGColor, (id)[UIColor clearColor].CGColor, (id)[UIColor colorWithWhite:0.0f alpha:0.2f].CGColor, nil];
+    
+    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *dateComps = [gregorianCalendar components:(NSCalendarUnitHour) fromDate: [NSDate date]];
+    NSInteger hour = [dateComps hour];
+    
+    if (hour < 6 || hour > 22) {
+        colors = @[(id)[UIColor clearColor].CGColor,
+                   (id)[UIColor colorWithWhite:0.0f alpha:0.5f].CGColor];
+    }
+    
+    NSNumber *stopOne = [NSNumber numberWithFloat:0.0f];
+    NSNumber *stopTwo = [NSNumber numberWithFloat:0.15f];
+    NSNumber *stopThree = [NSNumber numberWithFloat:0.75f];
+    NSNumber *stopFour = [NSNumber numberWithFloat:1.0f];
+    
+    NSArray *locations = [NSArray arrayWithObjects:stopOne, stopTwo, stopThree, stopFour, nil];
+    
+    CAGradientLayer *headerLayer = [CAGradientLayer layer];
+    headerLayer.colors = colors;
+    headerLayer.locations = locations;
+    
+    return headerLayer;
+}
+
 
 @end
