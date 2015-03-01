@@ -108,8 +108,9 @@
     }
     
     float sideDistance = 4.6f;
-    float marginRatio = 1.2f;
-    float sideNumator = sideDistance - marginRatio - 0.08f;
+    float marginRatio = 1.0f;
+    float recenteringAmount = 0.04f;
+    float sideNumator = sideDistance - marginRatio - recenteringAmount;
     float dotSize = self.frame.size.height / (9.0f - [[GTPlayerManager sharedReferenceManager] sizeOfDiceDots] * 1.2f);
     float cornerRadius = dotSize/1.89f;
     
@@ -295,7 +296,7 @@
 
 - (CAGradientLayer *)gradientLayer {
     if (!_gradientLayer) {
-        _gradientLayer = [self lightBlueGradient];
+        _gradientLayer = [self shadowGradient];
         [_gradientLayer setFrame:self.bounds];
     }
     
@@ -304,17 +305,11 @@
 
 #pragma mark - gradient
 
-- (CAGradientLayer *)lightBlueGradient {
-    NSArray *colors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1.0f alpha:0.41f].CGColor, (id)[UIColor colorWithWhite:0.9f alpha:0.0f].CGColor, (id)[UIColor clearColor].CGColor, (id)[UIColor colorWithWhite:0.0f alpha:0.2f].CGColor, nil];
-    
-    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-    NSDateComponents *dateComps = [gregorianCalendar components:(NSCalendarUnitHour) fromDate: [NSDate date]];
-    NSInteger hour = [dateComps hour];
-    
-    if (hour < 6 || hour > 22) {
-        colors = @[(id)[UIColor clearColor].CGColor,
-                   (id)[UIColor colorWithWhite:0.0f alpha:0.5f].CGColor];
-    }
+- (CAGradientLayer *)shadowGradient {
+    NSArray *colors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1.0f alpha:0.41f].CGColor,
+                       (id)[UIColor colorWithWhite:0.9f alpha:0.0f].CGColor,
+                       (id)[UIColor clearColor].CGColor,
+                       (id)[UIColor colorWithWhite:0.0f alpha:0.2f].CGColor, nil];
     
     NSNumber *stopOne = [NSNumber numberWithFloat:0.0f];
     NSNumber *stopTwo = [NSNumber numberWithFloat:0.15f];

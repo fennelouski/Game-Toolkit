@@ -90,8 +90,9 @@
                                                                       @"Orange" : [UIColor persimmon],
                                                                       @"Pink" : [UIColor brinkPink]}];
         
-        if ([UIColor strictHolidayColorsForToday]) {
-            [_diceColors setObject:[[UIColor strictHolidayColorsForToday] firstObject] forKey:@"Holiday"];
+        NSArray *holidayColors = [UIColor strictHolidayColorsForToday];
+        if (holidayColors) {
+            [_diceColors setObject:[holidayColors firstObject] forKey:@"Holiday"];
         }
         
         
@@ -99,11 +100,17 @@
         if (nameOfDiceColor) {
             _diceColorName = nameOfDiceColor;
             _diceColor = [_diceColors objectForKey:_diceColorName];
-            if (!_diceColor) _diceColorName = @"White";
+            if (!_diceColor) _diceColorName = @"Red";
         }
         
         else {
-            _diceColorName = @"White";
+            if (holidayColors) {
+                _diceColorName = @"Holiday";
+            }
+            
+            else {
+                _diceColorName = @"Red";
+            }
         }
         
         _diceColor = [_diceColors objectForKey:_diceColorName];
@@ -380,6 +387,10 @@
 
 - (NSArray *)diceColorNames {
     return [_diceColors allKeys];
+}
+
+- (NSString *)diceColorName {
+    return _diceColorName;
 }
 
 - (UIColor *)diceColorForName:(NSString *)colorName {

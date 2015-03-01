@@ -36,7 +36,19 @@
 }
 
 + (NSArray *)appColors {
-    return @[[self appColor1], [self appColor2], [self appColor3], [self appColor4], [self acidGreen], [self aero], [self africanViolet], [self airForceBlueRAF], [self alabamaCrimson], [self alloyOrange], [self almond], [self airSuperiorityBlue], [self aeroBlue]];
+    return @[[self appColor1],
+             [self appColor2],
+             [self appColor3],
+             [self appColor4],
+             [self acidGreen],
+             [self aero],
+             [self africanViolet],
+             [self airForceBlueRAF],
+             [self alabamaCrimson],
+             [self alloyOrange],
+             [self almond],
+             [self airSuperiorityBlue],
+             [self aeroBlue]];
 }
 
 // modify colors
@@ -1342,7 +1354,6 @@
         NSNumber *day = [defaults objectForKey:[NSString stringWithFormat:@"Day Of Easter In Year %ld", (long)[dateComps year]]];
         
         if (month && day) {
-            NSLog(@"found the date of Easter in that year!");
             if ([month intValue] == [dateComps month] && [day intValue] == [dateComps day]) {
                 isEaster = YES;
             }
@@ -1625,7 +1636,6 @@
         NSNumber *day = [defaults objectForKey:[NSString stringWithFormat:@"Day Of Easter In Year %ld", (long)[dateComps year]]];
         
         if (month && day) {
-            NSLog(@"found the date of Easter in that year!");
             if ([month intValue] == [dateComps month] && [day intValue] == [dateComps day]) {
                 isEaster = YES;
             }

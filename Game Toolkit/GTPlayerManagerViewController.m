@@ -446,6 +446,15 @@
                                                                               PICKER_HEIGHT)];
         [_diceColorPickerView setDataSource:self];
         [_diceColorPickerView setDelegate:self];
+        
+        NSString *currentDiceColor = [[GTPlayerManager sharedReferenceManager] diceColorName];
+        for (int i = 0; i < [[[GTPlayerManager sharedReferenceManager] diceColorNames] count]; i++) {
+            NSString *currentColorName = [[[GTPlayerManager sharedReferenceManager] diceColorNames] objectAtIndex:i];
+            if ([currentDiceColor isEqualToString:currentColorName]) {
+                [_diceColorPickerView selectRow:i inComponent:0 animated:YES];
+                break;
+            }
+        }
     }
     
     return _diceColorPickerView;
