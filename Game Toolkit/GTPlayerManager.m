@@ -9,9 +9,16 @@
 #import "GTPlayerManager.h"
 #import "GTTimePickerView.h"
 #import <AudioToolbox/AudioToolbox.h>
+#import "UIColor+AppColors.h"
+#import "NSString+AppFunctions.h"
 
 #define MINIMUM_NUMBER_OF_PLAYERS 2
 #define MAX_SIZE_OF_DICE_DOTS 5.5f
+
+#define SIZE_OF_DICE_DOTS_KEY @"5123 0F D1C3 D0Ts"
+#define NUMBER_OF_DICE_SIDES_KEY @"Number 0f D1ce S1D35"
+#define NUMBER_OF_DICE_KEY @"Number 0f D1ce"
+#define COLOR_OF_DICE_KEY @"C0L0UR 0F D1C3"
 
 @implementation GTPlayerManager {
     NSMutableArray *_players;
@@ -19,6 +26,9 @@
     BOOL _showDiceTotal;
     int _numberOfDice, _numberOfDiceSides;
     float _sizeOfDiceDots;
+    NSMutableDictionary *_diceColors;
+    UIColor *_diceColor;
+    NSString *_diceColorName;
 }
 
 + (instancetype)sharedReferenceManager {
@@ -40,12 +50,12 @@
         [self performSelector:@selector(runTimer) withObject:self afterDelay:1.0f];
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSNumber *diceCount = [defaults objectForKey:@"Number 0f D1ce"];
+        NSNumber *diceCount = [defaults objectForKey:NUMBER_OF_DICE_KEY];
         if (diceCount) {
             self.numberOfDice = [diceCount floatValue];
         }
         
-        NSNumber *diceSideCount = [defaults objectForKey:@"Number 0f D1ce S1D35"];
+        NSNumber *diceSideCount = [defaults objectForKey:NUMBER_OF_DICE_SIDES_KEY];
         if (diceSideCount) {
             self.numberOfDiceSides = [diceSideCount intValue];
         }
@@ -54,7 +64,7 @@
             self.numberOfDiceSides = 6;
         }
         
-        NSNumber *sizeOfDiceDots = [defaults objectForKey:@"5123 0F D1C3 D0Ts"];
+        NSNumber *sizeOfDiceDots = [defaults objectForKey:SIZE_OF_DICE_DOTS_KEY];
         if (sizeOfDiceDots) {
             _sizeOfDiceDots = [sizeOfDiceDots floatValue];
         }
@@ -71,6 +81,28 @@
         else {
             _showDiceTotal = NO;
         }
+        
+        _diceColors = [NSMutableDictionary dictionaryWithDictionary:@{@"White" : [UIColor white],
+                                                                      @"Red" : [UIColor venetianRed],
+                                                                      @"Blue" : [UIColor royalAzure],
+                                                                      @"Yellow" : [UIColor yellowPantone],
+                                                                      @"Black" : [UIColor black],
+                                                                      @"Orange" : [UIColor persimmon],
+                                                                      @"Pink" : [UIColor pink]}];
+        
+        
+        NSString *nameOfDiceColor = [defaults objectForKey:COLOR_OF_DICE_KEY];
+        if (nameOfDiceColor) {
+            _diceColorName = nameOfDiceColor;
+            _diceColor = [_diceColors objectForKey:_diceColorName];
+            if (!_diceColor) _diceColorName = @"White";
+        }
+        
+        else {
+            _diceColorName = @"White";
+        }
+        
+        _diceColor = [_diceColors objectForKey:_diceColorName];
     }
     
     return self;
@@ -88,7 +120,7 @@
     if (_isTimerRunning && self.currentPlayer) {
         self.currentPlayer.timeRemaining -= 0.03;
         if (self.currentPlayer.timeRemaining <= 0.0f) {
-            NSLog(@"%@ is out of time!", self.currentPlayer.name);
+            NSLog(@"%@ %@ out of time!", self.currentPlayer.name, [self.currentPlayer.name areOrIs]);
             self.currentPlayer.timeRemaining = 0.0f;
             _isTimerRunning = NO;
             NSURL *fileURL = [NSURL URLWithString:@"/System/Library/Audio/UISounds/alarm.caf"];
@@ -96,7 +128,7 @@
             AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)fileURL,&soundID);
             AudioServicesPlaySystemSound(soundID);
             
-            UIAlertController *resetTimerAlertView = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"%@ is out of time!", self.currentPlayer.name] message:@"Reset the timers?" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *resetTimerAlertView = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"%@ %@ out of time!", self.currentPlayer.name, [self.currentPlayer.name areOrIs]] message:@"Reset the timers?" preferredStyle:UIAlertControllerStyleAlert];
             
             UIAlertAction *resetAction = [UIAlertAction actionWithTitle:@"Reset Timers" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action){
                 [self resetTimers:self.timerPicker.time];
@@ -325,21 +357,69 @@
     _numberOfDice = numberOfDice;
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[NSNumber numberWithInt:numberOfDice] forKey:@"Number 0f D1ce"];
+    [defaults setObject:[NSNumber numberWithInt:numberOfDice] forKey:NUMBER_OF_DICE_KEY];
 }
 
 - (void)setNumberOfDiceSides:(int)numberOfDiceSides {
     _numberOfDiceSides = numberOfDiceSides;
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[NSNumber numberWithInt:numberOfDiceSides] forKey:@"Number 0f D1ce S1D35"];
+    [defaults setObject:[NSNumber numberWithInt:numberOfDiceSides] forKey:NUMBER_OF_DICE_SIDES_KEY];
 }
 
 - (void)setSizeOfDiceDots:(float)sizeOfDiceDots {
     _sizeOfDiceDots = sizeOfDiceDots;
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[NSNumber numberWithFloat:sizeOfDiceDots] forKey:@"5123 0F D1C3 D0Ts"];
+    [defaults setObject:[NSNumber numberWithFloat:sizeOfDiceDots] forKey:SIZE_OF_DICE_DOTS_KEY];
+}
+
+- (NSArray *)diceColorNames {
+    return [_diceColors allKeys];
+}
+
+- (UIColor *)diceColorForName:(NSString *)colorName {
+    if ([_diceColors objectForKey:colorName]) {
+        return [_diceColors objectForKey:colorName];
+    }
+    
+    // if the key is unrecognized, return the default white color
+    NSLog(@"Color not found, return \"White\"");
+    return [UIColor white];
+}
+
+- (UIColor *)diceColor {
+    return _diceColor;
+}
+
+- (void)setDiceColor:(NSString *)diceColorName {
+    if ([_diceColors objectForKey:diceColorName]) {
+        _diceColorName = diceColorName;
+        _diceColor = [_diceColors objectForKey:diceColorName];
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:diceColorName forKey:COLOR_OF_DICE_KEY];
+    }
+    
+    else {
+        NSLog(@"Can't find color for key \"%@\"", diceColorName);
+    }
+}
+
+- (UIColor *)diceDotsColor {
+    if ([_diceColorName isEqual:@"White"]) {
+        return [UIColor black];
+    }
+    
+    return [UIColor white];
+}
+
+- (UIColor *)diceBorderColor {
+    if ([_diceColorName isEqual:@"Black"]) {
+        return [UIColor white];
+    }
+    
+    return [UIColor black];
 }
 
 @end

@@ -9,12 +9,16 @@
 #import <UIKit/UIKit.h>
 #import "GTTimePickerView.h"
 
-@interface GTPlayerManagerViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
+@interface GTPlayerManagerViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 
 @property (nonatomic, strong) UITableView *playerTableView;
 @property (nonatomic, strong) NSMutableArray *textFields;
 @property (nonatomic, strong) UIToolbar *accessoryView, *headerToolbar;
 @property (nonatomic, strong) UIButton *resetButton, *resetScoreButton, *resetTimeButton, *resetDiceButton;
+@property (nonatomic, strong) UILabel *showTimeLabel;
+@property (nonatomic, strong) UISwitch *showTimeSwitch;
+@property (nonatomic, strong) UILabel *amountOfTimeLabelQuantity;
+@property (nonatomic, strong) UILabel *amountOfTimeLabel;
 @property (nonatomic, strong) GTTimePickerView *timerPicker;
 @property (nonatomic, strong) UILabel *timeLabel;
 @property (nonatomic, strong) UILabel *diceCountLabel, *diceLabel;
@@ -29,7 +33,10 @@
 @property (nonatomic, strong) UISlider *sizeOfDiceDotsSlider;
 @property (nonatomic, strong) UILabel *advancedDiceFeaturesLabel;
 @property (nonatomic, strong) UISwitch *advancedDiceFeaturesSwitch;
+@property (nonatomic, strong) UILabel *diceColorLabel;
+@property (nonatomic, strong) UIPickerView *diceColorPickerView;
 @property (nonatomic, strong) UIColor *tintColor;
+@property (nonatomic, strong) UIColor *deselectedColor;
 @property float keyboardHeight;
 @property BOOL keyboardIsShowing;
 

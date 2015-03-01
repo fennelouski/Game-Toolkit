@@ -13,6 +13,7 @@
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
 #define kStatusBarHeight (([[UIApplication sharedApplication] statusBarFrame].size.height == 20.0f) ? 20.0f : (([[UIApplication sharedApplication] statusBarFrame].size.height == 40.0f) ? 20.0f : 0.0f))
 #define kScreenHeight (([[UIApplication sharedApplication] statusBarFrame].size.height > 20.0f) ? [UIScreen mainScreen].bounds.size.height - 20.0f : [UIScreen mainScreen].bounds.size.height)
+#define ANIMATION_DURATION 0.35f
 #define CELL_HEIGHT 44.0f
 #define BUFFER 20.0f
 #define FOOTER_HEIGHT 49.0f
@@ -25,6 +26,7 @@
     [super viewDidLoad];
     
     self.tintColor = [UIColor rubyRed];
+    self.deselectedColor = [UIColor darkGrayColor];
     [self.view setBackgroundColor:[UIColor white]];
     [self.view addSubview:self.playerTableView];
     [self.view addSubview:self.headerToolbar];
@@ -37,7 +39,7 @@
     [nc addObserver:self  selector:@selector(reloadPickerView)    name:UIDeviceOrientationDidChangeNotification  object:nil];
     [nc addObserver:self selector:@selector(updateViews) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     [nc addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-//    [nc addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidChangeFrameNotification object:nil];
+    [nc addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidChangeFrameNotification object:nil];
     [nc addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
     
     [self updateViews];
@@ -189,6 +191,52 @@
     return _resetDiceButton;
 }
 
+- (UILabel *)showTimeLabel {
+    if (!_showTimeLabel) {
+        _showTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth - BUFFER * 2, CELL_HEIGHT)];
+        [_showTimeLabel setText:@"Adjust Time"];
+        [_showTimeLabel setTextAlignment:NSTextAlignmentLeft];
+        [_showTimeLabel setTextColor:self.deselectedColor];
+    }
+    
+    return _showTimeLabel;
+}
+
+- (UISwitch *)showTimeSwitch {
+    if (!_showTimeSwitch) {
+        _showTimeSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(kScreenWidth - 40.0f, 0.0f, 40.0f, kScreenWidth)];
+        [_showTimeSwitch setOnTintColor:self.tintColor];
+        [_showTimeSwitch setOn:NO animated:YES];
+        [_showTimeSwitch addTarget:self action:@selector(updateViews) forControlEvents:UIControlEventTouchUpInside];
+        [_showTimeSwitch addTarget:self action:@selector(updateViews) forControlEvents:UIControlEventTouchDragExit];
+        [_showTimeSwitch addTarget:self action:@selector(updateViews) forControlEvents:UIControlEventTouchDragOutside];
+    }
+    
+    return _showTimeSwitch;
+}
+
+- (UILabel *)amountOfTimeLabelQuantity {
+    if (!_amountOfTimeLabelQuantity) {
+        _amountOfTimeLabelQuantity = [[UILabel alloc] initWithFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth - BUFFER * 2, CELL_HEIGHT)];
+        [_amountOfTimeLabelQuantity setText:[NSString stringWithFormat:@"%ds", (int)self.timerPicker.time]];
+        [_amountOfTimeLabelQuantity setTextAlignment:NSTextAlignmentRight];
+        [_amountOfTimeLabelQuantity setTextColor:[UIColor darkTextColor]];
+    }
+    
+    return _amountOfTimeLabelQuantity;
+}
+
+- (UILabel *)amountOfTimeLabel {
+    if (!_amountOfTimeLabel) {
+        _amountOfTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth - BUFFER * 2, CELL_HEIGHT)];
+        [_amountOfTimeLabel setText:@"Length of Timer"];
+        [_amountOfTimeLabel setTextAlignment:NSTextAlignmentLeft];
+        [_amountOfTimeLabel setTextColor:self.deselectedColor];
+    }
+    
+    return _amountOfTimeLabel;
+}
+
 - (GTTimePickerView *)timerPicker {
     if (!_timerPicker) {
         _timerPicker = [[GTPlayerManager sharedReferenceManager] timerPicker];
@@ -225,7 +273,7 @@
     if (!_diceLabel) {
         _diceLabel = [[UILabel alloc] initWithFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth - BUFFER * 2.0f, CELL_HEIGHT)];
         [_diceLabel setText:@"Number of Dice"];
-        [_diceLabel setTextColor:[UIColor darkTextColor]];
+        [_diceLabel setTextColor:self.deselectedColor];
         [_diceLabel setTextAlignment:NSTextAlignmentLeft];
     }
     
@@ -253,7 +301,7 @@
         _showDiceTotalLabel = [[UILabel alloc] initWithFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth, CELL_HEIGHT)];
         [_showDiceTotalLabel setText:@"Show Dice Total"];
         [_showDiceTotalLabel setTextAlignment:NSTextAlignmentLeft];
-        [_showDiceTotalLabel setTextColor:[UIColor darkTextColor]];
+        [_showDiceTotalLabel setTextColor:self.deselectedColor];
     }
     
     return _showDiceTotalLabel;
@@ -274,7 +322,7 @@
     if (!_numberOfDiceSidesLabel) {
         _numberOfDiceSidesLabel = [[UILabel alloc] initWithFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth, CELL_HEIGHT)];
         [_numberOfDiceSidesLabel setTextAlignment:NSTextAlignmentLeft];
-        [_numberOfDiceSidesLabel setTextColor:[UIColor darkTextColor]];
+        [_numberOfDiceSidesLabel setTextColor:self.deselectedColor];
         
         [_numberOfDiceSidesLabel setText:@"Number of sides on dice"];
         
@@ -316,7 +364,7 @@
     if (!_sizeOfDiceLabel) {
         _sizeOfDiceLabel = [[UILabel alloc] initWithFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth, CELL_HEIGHT)];
         [_sizeOfDiceLabel setTextAlignment:NSTextAlignmentLeft];
-        [_sizeOfDiceLabel setTextColor:[UIColor darkTextColor]];
+        [_sizeOfDiceLabel setTextColor:self.deselectedColor];
         
         [_sizeOfDiceLabel setText:@"Size of dots on dice"];
         
@@ -358,7 +406,7 @@
     if (!_advancedDiceFeaturesLabel) {
         _advancedDiceFeaturesLabel = [[UILabel alloc] initWithFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth, CELL_HEIGHT)];
         [_advancedDiceFeaturesLabel setTextAlignment:NSTextAlignmentLeft];
-        [_advancedDiceFeaturesLabel setTextColor:[UIColor darkTextColor]];
+        [_advancedDiceFeaturesLabel setTextColor:self.deselectedColor];
         [_advancedDiceFeaturesLabel setText:@"Advanced Dice Features"];
     }
     
@@ -374,6 +422,33 @@
     }
     
     return _advancedDiceFeaturesSwitch;
+}
+
+- (UILabel *)diceColorLabel {
+    if (!_diceColorLabel) {
+        _diceColorLabel = [[UILabel alloc] initWithFrame:CGRectMake(BUFFER,
+                                                                    0.0f,
+                                                                    kScreenWidth - BUFFER * 2.0f,
+                                                                    CELL_HEIGHT)];
+        [_diceColorLabel setText:@"Color Of Dice"];
+        [_diceColorLabel setTextAlignment:NSTextAlignmentLeft];
+        [_diceColorLabel setTextColor:self.deselectedColor];
+    }
+    
+    return _diceColorLabel;
+}
+
+- (UIPickerView *)diceColorPickerView {
+    if (!_diceColorPickerView) {
+        _diceColorPickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0.0f,
+                                                                              0.0f,
+                                                                              kScreenWidth,
+                                                                              PICKER_HEIGHT)];
+        [_diceColorPickerView setDataSource:self];
+        [_diceColorPickerView setDelegate:self];
+    }
+    
+    return _diceColorPickerView;
 }
 
 #pragma mark - Size of Dots Label Text
@@ -437,7 +512,7 @@
             
             // timer picker view
         case 1:
-            numberOfRows = 1;
+            numberOfRows = 2;
             break;
             
             // reset timers
@@ -458,7 +533,7 @@
             // dice
         case 5:
             if (self.advancedDiceFeaturesSwitch.on) {
-                numberOfRows = 8;
+                numberOfRows = 10;
             }
             
             else {
@@ -482,7 +557,20 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     // time picker section
     if ([indexPath section] == 1) {
-        return PICKER_HEIGHT;
+        if ([indexPath row] == 1 && self.showTimeSwitch.on) {
+            return PICKER_HEIGHT;
+        }
+    }
+    
+    // dice section
+    else if ([indexPath section] == 5) {
+        if ([indexPath row] >= 4 && !self.advancedDiceFeaturesSwitch.on) {
+            return 0.0f;
+        }
+        
+        else if ([indexPath row] == 9) {
+            return PICKER_HEIGHT;
+        }
     }
     
     return CELL_HEIGHT;
@@ -509,9 +597,29 @@
     
     // timer picker
     else if ([indexPath section] == 1) {
-        [cell addSubview:self.timerPicker];
-        [self.timerPicker setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, PICKER_HEIGHT)];
-        [cell setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
+        if ([indexPath row] == 0) {
+            [cell addSubview:self.showTimeLabel];
+            [cell addSubview:self.showTimeSwitch];
+            
+            [self.showTimeSwitch setFrame:CGRectMake(kScreenWidth - 70.0f, 4.0f, 40.0f, kScreenWidth)];
+        }
+        
+        else if ([indexPath row] == 1) {
+            if (self.showTimeSwitch.on) {
+                [cell addSubview:self.timerPicker];
+                [self.timerPicker setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, PICKER_HEIGHT)];
+                [cell setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
+            }
+            
+            else {
+                [cell addSubview:self.amountOfTimeLabelQuantity];
+                [cell addSubview:self.amountOfTimeLabel];
+                
+                [self.amountOfTimeLabelQuantity setText:[NSString stringWithFormat:@"%ds", (int)[[[GTPlayerManager sharedReferenceManager] timerPicker] time]]];
+                [self.amountOfTimeLabelQuantity setFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth - BUFFER * 2, CELL_HEIGHT)];
+                [self.amountOfTimeLabel setFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth - BUFFER * 2, CELL_HEIGHT)];
+            }
+        }
     }
     
     // reset timer
@@ -606,6 +714,26 @@
             [self.sizeOfDiceDotsSlider setValue:[[GTPlayerManager sharedReferenceManager] sizeOfDiceDots] animated:YES];
             [self.sizeOfDiceDotsSlider setFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth - BUFFER * 2.0f, CELL_HEIGHT)];
         }
+        
+        // colors for
+        else if ([indexPath row] == 8) {
+            [cell addSubview:self.diceColorLabel];
+            
+            [self.diceColorLabel setFrame:CGRectMake(BUFFER,
+                                                     0.0f,
+                                                     kScreenWidth - BUFFER * 2.0f,
+                                                     CELL_HEIGHT)];
+        }
+        
+        // dice color picker
+        else if ([indexPath row] == 9) {
+            [cell addSubview:self.diceColorPickerView];
+            
+            [self.diceColorPickerView setFrame:CGRectMake(0.0f,
+                                                          0.0f,
+                                                          kScreenWidth,
+                                                          PICKER_HEIGHT)];
+        }
     }
     
     else if ([indexPath section] == 6) {
@@ -624,7 +752,13 @@
     NSLog(@"Selected row: %@", indexPath);
     
     if ([indexPath section] == 1) {
-        [self.playerTableView reloadData];
+        if ([indexPath row] == 1 || self.showTimeSwitch.on) {
+            [self.showTimeSwitch setOn:!self.showTimeSwitch.on animated:YES];
+        }
+        
+        [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+            [self.playerTableView reloadData];
+        }];
     }
     
     return NO;
@@ -745,11 +879,14 @@
 - (void)resetDiceButtonTouched {
     [[GTPlayerManager sharedReferenceManager] setNumberOfDiceSides:6];
     [[GTPlayerManager sharedReferenceManager] setNumberOfDice:5];
+    [[GTPlayerManager sharedReferenceManager] setSizeOfDiceDots:3.0f];
     [self.showDiceTotalSwitch setOn:NO animated:YES];
     [self switchShowDice];
     
     [self.numberOfDiceSidesCountLabel setText:[NSString stringWithFormat:@"%d", [[GTPlayerManager sharedReferenceManager] numberOfDiceSides]]];
     [self.diceCountLabel setText:[NSString stringWithFormat:@"%d", [[GTPlayerManager sharedReferenceManager] numberOfDice]]];
+    [self.sizeOfDiceLabelSMLXL setText:[self sizeOfDotsLabelText]];
+    [self.sizeOfDiceDotsSlider setValue:[[GTPlayerManager sharedReferenceManager] sizeOfDiceDots]];
     
     [self.diceCountSlider setValue:[[GTPlayerManager sharedReferenceManager] numberOfDice] animated:YES];
     [self.numberOfDiceSidesSlider setValue:[[GTPlayerManager sharedReferenceManager] numberOfDiceSides] animated:YES];
@@ -812,6 +949,58 @@
     self.keyboardIsShowing = NO;
     
     [self updateViews];
+}
+
+#pragma mark - Picker View Data Source and Delegate Methods
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    NSInteger numberOfComponents = 0;
+    
+    if ([pickerView isEqual:self.diceColorPickerView]) {
+        numberOfComponents = 1;
+    }
+    
+    return numberOfComponents;
+}
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    NSInteger numberOfRows = 0;
+    
+    if ([pickerView isEqual:self.diceColorPickerView]) {
+        numberOfRows = [[[GTPlayerManager sharedReferenceManager] diceColorNames] count];
+    }
+    
+    return numberOfRows;
+}
+
+- (NSAttributedString *)pickerView:(UIPickerView *)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:@""];
+    
+    if ([pickerView isEqual:self.diceColorPickerView]) {
+        NSString *colorName = [[[GTPlayerManager sharedReferenceManager] diceColorNames] objectAtIndex:row];
+        UIColor *color = ([colorName isEqualToString:@"White"]) ? [UIColor black] : [[GTPlayerManager sharedReferenceManager] diceColorForName:colorName];
+        attributedTitle = [[NSMutableAttributedString alloc] initWithString:colorName attributes:@{NSForegroundColorAttributeName : color}];
+    }
+    
+    return attributedTitle;
+}
+
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    NSString *title = @"";
+    
+    if ([pickerView isEqual:self.diceColorPickerView]) {
+        NSString *colorName = [[[GTPlayerManager sharedReferenceManager] diceColorNames] objectAtIndex:row];
+        title = colorName;
+    }
+    
+    return title;
+}
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    if ([pickerView isEqual:self.diceColorPickerView]) {
+        NSString *colorName = [self pickerView:pickerView titleForRow:row forComponent:component];
+        [[GTPlayerManager sharedReferenceManager] setDiceColor:colorName];
+    }
 }
 
 #pragma mark Motion Gesture Methods

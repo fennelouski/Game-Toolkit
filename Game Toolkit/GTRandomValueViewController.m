@@ -45,10 +45,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [self setUpDice];
-    
-    if (self.lastNumberOfDice != [[GTPlayerManager sharedReferenceManager] numberOfDice] || self.lastNumberOfDiceSides != [[GTPlayerManager sharedReferenceManager] numberOfDiceSides]) {
-        [self layoutDice];
-    }
+    [self layoutDice];
     
     self.showInstructions = YES;
 }
@@ -166,6 +163,8 @@
         
         diceTotal += [die value];
         dieNumber++;
+        
+        [die layoutSubviews];
     }
     [self.totalLabel setText:[NSString stringWithFormat:@"%d", diceTotal]];
     

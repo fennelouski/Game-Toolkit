@@ -52,5 +52,11 @@
 - (void)setNumberOfDice:(int)numberOfDice;
 - (void)setNumberOfDiceSides:(int)numberOfDiceSides;
 - (void)setSizeOfDiceDots:(float)sizeOfDiceDots;
+- (NSArray *)diceColorNames;
+- (UIColor *)diceColorForName:(NSString *)colorName;
+- (UIColor *)diceColor;
+- (void)setDiceColor:(NSString *)diceColorName;
+- (UIColor *)diceDotsColor;
+- (UIColor *)diceBorderColor;
 
 @end

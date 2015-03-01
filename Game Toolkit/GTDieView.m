@@ -23,13 +23,14 @@
     if (self) {
         self.selectable = YES;
         self.value = arc4random()%[[GTPlayerManager sharedReferenceManager] numberOfDiceSides] + 1;
+        [self setClipsToBounds:YES];
         
-        [self setBackgroundColor:[UIColor lightGrayColor]];
+        [self setBackgroundColor:[[GTPlayerManager sharedReferenceManager] diceColor]];
         
         [self drawSpots];
         
-//        [self.layer setBorderColor:[UIColor blackColor].CGColor];
-//        [self.layer setBorderWidth:self.frame.size.height / 20.0f];
+        [self.layer setBorderColor:[[GTPlayerManager sharedReferenceManager] diceBorderColor].CGColor];
+        [self.layer setBorderWidth:self.frame.size.height / 20.0f];
         [self.layer setCornerRadius:frame.size.height / CORNER_RADIUS_RATIO];
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dieTapped)];
@@ -50,6 +51,13 @@
     }
 }
 
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    [self setBackgroundColor:[[GTPlayerManager sharedReferenceManager] diceColor]];
+    [self.layer setBorderColor:[[GTPlayerManager sharedReferenceManager] diceBorderColor].CGColor];
+}
+
 - (void)animateSpots:(NSNumber *)changesMade {
     int changesMadeInt = [changesMade intValue];
     
@@ -57,13 +65,13 @@
     [self drawSpots];
     
     if (changesMadeInt < self.maximumChanges) {
-        NSNumber *changesToBeMade = [NSNumber numberWithInt:changesMadeInt + 1];
         float duration = ((float)(changesMadeInt + 1)) / (180.0f + (float)self.maximumChanges);
-        [UIView animateWithDuration:duration delay:0.0f options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        [UIView animateWithDuration:duration delay:0.0f usingSpringWithDamping:0.001f initialSpringVelocity:10.0f options:UIViewAnimationOptionCurveEaseInOut animations:^{
             float randomX = (((float)(arc4random()%100))/50.0f - 1.0f) * self.frame.size.width / (20.0f + changesMadeInt*2);
             float randomY = (((float)(arc4random()%100))/50.0f - 1.0f) * self.frame.size.height / (20.0f + changesMadeInt*2);
             self.center = CGPointMake(self.center.x + randomX, self.center.y + randomY);
         } completion:^(BOOL finished){
+            NSNumber *changesToBeMade = [NSNumber numberWithInt:changesMadeInt + 1];
             [self animateSpots:changesToBeMade];
         }];
     }
@@ -87,8 +95,10 @@
     float sideDistance = 4.6f;
     float marginRatio = 1.2f;
     float sideNumator = sideDistance - marginRatio;
-    float dotSize = self.frame.size.height / (9.0f - [[GTPlayerManager sharedReferenceManager] sizeOfDiceDots]);
-    float cornerRadius = dotSize/1.88f;
+    float dotSize = self.frame.size.height / (9.0f - [[GTPlayerManager sharedReferenceManager] sizeOfDiceDots] * 1.2f);
+    float cornerRadius = dotSize/1.89f;
+    
+    UIColor *dotColor = [[GTPlayerManager sharedReferenceManager] diceDotsColor];
     
     if ([[GTPlayerManager sharedReferenceManager] numberOfDiceSides] < 7) {
         // middle dot
@@ -100,7 +110,7 @@
             [centerSpot setCenter:CGPointMake(self.frame.size.width / 2.0f,
                                               self.frame.size.height / 2.0f)];
             [centerSpot.layer setCornerRadius:cornerRadius];
-            [centerSpot setBackgroundColor:[UIColor blackColor]];
+            [centerSpot setBackgroundColor:dotColor];
             [self addSubview:centerSpot];
         }
         
@@ -113,7 +123,7 @@
             [topLeftSpot setCenter:CGPointMake(self.frame.size.width * marginRatio / sideDistance,
                                                self.frame.size.height * marginRatio / sideDistance)];
             [topLeftSpot.layer setCornerRadius:cornerRadius];
-            [topLeftSpot setBackgroundColor:[UIColor blackColor]];
+            [topLeftSpot setBackgroundColor:dotColor];
             [self addSubview:topLeftSpot];
 
             UIView *bottomRightSpot = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width * sideNumator / sideDistance - dotSize / 2.0f,
@@ -123,7 +133,7 @@
             [bottomRightSpot setCenter:CGPointMake(self.frame.size.width * sideNumator / sideDistance,
                                                    self.frame.size.height * sideNumator / sideDistance)];
             [bottomRightSpot.layer setCornerRadius:cornerRadius];
-            [bottomRightSpot setBackgroundColor:[UIColor blackColor]];
+            [bottomRightSpot setBackgroundColor:dotColor];
             [self addSubview:bottomRightSpot];
         }
         
@@ -136,7 +146,7 @@
             [topRightSpot setCenter:CGPointMake(self.frame.size.width * sideNumator / sideDistance,
                                                 self.frame.size.height * marginRatio / sideDistance)];
             [topRightSpot.layer setCornerRadius:cornerRadius];
-            [topRightSpot setBackgroundColor:[UIColor blackColor]];
+            [topRightSpot setBackgroundColor:dotColor];
             [self addSubview:topRightSpot];
             
             UIView *bottomLeftSpot = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width * marginRatio / sideDistance - dotSize / 2.0f,
@@ -146,7 +156,7 @@
             [bottomLeftSpot setCenter:CGPointMake(self.frame.size.width * marginRatio / sideDistance,
                                                   self.frame.size.height * sideNumator / sideDistance)];
             [bottomLeftSpot.layer setCornerRadius:cornerRadius];
-            [bottomLeftSpot setBackgroundColor:[UIColor blackColor]];
+            [bottomLeftSpot setBackgroundColor:dotColor];
             [self addSubview:bottomLeftSpot];
         }
         
@@ -159,7 +169,7 @@
             [leftSpot setCenter:CGPointMake(self.frame.size.width * marginRatio / sideDistance,
                                             self.frame.size.height / 2.0f)];
             [leftSpot.layer setCornerRadius:cornerRadius];
-            [leftSpot setBackgroundColor:[UIColor blackColor]];
+            [leftSpot setBackgroundColor:dotColor];
             [self addSubview:leftSpot];
             
             UIView *rightSpot = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width * sideNumator / sideDistance - dotSize / 2.0f,
@@ -169,7 +179,7 @@
             [rightSpot setCenter:CGPointMake(self.frame.size.width * sideNumator / sideDistance,
                                              self.frame.size.height / 2.0f)];
             [rightSpot.layer setCornerRadius:cornerRadius];
-            [rightSpot setBackgroundColor:[UIColor blackColor]];
+            [rightSpot setBackgroundColor:dotColor];
             [self addSubview:rightSpot];
         }
     }
@@ -187,13 +197,12 @@
     
     if (self.selected) {
         float grayValue = ((float)((arc4random()%20) + 35.0f) / 100.0f);
-        [self.shadingView setBackgroundColor:[UIColor colorWithWhite:grayValue alpha:1.0f]];
-        [self setBackgroundColor:[UIColor darkGrayColor]];
+        [self.shadingView setBackgroundColor:[UIColor colorWithWhite:grayValue alpha:0.3f]];
     }
     
     else {
-        [self.shadingView setBackgroundColor:[UIColor whiteColor]];
-        [self setBackgroundColor:[UIColor lightGrayColor]];
+        [self.shadingView setBackgroundColor:[UIColor clearColor]];
+        [self setBackgroundColor:[[GTPlayerManager sharedReferenceManager] diceColor]];
     }
     
     self.selectable = YES;
@@ -223,7 +232,7 @@
         _valueLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.frame.size.width, self.frame.size.height)];
         [_valueLabel setFont:[UIFont systemFontOfSize:self.frame.size.height/FONT_SIZE_RATIO]];
         [_valueLabel setTextAlignment:NSTextAlignmentCenter];
-        [_valueLabel setTextColor:[UIColor darkTextColor]];
+        [_valueLabel setTextColor:[[GTPlayerManager sharedReferenceManager] diceDotsColor]];
         [_valueLabel setText:[NSString stringWithFormat:@"%d", self.value]];
         [_valueLabel setClipsToBounds:NO];
     }
@@ -234,8 +243,9 @@
 - (UIView *)shadingView {
     if (!_shadingView) {
         _shadingView = [[UILabel alloc] initWithFrame:self.bounds];
-        [_shadingView.layer setCornerRadius:self.frame.size.width/(CORNER_RADIUS_RATIO * 0.3f)];
-        [_shadingView setBackgroundColor:[UIColor whiteColor]];
+        [_shadingView setAlpha:0.5f];
+        [_shadingView.layer setCornerRadius:5.0f];
+        [_shadingView setBackgroundColor:[UIColor colorWithWhite:0.5f alpha:0.0f]];
         [_shadingView setClipsToBounds:YES];
     }
     
