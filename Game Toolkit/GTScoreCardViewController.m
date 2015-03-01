@@ -14,6 +14,7 @@
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
 #define kStatusBarHeight (([[UIApplication sharedApplication] statusBarFrame].size.height == 20.0f) ? 20.0f : (([[UIApplication sharedApplication] statusBarFrame].size.height == 40.0f) ? 20.0f : 0.0f))
 #define kScreenHeight (([[UIApplication sharedApplication] statusBarFrame].size.height > 20.0f) ? [UIScreen mainScreen].bounds.size.height - 20.0f : [UIScreen mainScreen].bounds.size.height)
+#define ANIMATION_DURATION 0.05f
 #define CELL_HEIGHT 44.0f
 #define HEADER_HEIGHT CELL_HEIGHT + kStatusBarHeight
 #define CELL_BUFFER 20.0f
@@ -26,7 +27,12 @@
 //    [self.view setBackgroundColor:[UIColor white]];
 //    [self.view addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Green Background"]]];
     
-    UIToolbar *headerBackground = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f, 0.0f, kScreenWidth + kScreenHeight, kStatusBarHeight + kScreenHeight + kScreenWidth)];
+    self.keyboardIsShowing = NO;
+    
+    UIToolbar *headerBackground = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f,
+                                                                              0.0f,
+                                                                              kScreenWidth + kScreenHeight,
+                                                                              kStatusBarHeight + kScreenHeight + kScreenWidth)];
     [self.view addSubview:headerBackground];
     [self.view addSubview:self.tableScrollView];
     
@@ -34,8 +40,7 @@
     [nc addObserver:self  selector:@selector(updateViews)    name:UIDeviceOrientationDidChangeNotification  object:nil];
     [nc addObserver:self selector:@selector(updateViews) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     [nc addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardWillShowNotification object:nil];
-//    [nc addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidChangeFrameNotification object:nil];
-    [nc addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
+    [nc addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardWillHideNotification object:nil];
     
     self.textFields = [[NSMutableArray alloc] initWithCapacity:1000];
     for (int i = 0; i < 1000; i++) {
@@ -73,7 +78,7 @@
         [playerTable setDelegate:self];
         [playerTable setDataSource:self];
         [playerTable setTag:i];
-        [playerTable setBounces:NO];
+        [playerTable setBounces:YES];
         [self.playerTables addObject:playerTable];
         if (i + 1 < [[[GTPlayerManager sharedReferenceManager] players] count]) [playerTable setShowsVerticalScrollIndicator:NO];
         
@@ -106,35 +111,58 @@
 }
 
 - (void)updateViews {
-    [UIView animateWithDuration:0.35f animations:^{
-        [self.tableScrollView setFrame:CGRectMake(0.0, 0.0f, kScreenWidth, kScreenHeight)];
+    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        [self.tableScrollView setFrame:CGRectMake(0.0,
+                                                  0.0f,
+                                                  kScreenWidth,
+                                                  kScreenHeight)];
         float tableXPosition = 0.0f;
         self.cellWidth = STARTING_CELL_WIDTH;
         while ([[[GTPlayerManager sharedReferenceManager] players] count] * self.cellWidth < kScreenWidth) self.cellWidth++;
-        [self.tableScrollView setContentSize:CGSizeMake([[[GTPlayerManager sharedReferenceManager] players] count] * self.cellWidth, kScreenHeight)];
+        [self.tableScrollView setContentSize:CGSizeMake([[[GTPlayerManager sharedReferenceManager] players] count] * self.cellWidth,
+                                                        kScreenHeight)];
         for (UITableView *tableView in self.playerTables) {
             if (kScreenHeight > kScreenWidth) {
-                [tableView setContentInset:UIEdgeInsetsMake(CELL_HEIGHT + kStatusBarHeight, 0.0f, self.keyboardHeight, 0.0f)];
+                [tableView setContentInset:UIEdgeInsetsMake(CELL_HEIGHT + kStatusBarHeight,
+                                                            0.0f,
+                                                            self.keyboardHeight,
+                                                            0.0f)];
             }
             
             else {
-                [tableView setContentInset:UIEdgeInsetsMake(CELL_HEIGHT + kStatusBarHeight, 0.0f, FOOTER_HEIGHT, 0.0f)];
+                [tableView setContentInset:UIEdgeInsetsMake(CELL_HEIGHT + kStatusBarHeight,
+                                                            0.0f,
+                                                            FOOTER_HEIGHT,
+                                                            0.0f)];
                 [self.currentFirstResponder resignFirstResponder];
             }
             
-            [tableView setFrame:CGRectMake(tableXPosition, 0.0f, self.cellWidth, kScreenHeight)];
-            [tableView reloadData];
+            [tableView setFrame:CGRectMake(tableXPosition,
+                                           0.0f,
+                                           self.cellWidth,
+                                           kScreenHeight)];
+            if (!self.keyboardIsShowing) {
+                [tableView reloadData];
+            }
+            
             tableXPosition += self.cellWidth;
         }
         
         for (int i = 0; i < self.headerSubviews.count; i++) {
             UILabel *headerLabel = [self.headerSubviews objectAtIndex:i];
-            [headerLabel setFrame:CGRectMake(self.cellWidth * i, kStatusBarHeight, self.cellWidth, CELL_HEIGHT)];
+            [headerLabel setFrame:CGRectMake(self.cellWidth * i,
+                                             kStatusBarHeight,
+                                             self.cellWidth,
+                                             CELL_HEIGHT)];
             [self.headerToolbar addSubview:headerLabel];
         }
         
-        [self.headerToolbar setFrame:CGRectMake(0.0f, 0.0f, (self.tableScrollView.contentSize.width > kScreenWidth) ? self.tableScrollView.contentSize.width : kScreenWidth, HEADER_HEIGHT)];
-        [self.saveButton setCenter:CGPointMake(kScreenWidth - self.saveButton.frame.size.width/2.0f, CELL_HEIGHT/2.0f)];
+        [self.headerToolbar setFrame:CGRectMake(0.0f,
+                                                0.0f,
+                                                (self.tableScrollView.contentSize.width > kScreenWidth) ? self.tableScrollView.contentSize.width : kScreenWidth,
+                                                HEADER_HEIGHT)];
+        [self.saveButton setCenter:CGPointMake(kScreenWidth - self.saveButton.frame.size.width/2.0f,
+                                               CELL_HEIGHT/2.0f)];
     }];
 }
 
@@ -142,7 +170,7 @@
 
 - (UIScrollView *)tableScrollView {
     if (!_tableScrollView) {
-        _tableScrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
+        _tableScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, kScreenHeight)];
         [_tableScrollView setShowsVerticalScrollIndicator:NO];
         [_tableScrollView setBounces:YES];
         [_tableScrollView setScrollsToTop:YES];
@@ -216,7 +244,8 @@
     
     if (!shouldCommit) {
         for (UITableView *tableView in self.playerTables) {
-            [tableView reloadData];
+            [tableView performSelector:@selector(reloadData) withObject:tableView afterDelay:0.03f];
+//            [tableView reloadData];
         }
         
         return;
@@ -233,9 +262,9 @@
         [textField setText:@""];
         keepingTrack++;
     }
-
+    
     for (UITableView *tableView in self.playerTables) {
-        [tableView reloadData];
+        [tableView performSelector:@selector(reloadData) withObject:tableView afterDelay:0.03f];
     }
     
     [self.negativeButton setSelected:NO];

@@ -18,6 +18,6 @@
 @property (nonatomic, strong) NSMutableArray *headerSubviews, *textFields;
 @property (nonatomic, strong) UIToolbar *headerToolbar;
 @property float cellWidth, keyboardHeight;
-@property BOOL firstResponderLoopCheck;
+@property BOOL firstResponderLoopCheck, keyboardIsShowing;
 
 @end
