@@ -84,7 +84,7 @@
         [self.headerToolbar setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, kStatusBarHeight)];
         [self.resetTimeButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
         [self.resetScoreButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
-        [self.resetButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
+        [self.resetNamesButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
         [self.timerPicker layoutSubviews];
     } completion:^(BOOL finished) {
         if (!self.keyboardIsShowing) {
@@ -143,16 +143,16 @@
     return _accessoryView;
 }
 
-- (UIButton *)resetButton {
-    if (!_resetButton) {
-        _resetButton = [[UIButton alloc] initWithFrame:CGRectZero];
-        [_resetButton setTitle:@"Reset" forState:UIControlStateNormal];
-        [_resetButton setTitleColor:[UIColor white] forState:UIControlStateNormal];
-        [_resetButton setBackgroundColor:self.tintColor];
-        [_resetButton addTarget:self action:@selector(resetButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+- (UIButton *)resetNamesButton {
+    if (!_resetNamesButton) {
+        _resetNamesButton = [[UIButton alloc] initWithFrame:CGRectZero];
+        [_resetNamesButton setTitle:@"Reset Names" forState:UIControlStateNormal];
+        [_resetNamesButton setTitleColor:[UIColor white] forState:UIControlStateNormal];
+        [_resetNamesButton setBackgroundColor:self.tintColor];
+        [_resetNamesButton addTarget:self action:@selector(resetNamesButtonTouched) forControlEvents:UIControlEventTouchUpInside];
     }
     
-    return _resetButton;
+    return _resetNamesButton;
 }
 
 - (UIButton *)resetScoreButton {
@@ -634,19 +634,19 @@
     // reset timer
     else if ([indexPath section] == 2) {
         [cell addSubview:self.resetTimeButton];
-        [self.resetButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
+        [self.resetNamesButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
     }
     
     // reset scores
     else if ([indexPath section] == 3) {
         [cell addSubview:self.resetScoreButton];
-        [self.resetButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
+        [self.resetNamesButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
     }
     
     // reset scores and timer
     else if ([indexPath section] == 4) {
-        [cell addSubview:self.resetButton];
-        [self.resetButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
+        [cell addSubview:self.resetNamesButton];
+        [self.resetNamesButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
     }
     
     // dice
@@ -865,8 +865,26 @@
 
 #pragma mark - Button Actions
 
-- (void)resetButtonTouched {
-    [self resetGame];
+- (void)resetNamesButtonTouched {
+    [self flashButton:self.resetNamesButton];
+    
+    UIAlertController *resetNamesController = [UIAlertController alertControllerWithTitle:@"Reset Names?" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *resetNamesAction = [UIAlertAction actionWithTitle:@"Reset" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        NSArray *players = [NSArray arrayWithArray:[[GTPlayerManager sharedReferenceManager] players]];
+        for (GTPlayer *player in players) {
+            [[GTPlayerManager sharedReferenceManager] removePlayer:player];
+        }
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        
+    }];
+    
+    [resetNamesController addAction:resetNamesAction];
+    [resetNamesController addAction:cancelAction];
+    [self presentViewController:resetNamesController animated:YES completion:^{
+        
+    }];
 }
 
 - (void)resetTimerButtonTouched {
@@ -875,14 +893,27 @@
 }
 
 - (void)resetScoresButtonTouched {
-    [[GTPlayerManager sharedReferenceManager] resetScores];
-    [self flashButton:self.resetScoreButton];
+    UIAlertController *resetNamesController = [UIAlertController alertControllerWithTitle:@"Reset Scores?" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *resetNamesAction = [UIAlertAction actionWithTitle:@"Reset" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        [[GTPlayerManager sharedReferenceManager] resetScores];
+        [self flashButton:self.resetScoreButton];
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        
+    }];
+    
+    [resetNamesController addAction:resetNamesAction];
+    [resetNamesController addAction:cancelAction];
+    [self presentViewController:resetNamesController animated:YES completion:^{
+        
+    }];
 }
 
 - (void)resetGame {
     [[GTPlayerManager sharedReferenceManager] resetScores];
     [[GTPlayerManager sharedReferenceManager] resetTimers:self.timerPicker.time];
-    [self flashButton:self.resetButton];
+    [self flashButton:self.resetNamesButton];
 }
 
 - (void)resetDiceButtonTouched {
