@@ -99,11 +99,11 @@
             frame.size.height += frame.origin.y;
             frame.origin.y = 0.0f;
         }
+        
         GTPlayerTimeButton *button = [[GTPlayerTimeButton alloc] initWithFrame:frame];
         [button setPlayer:player];
         [button setTitle:player.name forState:UIControlStateNormal];
-        [button setBackgroundColor:[UIColor randomDarkColorFromString:player.name]];
-        [button setBackgroundColor:[button.backgroundColor makeBrightnessOf:DESELECTED_BRIGHTNESS]];
+        [button setBackgroundColor:[[UIColor randomDarkColorFromString:player.name] makeBrightnessOf:DESELECTED_BRIGHTNESS]];
         [button addTarget:self action:@selector(timerButtonTouched:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:button];
         
@@ -195,14 +195,16 @@
                 [timerButton setBackgroundColor:[timerButton.backgroundColor makeBrightnessOf:SELECTED_BRIGHTNESS]];
                 [timerButton.nameLabel setTextColor:[UIColor blackColor]];
                 [timerButton.timeLabel setTextColor:[UIColor blackColor]];
+                [timerButton setSelected:YES];
             }];
         }
         
         else {
             [UIView animateWithDuration:0.15f animations:^{
-                [timerButton setBackgroundColor:[timerButton.backgroundColor makeBrightnessOf:DESELECTED_BRIGHTNESS]];
+                [timerButton setBackgroundColor:[[UIColor randomDarkColorFromString:timerButton.player.name] makeBrightnessOf:DESELECTED_BRIGHTNESS]];
                 [timerButton.nameLabel setTextColor:[UIColor whiteColor]];
                 [timerButton.timeLabel setTextColor:[UIColor whiteColor]];
+                [timerButton setSelected:NO];
             }];
         }
     }
