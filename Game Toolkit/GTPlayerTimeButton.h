@@ -14,5 +14,6 @@
 @property (nonatomic, strong) GTPlayer *player;
 @property (nonatomic, strong) UILabel *nameLabel, *timeLabel;
 @property (nonatomic, strong) UIFont *font;
+@property (nonatomic, strong) CAGradientLayer *gradientLayer;
 
 @end
