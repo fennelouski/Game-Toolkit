@@ -39,5 +39,7 @@
 @property (nonatomic, strong) UIColor *deselectedColor;
 @property float keyboardHeight;
 @property BOOL keyboardIsShowing;
+@property BOOL viewIsShowing;
+@property (nonatomic, strong) NSDate *lastShownDate;
 
 @end

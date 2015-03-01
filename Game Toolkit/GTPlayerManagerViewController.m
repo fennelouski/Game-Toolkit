@@ -33,6 +33,7 @@
     self.keyboardHeight = FOOTER_HEIGHT;
     self.keyboardIsShowing = NO;
     [self setUpTableView];
+    self.lastShownDate = [NSDate date];
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self  selector:@selector(updateViews)    name:UIDeviceOrientationDidChangeNotification  object:nil];
@@ -48,10 +49,15 @@
 - (void)viewWillAppear:(BOOL)animated {
     [self.playerTableView reloadData];
     [self updateViews];
+    self.viewIsShowing = YES;
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    
+    self.viewIsShowing = NO;
+    self.lastShownDate = [NSDate date];
+    [self performSelector:@selector(resetExpandedViews) withObject:self afterDelay:61.0f];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *key;
@@ -91,6 +97,16 @@
             [self.playerTableView reloadData];
         }
     }];
+}
+
+- (void)resetExpandedViews {
+    if (!self.viewIsShowing) {
+        if (abs([self.lastShownDate timeIntervalSinceNow]) > 60) {
+            [self.advancedDiceFeaturesSwitch setOn:NO animated:YES];
+            [self.showTimeSwitch setOn:NO animated:YES];
+            [self updateViews];
+        }
+    }
 }
 
 - (void)reloadPickerView {
