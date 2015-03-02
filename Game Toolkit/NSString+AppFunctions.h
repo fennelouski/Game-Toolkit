@@ -14,5 +14,7 @@
 + (NSString *)portmonteau:(NSString *)input;
 - (NSString *)areOrIs;
 + (NSString *)areOrIs:(NSString *)input;
+- (NSString *)piIfy;
++ (NSString *)piIfy:(NSString *)input;
 
 @end

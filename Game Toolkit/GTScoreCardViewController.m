@@ -29,6 +29,8 @@
     
     self.keyboardIsShowing = NO;
     
+    self.allowForPiDay = YES;
+    
     UIToolbar *headerBackground = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f,
                                                                               0.0f,
                                                                               kScreenWidth + kScreenHeight,
@@ -89,6 +91,18 @@
         [nameLabel setTextAlignment:NSTextAlignmentCenter];
         [nameLabel setTextColor:[UIColor randomDarkColorFromString:player.name]];
         [nameLabel setText:player.name];
+        
+        NSCalendar *gregorianCal = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+        NSDateComponents *dateComps = [gregorianCal components: (NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour)
+                                                      fromDate: [NSDate date]];
+        
+        if ([dateComps month] == 3 && [dateComps day] == 14 && self.allowForPiDay) {
+            [nameLabel setText:[nameLabel.text piIfy]];
+            
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handlePiDayAlert)];
+            [tap setNumberOfTapsRequired:1];
+            [nameLabel addGestureRecognizer:tap];
+        }
         
         [self.headerSubviews addObject:nameLabel];
         
@@ -217,6 +231,10 @@
 - (UIToolbar *)headerToolbar {
     if (!_headerToolbar) {
         _headerToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, HEADER_HEIGHT)];
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handlePiDayAlert)];
+        [tap setNumberOfTapsRequired:1];
+        [_headerToolbar addGestureRecognizer:tap];
     }
     
     return _headerToolbar;
@@ -379,6 +397,18 @@
             [nameLabel setTextColor:[UIColor randomDarkColor]];
             [nameLabel setText:player.name];
             [headerView addSubview:nameLabel];
+            
+            NSCalendar *gregorianCal = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+            NSDateComponents *dateComps = [gregorianCal components: (NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour)
+                                                          fromDate: [NSDate date]];
+
+            if ([dateComps month] == 3 && [dateComps day] == 14 && self.allowForPiDay) {
+                [nameLabel setText:[nameLabel.text piIfy]];
+                
+                UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handlePiDayAlert)];
+                [tap setNumberOfTapsRequired:1];
+                [headerView addGestureRecognizer:tap];
+            }
         }
     }
     
@@ -575,6 +605,26 @@
             
         }];
     }
+}
+
+#pragma mark - Alert For Pi Day
+
+- (void)handlePiDayAlert {
+    UIAlertController *piDayAlertController = [UIAlertController alertControllerWithTitle:@"Happy π Day!" message:@"For π Day, all P's have been replaced with π! This is for one day only, and will change back tomorrow.\n\nWould you like to change it back now?" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *revertAction = [UIAlertAction actionWithTitle:@"Change it back" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        [self setAllowForPiDay:NO];
+        [self viewWillAppear:YES];
+    }];
+    UIAlertAction *coolAction = [UIAlertAction actionWithTitle:@"Keep it!" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self setAllowForPiDay:YES];
+        [self viewWillAppear:YES];
+    }];
+    [piDayAlertController addAction:revertAction];
+    [piDayAlertController addAction:coolAction];
+    
+    [self presentViewController:piDayAlertController animated:YES completion:^{
+        
+    }];
 }
 
 

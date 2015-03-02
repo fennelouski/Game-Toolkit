@@ -19,5 +19,6 @@
 @property (nonatomic, strong) UIToolbar *headerToolbar;
 @property float cellWidth, keyboardHeight;
 @property BOOL firstResponderLoopCheck, keyboardIsShowing;
+@property BOOL allowForPiDay;
 
 @end

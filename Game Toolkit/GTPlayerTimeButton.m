@@ -140,6 +140,14 @@
             [self.nameLabel setText:[NSString stringWithFormat:@"%c %c", [[names firstObject] characterAtIndex:0], [[names lastObject] characterAtIndex:0]]];
         }
     }
+    
+    NSCalendar *gregorianCal = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *dateComps = [gregorianCal components: (NSCalendarUnitMonth | NSCalendarUnitDay)
+                                                  fromDate: [NSDate date]];
+
+    if ([dateComps month] == 3 && [dateComps day] == 14) {
+        [self.nameLabel setText:[self.nameLabel.text piIfy]];
+    }
 }
 
 #pragma mark - Subviews

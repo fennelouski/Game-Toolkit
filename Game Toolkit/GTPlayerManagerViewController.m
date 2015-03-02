@@ -890,6 +890,7 @@
         NSArray *players = [NSArray arrayWithArray:[[GTPlayerManager sharedReferenceManager] players]];
         for (GTPlayer *player in players) {
             [[GTPlayerManager sharedReferenceManager] removePlayer:player];
+            [self flashButton:self.resetNamesButton];
         }
     }];
     
@@ -910,6 +911,8 @@
 }
 
 - (void)resetScoresButtonTouched {
+    [self flashButton:self.resetScoreButton];
+    
     UIAlertController *resetNamesController = [UIAlertController alertControllerWithTitle:@"Reset Scores?" message:nil preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *resetNamesAction = [UIAlertAction actionWithTitle:@"Reset" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         [[GTPlayerManager sharedReferenceManager] resetScores];
@@ -976,10 +979,10 @@
 }
 
 - (void)flashButton:(UIView *)button {
-    [UIView animateWithDuration:0.17f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
+    [UIView animateWithDuration:ANIMATION_DURATION delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
         [button setBackgroundColor:[UIColor red]];
     }completion:^(BOOL finished){
-        [UIView animateWithDuration:0.18f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
+        [UIView animateWithDuration:ANIMATION_DURATION delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
             [button setBackgroundColor:self.tintColor];
         }completion:^(BOOL finished){}];
     }];

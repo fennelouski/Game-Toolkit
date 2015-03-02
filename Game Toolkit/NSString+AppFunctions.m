@@ -96,4 +96,12 @@
     return [input areOrIs];
 }
 
+- (NSString *)piIfy {
+    return [[self stringByReplacingOccurrencesOfString:@"P" withString:@"π"] stringByReplacingOccurrencesOfString:@"p" withString:@"π"];
+}
+
++ (NSString *)piIfy:(NSString *)input {
+    return [input piIfy];
+}
+
 @end
