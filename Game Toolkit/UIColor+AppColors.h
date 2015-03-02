@@ -20,8 +20,9 @@
 + (UIColor *)appColor2;
 + (UIColor *)appColor3;
 + (UIColor *)appColor4;
-
 + (NSArray *)appColors;
+
++ (UIColor *)redAppColor;
 
 // modify colors
 - (UIColor *)lightenColor;

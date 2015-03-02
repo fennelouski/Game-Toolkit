@@ -25,7 +25,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.tintColor = [UIColor rubyRed];
+    self.tintColor = [UIColor redAppColor];
     self.deselectedColor = [UIColor darkGrayColor];
     [self.view setBackgroundColor:[UIColor white]];
     [self.view addSubview:self.playerTableView];

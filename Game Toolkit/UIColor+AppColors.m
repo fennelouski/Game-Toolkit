@@ -51,6 +51,10 @@
              [self aeroBlue]];
 }
 
++ (UIColor *)redAppColor {
+    return [UIColor venetianRed];
+}
+
 // modify colors
 
 - (UIColor *)lightenColor {

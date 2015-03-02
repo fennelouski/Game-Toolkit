@@ -55,8 +55,9 @@
     self.maximumChanges = arc4random()%12 + 8;
     if (!self.selected) {
         [self animateSpots:[NSNumber numberWithInt:0]];
-        float randomDelay = ((float)(arc4random()%50))/100.0f;
+        float randomDelay = ((float)(arc4random()%50 - 25))/100.0f;
         [self performSelector:@selector(startJiggling) withObject:self afterDelay:randomDelay];
+        [self performSelector:@selector(stopJiggling) withObject:self afterDelay:randomDelay + 0.2f];
     }
 }
 
@@ -101,10 +102,6 @@
             NSNumber *changesToBeMade = [NSNumber numberWithInt:changesMadeInt + 1];
             [self animateSpots:changesToBeMade];
         }];
-    }
-    
-    else {
-        [self performSelector:@selector(stopJiggling) withObject:self afterDelay:0.2f];
     }
 }
 

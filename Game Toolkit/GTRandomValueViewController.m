@@ -400,11 +400,11 @@
     }
     
     else {
-        [UIView animateWithDuration:0.35f animations:^{
+        [UIView animateWithDuration:ANIMATION_DURATION animations:^{
             [self.totalLabel setCenter:CGPointMake(kScreenWidth/2.0f, kScreenHeight + kScreenWidth)];
             [self.totalLabel setAlpha:0.0f];
         } completion:^(BOOL finished){
-            [UIView animateWithDuration:0.35f animations:^{
+            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                 [self.totalLabel setAlpha:0.3f];
             }];
         }];
