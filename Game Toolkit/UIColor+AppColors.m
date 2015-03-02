@@ -52,10 +52,48 @@
 }
 
 + (UIColor *)redAppColor {
+    NSCalendar *gregorianCal = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *dateComps = [gregorianCal components: (NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour)
+                                                  fromDate: [NSDate date]];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSNumber *easterMonth = [defaults objectForKey:[NSString stringWithFormat:@"Month Of Easter In Year %ld", (long)[dateComps year]]];
+    NSNumber *easterDay = [defaults objectForKey:[NSString stringWithFormat:@"Day Of Easter In Year %ld", (long)[dateComps year]]];
+    
+    // St. Patrick's Day
+    if ([dateComps month] == 3 && [dateComps day] == 17) {
+        return [UIColor greenPantone];
+    }
+    
+    // Easter
+    else if (([dateComps month] == 3 || [dateComps month] == 4) && easterMonth && [dateComps month] == [easterMonth intValue] && easterDay && [dateComps day] == [easterDay intValue]) {
+        return [UIColor heliotrope];
+    }
+    
+    // 4th Of July
+    else if ([dateComps month] == 7 && [dateComps day] == 4) {
+        return [UIColor navy];
+    }
+    
+    // Halloween
+    else if ([dateComps month] == 10 && [dateComps day] >= 30) {
+        return [UIColor safetyOrange];
+    }
+    
+    // Christmas
+    else if ([dateComps month] == 12 && [dateComps day] >= 20 && [dateComps day] <= 25) {
+        return [UIColor forestGreenWeb];
+    }
+    
+    // New Year's Eve
+    else if (([dateComps month] == 12 && [dateComps day] == 31) || ([dateComps month] == 1 && [dateComps day] == 1 && [dateComps hour] < 6)) {
+        return [UIColor schoolBusYellow];
+    }
+    
     return [UIColor venetianRed];
 }
 
-// modify colors
+#pragma mark - modify colors
 
 - (UIColor *)lightenColor {
     return [self lightenColorBy:0.5f];
@@ -213,7 +251,7 @@
     return [UIColor colorWithRed:redValue green:greenValue blue:blueValue alpha:1.0f];
 }
 
-// random colors
+#pragma mark - random colors
 
 + (UIColor *)randomPastelColor {
     float randomBrightness = (9500.0f - (arc4random()%1000)) / 10000.0f;
@@ -840,7 +878,7 @@
     return [UIColor randomColorName];
 }
 
-// sets of colors
+#pragma mark - sets of colors
 
 + (NSDictionary *)whiteShades {
     return @{@"white" : [UIColor white],
@@ -1333,6 +1371,8 @@
              @"wisteria" : [UIColor wisteria]};
 }
 
+
+#pragma mark - Holiday colors
 
 // Holiday Colors for Today
 // the first color in the returned array is the darkest color, the second is the lightest and each color after the second gets progressively lighter
@@ -1884,7 +1924,7 @@
     return nil;
 }
 
-// different sets of colors for 2 different players
+#pragma mark - different sets of colors for 2 different players
 
 + (NSArray *)player1Colors {
     return @[[UIColor randomDarkColor]];
@@ -1894,13 +1934,13 @@
     return @[[UIColor randomDarkColor]];
 }
 
-// iOS Colors
+#pragma mark - iOS Colors
 
 + (UIColor *)uiSwitchGreen {
     return [UIColor colorWithRed:76.0f/255.0f green:217.0f/255.0f blue:100.0f/255.0f alpha:1.0f];
 }
 
-// Colors that should have been there from the beginning
+#pragma mark - Colors that should have been there from the beginning
 
 + (NSArray *)allColorsArray {
     return @[[UIColor acidGreen],
