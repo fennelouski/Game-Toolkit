@@ -12,6 +12,9 @@
 		9032D7641AA23BA200886606 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9032D7631AA23BA200886606 /* GLKit.framework */; };
 		9032D7661AA23BA800886606 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9032D7651AA23BA800886606 /* QuartzCore.framework */; };
 		9032D7681AA23BD100886606 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9032D7671AA23BD100886606 /* OpenGLES.framework */; };
+		9092F8631AA4AD2F002AE4F4 /* Fire Pager.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9092F8621AA4AD2F002AE4F4 /* Fire Pager.wav */; };
+		9092F8651AA4AE69002AE4F4 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9092F8641AA4AE69002AE4F4 /* AVFoundation.framework */; };
+		9092F8671AA4AE72002AE4F4 /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9092F8661AA4AE72002AE4F4 /* AVKit.framework */; };
 		90B178281A8BDE88006C4610 /* GTTimePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B178271A8BDE88006C4610 /* GTTimePickerView.m */; };
 		90D25A891A8C68B9004E18C4 /* GTRandomValueViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90D25A881A8C68B9004E18C4 /* GTRandomValueViewController.m */; };
 		90D25A8C1A8C691A004E18C4 /* GTDieView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90D25A8B1A8C691A004E18C4 /* GTDieView.m */; };
@@ -61,6 +64,9 @@
 		9032D7631AA23BA200886606 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		9032D7651AA23BA800886606 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		9032D7671AA23BD100886606 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		9092F8621AA4AD2F002AE4F4 /* Fire Pager.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = "Fire Pager.wav"; path = "Audio Files/Fire Pager.wav"; sourceTree = "<group>"; };
+		9092F8641AA4AE69002AE4F4 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		9092F8661AA4AE72002AE4F4 /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
 		90B178261A8BDE88006C4610 /* GTTimePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTTimePickerView.h; sourceTree = "<group>"; };
 		90B178271A8BDE88006C4610 /* GTTimePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTTimePickerView.m; sourceTree = "<group>"; };
 		90D25A871A8C68B9004E18C4 /* GTRandomValueViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTRandomValueViewController.h; sourceTree = "<group>"; };
@@ -112,6 +118,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9092F8671AA4AE72002AE4F4 /* AVKit.framework in Frameworks */,
+				9092F8651AA4AE69002AE4F4 /* AVFoundation.framework in Frameworks */,
 				9032D7681AA23BD100886606 /* OpenGLES.framework in Frameworks */,
 				9032D7661AA23BA800886606 /* QuartzCore.framework in Frameworks */,
 				9032D7641AA23BA200886606 /* GLKit.framework in Frameworks */,
@@ -232,6 +240,8 @@
 				90E83C0B1A80797700626CE2 /* LaunchScreen.xib */,
 				90D25AA41A8D50CA004E18C4 /* Images-2.xcassets */,
 				90E83BF91A80797700626CE2 /* Supporting Files */,
+				9092F8661AA4AE72002AE4F4 /* AVKit.framework */,
+				9092F8641AA4AE69002AE4F4 /* AVFoundation.framework */,
 				9032D7671AA23BD100886606 /* OpenGLES.framework */,
 				9032D7651AA23BA800886606 /* QuartzCore.framework */,
 				9032D7631AA23BA200886606 /* GLKit.framework */,
@@ -243,6 +253,7 @@
 		90E83BF91A80797700626CE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				9092F8621AA4AD2F002AE4F4 /* Fire Pager.wav */,
 				90E83BFA1A80797700626CE2 /* Info.plist */,
 				90E83BFB1A80797700626CE2 /* main.m */,
 			);
@@ -363,6 +374,7 @@
 				90D25AA01A8D4FA4004E18C4 /* Default-Portrait.png in Resources */,
 				90D25AA31A8D4FA4004E18C4 /* Default@2x.png in Resources */,
 				90E83C0A1A80797700626CE2 /* Images.xcassets in Resources */,
+				9092F8631AA4AD2F002AE4F4 /* Fire Pager.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -522,7 +534,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = "Game Toolkit/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "1f259c54-7b48-441c-a4f0-d9156fa27eed";
@@ -536,7 +548,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = "Game Toolkit/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "5aec38a4-9f78-4211-9d21-f3d6fb47584b";

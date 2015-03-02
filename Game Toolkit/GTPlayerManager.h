@@ -59,5 +59,7 @@
 - (void)setDiceColor:(NSString *)diceColorName;
 - (UIColor *)diceDotsColor;
 - (UIColor *)diceBorderColor;
+- (NSTimeInterval)playAlarmTime;
+- (void)setPlayAlarmTime:(NSTimeInterval)playAlarmTime;
 
 @end

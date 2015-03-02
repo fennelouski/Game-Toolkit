@@ -11,6 +11,8 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import "UIColor+AppColors.h"
 #import "NSString+AppFunctions.h"
+#import <AudioToolbox/AudioToolbox.h>
+#import <AVFoundation/AVFoundation.h>
 
 #define MINIMUM_NUMBER_OF_PLAYERS 2
 #define MAX_SIZE_OF_DICE_DOTS 5.5f
@@ -19,6 +21,7 @@
 #define NUMBER_OF_DICE_SIDES_KEY @"Number 0f D1ce S1D35"
 #define NUMBER_OF_DICE_KEY @"Number 0f D1ce"
 #define COLOR_OF_DICE_KEY @"C0L0UR 0F D1C3"
+#define PLAY_ALARM_TIME_KEY @"PL4Y 4l4rm T1m3"
 
 @implementation GTPlayerManager {
     NSMutableArray *_players;
@@ -29,6 +32,7 @@
     NSMutableDictionary *_diceColors;
     UIColor *_diceColor;
     NSString *_diceColorName;
+    NSTimeInterval _playAlarmTime;
 }
 
 + (instancetype)sharedReferenceManager {
@@ -80,6 +84,15 @@
         
         else {
             _showDiceTotal = NO;
+        }
+        
+        NSNumber *playAlarmTime = [defaults objectForKey:PLAY_ALARM_TIME_KEY];
+        if (playAlarmTime) {
+            _playAlarmTime = [playAlarmTime floatValue];
+        }
+        
+        else {
+            _playAlarmTime = 3.0f;
         }
         
         _diceColors = [NSMutableDictionary dictionaryWithDictionary:@{@"White" : [UIColor white],
@@ -134,10 +147,15 @@
             NSLog(@"%@ %@ out of time!", self.currentPlayer.name, [self.currentPlayer.name areOrIs]);
             self.currentPlayer.timeRemaining = 0.0f;
             _isTimerRunning = NO;
-            NSURL *fileURL = [NSURL URLWithString:@"/System/Library/Audio/UISounds/alarm.caf"];
-            SystemSoundID soundID;
-            AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)fileURL,&soundID);
-            AudioServicesPlaySystemSound(soundID);
+            
+            NSString *soundFilePath = [NSString stringWithFormat:@"%@/%@.wav",
+                                       [[NSBundle mainBundle] resourcePath], @"Fire Pager"];
+            NSURL *soundFileURL = [NSURL fileURLWithPath:soundFilePath];
+            
+            AVAudioPlayer *audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundFileURL
+                                                                  error:nil];
+            [audioPlayer play];
+            [audioPlayer performSelector:@selector(stop) withObject:audioPlayer afterDelay:_playAlarmTime];
             
             UIAlertController *resetTimerAlertView = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"%@ %@ out of time!", self.currentPlayer.name, [self.currentPlayer.name areOrIs]] message:@"Reset the timers?" preferredStyle:UIAlertControllerStyleAlert];
             
@@ -439,6 +457,17 @@
     }
     
     return [UIColor black];
+}
+
+- (NSTimeInterval)playAlarmTime {
+    return _playAlarmTime;
+}
+
+- (void)setPlayAlarmTime:(NSTimeInterval)playAlarmTime {
+    _playAlarmTime = playAlarmTime;
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[NSNumber numberWithFloat:playAlarmTime] forKey:PLAY_ALARM_TIME_KEY];
 }
 
 @end
