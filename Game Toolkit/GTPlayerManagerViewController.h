@@ -14,7 +14,7 @@
 @property (nonatomic, strong) UITableView *playerTableView;
 @property (nonatomic, strong) NSMutableArray *textFields;
 @property (nonatomic, strong) UIToolbar *accessoryView, *headerToolbar;
-@property (nonatomic, strong) UIButton *resetNamesButton, *resetScoreButton, *resetTimeButton, *resetDiceButton;
+@property (nonatomic, strong) UIButton *resetNamesButton, *resetScoreButton, *resetTimeButton, *resetDiceButton, *resetInstructionsButton;
 @property (nonatomic, strong) UILabel *showTimeLabel;
 @property (nonatomic, strong) UISwitch *showTimeSwitch;
 @property (nonatomic, strong) UILabel *amountOfTimeLabelQuantity;

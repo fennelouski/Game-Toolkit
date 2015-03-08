@@ -1924,6 +1924,53 @@
     return nil;
 }
 
+#pragma mark - Colors for Time
+
++ (UIColor *)colorForCurrentTime {
+    return [UIColor colorForTimeOfDay:[NSDate date]];
+}
+
++ (UIColor *)colorForTimeOfDay:(NSDate *)date {
+    NSCalendar *gregorianCal = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *dateComps = [gregorianCal components: (NSCalendarUnitHour | NSCalendarUnitMinute)
+                                                  fromDate: date];
+    
+    int minutes = (int)[dateComps minute];
+    int hour = (int)[dateComps hour];
+    hour *= 60;
+    int timeValue = hour + minutes;
+    timeValue -= 720; // noon is now zero
+    timeValue = abs(timeValue);
+    timeValue *= timeValue * timeValue;
+    timeValue /= 720;
+    float time = 1.0f - (((float)timeValue)/518400.0f);
+    time *= 1.2f;
+    time *= time;
+    time /= 1.2f;
+    NSLog(@"Time: %f", time);
+    float redValue = time;
+    float greenValue = time;
+    float blueValue = time;
+    
+    // between 6 AM and 6 PM
+    if (hour < 64800) {
+        redValue -= 0.2f;
+        redValue *= 0.65;
+        greenValue -= 0.1f;
+        greenValue *= 0.83f;
+    }
+    
+    if (time < 0.8) {
+        redValue *= 0.25f;
+        greenValue *= 0.1f;
+        blueValue *= 0.7f;
+    }
+    
+    NSLog(@"R: %f\t\tG: %f\t\tB: %f\t\t%@", redValue, greenValue, blueValue, date);
+    
+    return [UIColor colorWithRed:redValue green:greenValue blue:blueValue alpha:1.0f];
+}
+
 #pragma mark - different sets of colors for 2 different players
 
 + (NSArray *)player1Colors {

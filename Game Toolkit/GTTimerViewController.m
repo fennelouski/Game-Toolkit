@@ -24,7 +24,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.view setBackgroundColor:[UIColor black]];
+    [self.view setBackgroundColor:[UIColor white]];
 //    [self.view addSubview:self.headerToolbar];
     self.playerButtons = [[NSMutableDictionary alloc] initWithCapacity:[[[GTPlayerManager sharedReferenceManager] players] count]];
     
@@ -51,6 +51,8 @@
     [UIView animateWithDuration:0.0f animations:^{
         [self.headerToolbar setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, kStatusBarHeight)];
         [self layoutButtons];
+    } completion:^(BOOL finished) {
+        
     }];
 }
 

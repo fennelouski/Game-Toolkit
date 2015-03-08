@@ -20,6 +20,7 @@
 #define CELL_BUFFER 20.0f
 #define STARTING_CELL_WIDTH 80.0f
 #define FOOTER_HEIGHT 49.0f
+#define WAIT_TIME 1.0f
 
 @implementation GTScoreCardViewController
 
@@ -28,7 +29,7 @@
 //    [self.view addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Green Background"]]];
     
     self.keyboardIsShowing = NO;
-    
+    self.showInstructions = YES;
     self.allowForPiDay = YES;
     
     UIToolbar *headerBackground = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f,
@@ -56,10 +57,14 @@
         [scoreTextField setInputAccessoryView:self.accessoryView];
         [self.textFields addObject:scoreTextField];
     }
+    
+    [self performSelector:@selector(checkForInstructions) withObject:self afterDelay:WAIT_TIME];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    self.showInstructions = YES;
     
     if (self.headerSubviews) {
         for (UIView *subview in self.headerSubviews) {
@@ -116,6 +121,12 @@
     [self updateViews];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    self.showInstructions = NO;
+}
+
 - (void)layoutTables {
     for (UITableView *tableView in self.playerTables) {
         [self.tableScrollView addSubview:tableView];
@@ -136,7 +147,7 @@
         [self.tableScrollView setContentSize:CGSizeMake([[[GTPlayerManager sharedReferenceManager] players] count] * self.cellWidth,
                                                         kScreenHeight)];
         for (UITableView *tableView in self.playerTables) {
-            if (kScreenHeight > kScreenWidth) {
+            if (kScreenHeight >= 480.0f) {
                 [tableView setContentInset:UIEdgeInsetsMake(CELL_HEIGHT + kStatusBarHeight,
                                                             0.0f,
                                                             self.keyboardHeight,
@@ -148,7 +159,19 @@
                                                             0.0f,
                                                             FOOTER_HEIGHT,
                                                             0.0f)];
-                [self.currentFirstResponder resignFirstResponder];
+                
+                if ([self.currentFirstResponder isFirstResponder]) {
+                    [self.currentFirstResponder resignFirstResponder];
+                    [self setCurrentFirstResponder:nil];
+                    
+                    UIAlertController *keyboardWarningAlert = [UIAlertController alertControllerWithTitle:@"Rotate Phone To Insert Scores" message:@"Keyboard is disabled while phone is sideways." preferredStyle:UIAlertControllerStyleAlert];
+                    UIAlertAction *dismissAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                    }];
+                    [keyboardWarningAlert addAction:dismissAction];
+                    [self presentViewController:keyboardWarningAlert animated:YES completion:^{
+                        
+                    }];
+                }
             }
             
             [tableView setFrame:CGRectMake(tableXPosition,
@@ -232,9 +255,16 @@
     if (!_headerToolbar) {
         _headerToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, HEADER_HEIGHT)];
         
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handlePiDayAlert)];
-        [tap setNumberOfTapsRequired:1];
-        [_headerToolbar addGestureRecognizer:tap];
+        NSCalendar *gregorianCal = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+        NSDateComponents *dateComps = [gregorianCal components: (NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour)
+                                                      fromDate: [NSDate date]];
+        
+        if ([dateComps month] == 3 && [dateComps day] == 14 && self.allowForPiDay) {
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handlePiDayAlert)];
+            [tap setNumberOfTapsRequired:1];
+            
+            [_headerToolbar addGestureRecognizer:tap];
+        }
     }
     
     return _headerToolbar;
@@ -604,6 +634,36 @@
         [self presentViewController:alertController animated:YES completion:^{
             
         }];
+    }
+}
+
+#pragma mark - Instructions
+
+- (void)checkForInstructions {
+    //    NSLog(@"checkForInstructions");
+    if (self.showInstructions) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSDate *initialWelcomeDate = [defaults objectForKey:@"initialWelcomeDate"];
+        
+        // check to see if the user has rolled the dice within the last week
+        // if not, then show an alert describing how to roll the dice
+        if (!initialWelcomeDate || abs((int)[initialWelcomeDate timeIntervalSinceNow]) > 86400 * 30) {
+            NSString *title = @"Welcome to Game Toolkit!";
+            NSString *message = [NSString stringWithFormat:@"To add scores just tap on #### at the bottom of each player's column. To add, remove or change the name of a player go to the settings tab. There, you can also change the length of time for the timers, change dice colors, as well as change the number of sides on the dice. "];
+            UIAlertController *instructionAlerController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *gotItAction = [UIAlertAction actionWithTitle:@"Got it!" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+                [defaults setObject:[NSDate date] forKey:@"initialWelcomeDate"];
+            }];
+            [instructionAlerController addAction:gotItAction];
+            
+            [self presentViewController:instructionAlerController animated:YES completion:^{
+                
+            }];
+        }
+    }
+    
+    else {
+        [self performSelector:@selector(checkForInstructions) withObject:self afterDelay:WAIT_TIME];
     }
 }
 

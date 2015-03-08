@@ -20,7 +20,7 @@
 #define FOOTER_HEIGHT 49.0f
 #define PICKER_HEIGHT 216.0f
 #define WAIT_TIME 4.0f
-#define LONG_WAIT_TIME 600.0f
+#define LONG_WAIT_TIME 300.0f
 #define ANIMATION_ITERATIONS 120
 
 @implementation GTRandomValueViewController
@@ -43,7 +43,7 @@
     [nc addObserver:self selector:@selector(updateViews) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     
     [self performSelector:@selector(checkForInstructions) withObject:self afterDelay:WAIT_TIME];
-    [self performSelector:@selector(checkForInstructions) withObject:self afterDelay:LONG_WAIT_TIME]; // add a check for 10 minutes later to see if the user has both shaken and double tapped
+    [self performSelector:@selector(checkForInstructions) withObject:self afterDelay:LONG_WAIT_TIME]; // add a check for 5 minutes later to see if the user has both shaken and double tapped
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -298,7 +298,7 @@
 
 - (UITapGestureRecognizer *)doubleTap {
     if (!_doubleTap) {
-        _doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTapped)];
+        _doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTapped:)];
         [_doubleTap setNumberOfTapsRequired:2];
     }
     
@@ -325,12 +325,18 @@
 
 #pragma mark - Gesture Actions
 
-- (void)doubleTapped {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSDate *lastDoubleTapDate = [NSDate date];
-    [defaults setObject:lastDoubleTapDate forKey:@"lastDoubleTapDate"];
-
-    [self rollDice];
+- (void)doubleTapped:(UITapGestureRecognizer *)tap {
+    if ([tap.view isEqual:self.view]) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSDate *lastDoubleTapDate = [NSDate date];
+        [defaults setObject:lastDoubleTapDate forKey:@"lastDoubleTapDate"];
+        
+        [self rollDice];
+    }
+    
+    else {
+        NSLog(@"Not in the right view");
+    }
 }
 
 - (void)swipedDown {

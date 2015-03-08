@@ -207,6 +207,18 @@
     return _resetDiceButton;
 }
 
+- (UIButton *)resetInstructionsButton {
+    if (!_resetInstructionsButton) {
+        _resetInstructionsButton = [[UIButton alloc] initWithFrame:CGRectZero];
+        [_resetInstructionsButton setTitle:@"Reset Instructions" forState:UIControlStateNormal];
+        [_resetInstructionsButton setTitleColor:[UIColor white] forState:UIControlStateNormal];
+        [_resetInstructionsButton setBackgroundColor:self.tintColor];
+        [_resetInstructionsButton addTarget:self action:@selector(resetInstructionsButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    return _resetInstructionsButton;
+}
+
 - (UILabel *)showTimeLabel {
     if (!_showTimeLabel) {
         _showTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(BUFFER, 0.0f, kScreenWidth - BUFFER * 2, CELL_HEIGHT)];
@@ -520,7 +532,7 @@
 #pragma mark - Table View Data Source and Delegate Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 7;
+    return 8;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -569,6 +581,10 @@
             
             // reset dice
         case 6:
+            numberOfRows = 1;
+            break;
+            
+        case 7:
             numberOfRows = 1;
             break;
             
@@ -767,6 +783,11 @@
     }
     
     else if ([indexPath section] == 7) {
+        [cell addSubview:self.resetInstructionsButton];
+        [self.resetInstructionsButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
+    }
+    
+    else if ([indexPath section] == 8) {
         [cell setBackgroundColor:[UIColor royalBlue2]];
     }
     
@@ -952,6 +973,15 @@
     [self.numberOfDiceSidesSlider setValue:[[GTPlayerManager sharedReferenceManager] numberOfDiceSides] animated:YES];
     
     [self flashButton:self.resetDiceButton];
+}
+
+- (void)resetInstructionsButtonTouched {
+    [self flashButton:self.resetInstructionsButton];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:@"initialWelcomeDate"];
+    [defaults removeObjectForKey:@"lastShakeDate"];
+    [defaults removeObjectForKey:@"lastDoubleTapDate"];
 }
 
 - (void)sliderTouched:(UISlider *)slider {

@@ -20,5 +20,6 @@
 @property float cellWidth, keyboardHeight;
 @property BOOL firstResponderLoopCheck, keyboardIsShowing;
 @property BOOL allowForPiDay;
+@property BOOL showInstructions;
 
 @end

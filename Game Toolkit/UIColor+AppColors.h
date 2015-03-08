@@ -60,6 +60,10 @@
 + (NSArray *)strictHolidayColorsForToday;
 + (NSArray *)strictHolidayColorsForDate:(NSDate *)date;
 
+// color for time of day
++ (UIColor *)colorForTimeOfDay:(NSDate *)date;
++ (UIColor *)colorForCurrentTime;
+
 // sets of colors that are different for two players
 + (NSArray *)player1Colors;
 + (NSArray *)player2Colors;
