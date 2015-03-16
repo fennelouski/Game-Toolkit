@@ -126,7 +126,7 @@
         [textField setAutocorrectionType:UITextAutocorrectionTypeNo];
         [textField setReturnKeyType:UIReturnKeyDone];
         [textField setTag:i];
-        [textField setTintColor:self.tintColor];
+        [textField setTintColor:[UIColor appColor]];
         [self.textFields addObject:textField];
     }
 }
