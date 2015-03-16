@@ -80,7 +80,12 @@
                           @"kids",
                           @"adults",
                           @"people",
-                          @"animals"];
+                          @"animals",
+                          @"they",
+                          @"dads",
+                          @"moms",
+                          @"grandparents",
+                          @"grandkids"];
     NSString *lowerCaseInput = [self lowercaseString];
     
     for (NSString *comparisonWord in areWords) {
