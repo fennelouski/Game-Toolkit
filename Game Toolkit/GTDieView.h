@@ -17,7 +17,6 @@
 @property (nonatomic, strong) UIView *deselectedView;
 @property (nonatomic, strong) CAGradientLayer *gradientLayer;
 @property CGRect defaultFrame;
-@property float theta;
 
 - (void)randomize;
 - (void)drawSpots;

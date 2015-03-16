@@ -43,22 +43,9 @@
         [self addSubview:self.deselectedView];
         
         self.defaultFrame = frame;
-        self.theta = 0.0f;
     }
     
     return self;
-}
-
-- (void)randomize {
-    [self.valueLabel setFont:[UIFont systemFontOfSize:self.frame.size.height/FONT_SIZE_RATIO]];
-    
-    self.maximumChanges = arc4random()%12 + 8;
-    if (!self.selected) {
-        [self animateSpots:[NSNumber numberWithInt:0]];
-        float randomDelay = ((float)(arc4random()%50 - 25))/100.0f;
-        [self performSelector:@selector(startJiggling) withObject:self afterDelay:randomDelay];
-        [self performSelector:@selector(stopJiggling) withObject:self afterDelay:randomDelay + 0.2f];
-    }
 }
 
 - (void)layoutSubviews {
@@ -86,18 +73,33 @@
     self.layer.shadowPath = shadowPath.CGPath;
 }
 
+- (void)randomize {
+    [self.valueLabel setFont:[UIFont systemFontOfSize:self.frame.size.height/FONT_SIZE_RATIO]];
+    
+    self.maximumChanges = arc4random()%12 + 8;
+    if (!self.selected) {
+        [self animateSpots:[NSNumber numberWithInt:0]];
+        float randomDelay = ((float)(arc4random()%50 - 25))/100.0f;
+        [self performSelector:@selector(startJiggling) withObject:self afterDelay:randomDelay];
+        [self performSelector:@selector(stopJiggling) withObject:self afterDelay:randomDelay + 0.2f];
+    }
+}
+
 - (void)animateSpots:(NSNumber *)changesMade {
     int changesMadeInt = [changesMade intValue];
     
     self.value = arc4random()%[[GTPlayerManager sharedReferenceManager] numberOfDiceSides] + 1;
     [self drawSpots];
     
-    if (changesMadeInt < self.maximumChanges) {
+    if (changesMadeInt < self.maximumChanges && changesMadeInt < 30 - [[GTPlayerManager sharedReferenceManager] numberOfDice]) {
         float duration = ((float)(changesMadeInt + 1)) / (180.0f + (float)self.maximumChanges);
+        
         [UIView animateWithDuration:duration delay:0.0f usingSpringWithDamping:0.001f initialSpringVelocity:10.0f options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            float randomX = (((float)(arc4random()%100))/50.0f - 1.0f) * self.frame.size.width / (20.0f + changesMadeInt*2);
-            float randomY = (((float)(arc4random()%100))/50.0f - 1.0f) * self.frame.size.height / (20.0f + changesMadeInt*2);
-            self.center = CGPointMake(self.center.x + randomX, self.center.y + randomY);
+            if ([[GTPlayerManager sharedReferenceManager] numberOfDice] <= 10) {
+                float randomX = (((float)(arc4random()%100))/50.0f - 1.0f) * self.frame.size.width / (20.0f + changesMadeInt*2);
+                float randomY = (((float)(arc4random()%100))/50.0f - 1.0f) * self.frame.size.height / (20.0f + changesMadeInt*2);
+                self.center = CGPointMake(self.center.x + randomX, self.center.y + randomY);
+            }
         } completion:^(BOOL finished){
             NSNumber *changesToBeMade = [NSNumber numberWithInt:changesMadeInt + 1];
             [self animateSpots:changesToBeMade];
@@ -145,41 +147,8 @@
             [dots addObject:centerSpot];
         }
         
-        // top left and bottom right corners
-        if (self.value == 2 || self.value == 3 || self.value == 4 || self.value == 5 || self.value == 6) {
-            UIView *topLeftSpot = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width * marginRatio/ sideDistance - dotSize / 2.0f,
-                                                                           self.frame.size.height * marginRatio / sideDistance - dotSize / 2.0f,
-                                                                           dotSize,
-                                                                           dotSize)];
-            [topLeftSpot setCenter:CGPointMake(self.frame.size.width * marginRatio / sideDistance,
-                                               self.frame.size.height * marginRatio / sideDistance)];
-            [topLeftSpot.layer setCornerRadius:cornerRadius];
-            [topLeftSpot setBackgroundColor:dotColor];
-            [dots addObject:topLeftSpot];
-
-            UIView *bottomRightSpot = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width * sideNumator / sideDistance - dotSize / 2.0f,
-                                                                               self.frame.size.height * sideNumator / sideDistance - dotSize / 2.0f,
-                                                                               dotSize,
-                                                                               dotSize)];
-            [bottomRightSpot setCenter:CGPointMake(self.frame.size.width * sideNumator / sideDistance,
-                                                   self.frame.size.height * sideNumator / sideDistance)];
-            [bottomRightSpot.layer setCornerRadius:cornerRadius];
-            [bottomRightSpot setBackgroundColor:dotColor];
-            [dots addObject:bottomRightSpot];
-        }
-        
-        // bottom left and top right corners
+        // bottom left corner
         if (self.value == 4 || self.value == 5 || self.value == 6) {
-            UIView *topRightSpot = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width * sideNumator / sideDistance - dotSize / 2.0f,
-                                                                            self.frame.size.height * marginRatio / sideDistance - dotSize / 2.0f,
-                                                                            dotSize,
-                                                                            dotSize)];
-            [topRightSpot setCenter:CGPointMake(self.frame.size.width * sideNumator / sideDistance,
-                                                self.frame.size.height * marginRatio / sideDistance)];
-            [topRightSpot.layer setCornerRadius:cornerRadius];
-            [topRightSpot setBackgroundColor:dotColor];
-            [dots addObject:topRightSpot];
-            
             UIView *bottomLeftSpot = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width * marginRatio / sideDistance - dotSize / 2.0f,
                                                                               self.frame.size.height * sideNumator / sideDistance - dotSize / 2.0f,
                                                                               dotSize,
@@ -191,7 +160,7 @@
             [dots addObject:bottomLeftSpot];
         }
         
-        // middle of the sides
+        // left middle
         if (self.value == 6) {
             UIView *leftSpot = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width * marginRatio / sideDistance - dotSize / 2.0f,
                                                                         self.frame.size.height / 2.0f - dotSize / 2.0f,
@@ -202,7 +171,36 @@
             [leftSpot.layer setCornerRadius:cornerRadius];
             [leftSpot setBackgroundColor:dotColor];
             [dots addObject:leftSpot];
-            
+        }
+        
+        // top left corner
+        if (self.value == 2 || self.value == 3 || self.value == 4 || self.value == 5 || self.value == 6) {
+            UIView *topLeftSpot = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width * marginRatio/ sideDistance - dotSize / 2.0f,
+                                                                           self.frame.size.height * marginRatio / sideDistance - dotSize / 2.0f,
+                                                                           dotSize,
+                                                                           dotSize)];
+            [topLeftSpot setCenter:CGPointMake(self.frame.size.width * marginRatio / sideDistance,
+                                               self.frame.size.height * marginRatio / sideDistance)];
+            [topLeftSpot.layer setCornerRadius:cornerRadius];
+            [topLeftSpot setBackgroundColor:dotColor];
+            [dots addObject:topLeftSpot];
+        }
+        
+        // bottom right corner
+        if (self.value == 2 || self.value == 3 || self.value == 4 || self.value == 5 || self.value == 6) {
+            UIView *bottomRightSpot = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width * sideNumator / sideDistance - dotSize / 2.0f,
+                                                                               self.frame.size.height * sideNumator / sideDistance - dotSize / 2.0f,
+                                                                               dotSize,
+                                                                               dotSize)];
+            [bottomRightSpot setCenter:CGPointMake(self.frame.size.width * sideNumator / sideDistance,
+                                                   self.frame.size.height * sideNumator / sideDistance)];
+            [bottomRightSpot.layer setCornerRadius:cornerRadius];
+            [bottomRightSpot setBackgroundColor:dotColor];
+            [dots addObject:bottomRightSpot];
+        }
+        
+        // right middle
+        if (self.value == 6) {
             UIView *rightSpot = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width * sideNumator / sideDistance - dotSize / 2.0f,
                                                                          self.frame.size.height / 2.0f - dotSize / 2.0f,
                                                                          dotSize,
@@ -212,6 +210,19 @@
             [rightSpot.layer setCornerRadius:cornerRadius];
             [rightSpot setBackgroundColor:dotColor];
             [dots addObject:rightSpot];
+        }
+        
+        // top right corner
+        if (self.value == 4 || self.value == 5 || self.value == 6) {
+            UIView *topRightSpot = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width * sideNumator / sideDistance - dotSize / 2.0f,
+                                                                            self.frame.size.height * marginRatio / sideDistance - dotSize / 2.0f,
+                                                                            dotSize,
+                                                                            dotSize)];
+            [topRightSpot setCenter:CGPointMake(self.frame.size.width * sideNumator / sideDistance,
+                                                self.frame.size.height * marginRatio / sideDistance)];
+            [topRightSpot.layer setCornerRadius:cornerRadius];
+            [topRightSpot setBackgroundColor:dotColor];
+            [dots addObject:topRightSpot];
         }
     }
     
