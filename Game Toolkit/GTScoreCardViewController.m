@@ -55,6 +55,7 @@
         [scoreTextField setTextAlignment:NSTextAlignmentRight];
         [scoreTextField setTag:i];
         [scoreTextField setInputAccessoryView:self.accessoryView];
+        [scoreTextField setTintColor:[UIColor appColor]];
         [self.textFields addObject:scoreTextField];
     }
     
@@ -112,6 +113,10 @@
         [self.headerSubviews addObject:nameLabel];
         
         tableXPosition += self.cellWidth;
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                              action:@selector(editScoreForPlayer:)];
+        [playerTable addGestureRecognizer:tap];
     }
     
     [self layoutTables];
@@ -244,7 +249,7 @@
     if (!_saveButton) {
         _saveButton = [[UIButton alloc] initWithFrame:CGRectMake(kScreenWidth/2.0f, 0.0f, kScreenWidth/2.0f, CELL_HEIGHT)];
         [_saveButton setTitle:@"Add Scores" forState:UIControlStateNormal];
-        [_saveButton setTitleColor:[UIColor blue] forState:UIControlStateNormal];
+        [_saveButton setTitleColor:[UIColor appColor] forState:UIControlStateNormal];
         [_saveButton addTarget:self action:@selector(saveButtonTouched) forControlEvents:UIControlEventTouchUpInside];
     }
     
@@ -544,6 +549,14 @@
 // apparently, this works and does NOT create an inifinite loop
 - (void)letsJustTryThis {
     [self.currentFirstResponder becomeFirstResponder];
+}
+
+- (void)editScoreForPlayer:(UITapGestureRecognizer *)tap {
+    UIView *playerTable = [tap view];
+    if ([playerTable tag] < [self.textFields count]) {
+        UITextField *playerTextField = [self.textFields objectAtIndex:[playerTable tag]];
+        [playerTextField becomeFirstResponder];
+    }
 }
 
 - (void)checkForFirstResponder {
