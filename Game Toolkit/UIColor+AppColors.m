@@ -16,7 +16,10 @@
 @implementation UIColor (AppColors)
 
 + (UIColor *)appColor {
-    return [UIColor colorWithRed:0.985f green:0.955f blue:0.905f alpha:1.0f];
+    UIColor *specialTintColor = [self specialTintColor];
+    if (specialTintColor) return specialTintColor;
+    
+    return [UIColor blueberry];
 }
 
 + (UIColor *)appColor1 {
@@ -52,6 +55,13 @@
 }
 
 + (UIColor *)redAppColor {
+    UIColor *specialTintColor = [self specialTintColor];
+    if (specialTintColor) return specialTintColor;
+    
+    return [UIColor venetianRed];
+}
+
++ (UIColor *)specialTintColor {
     NSCalendar *gregorianCal = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     NSDateComponents *dateComps = [gregorianCal components: (NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour)
                                                   fromDate: [NSDate date]];
@@ -90,7 +100,7 @@
         return [UIColor schoolBusYellow];
     }
     
-    return [UIColor venetianRed];
+    return nil;
 }
 
 #pragma mark - modify colors
