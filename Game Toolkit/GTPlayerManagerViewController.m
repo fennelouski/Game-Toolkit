@@ -871,20 +871,28 @@
         }
     }
     
-    // create new players for new names
-    for (int i = 0; i < [playerNames count]; i++) {
-        NSString *playerName = [playerNames objectAtIndex:i];
-        GTPlayer *newPlayer = [[GTPlayer alloc] initWithName:playerName];
-        [newPlayer setName:playerName];
-        [newPlayer setTimeRemaining:self.timerPicker.time];
-        [[GTPlayerManager sharedReferenceManager] addPlayer:newPlayer atIndex:[[playerNamePositions objectForKey:playerName] intValue]];
+    if ([playerNames count] == 1 && [playersToRemove count] == 1) {
+        GTPlayer *formerPlayer = [playersToRemove firstObject];
+        [formerPlayer setName:[playerNames firstObject]];
     }
     
-    [[GTPlayerManager sharedReferenceManager] removePlayers:playersToRemove];
+    else {
+        // create new players for new names
+        for (int i = 0; i < [playerNames count]; i++) {
+            NSString *playerName = [playerNames objectAtIndex:i];
+            GTPlayer *newPlayer = [[GTPlayer alloc] initWithName:playerName];
+            [newPlayer setName:playerName];
+            [newPlayer setTimeRemaining:self.timerPicker.time];
+            [[GTPlayerManager sharedReferenceManager] addPlayer:newPlayer atIndex:[[playerNamePositions objectForKey:playerName] intValue]];
+        }
+        
+        NSLog(@"Remove %d players", (int)playersToRemove.count);
+        [[GTPlayerManager sharedReferenceManager] removePlayers:playersToRemove];
+    }
     
     // if there are more players than there were before, then reset each player's score
     if (shouldReset) {
-        [self resetGame];
+//        [self resetGame];
     }
     
     [self.playerTableView reloadData];

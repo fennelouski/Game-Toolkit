@@ -127,6 +127,8 @@
         }
         
         _diceColor = [_diceColors objectForKey:_diceColorName];
+        
+        [defaults setBool:YES forKey:@"Ads have been removed"];
     }
     
     return self;
@@ -259,6 +261,8 @@
     else {
         NSLog(@"Player already exists!");
     }
+    
+    [self updatePlayerScores];
 }
 
 - (void)addPlayer:(GTPlayer *)player atIndex:(NSInteger)index {
@@ -269,10 +273,29 @@
     else {
         [self addPlayer:player];
     }
+    
+    [self updatePlayerScores];
 }
 
 - (void)addPlayers:(NSArray *)players {
     [_players addObjectsFromArray:players];
+    
+    [self updatePlayerScores];
+}
+
+- (void)updatePlayerScores {
+    NSInteger numberOfRounds = 0;
+    for (GTPlayer *player in _players) {
+        if ([[player scoreHistory] count] > numberOfRounds) {
+            numberOfRounds = [[player scoreHistory] count];
+        }
+    }
+    
+    for (GTPlayer *player in _players) {
+        while ([[player scoreHistory] count] < numberOfRounds) {
+            [[player scoreHistory] addObject:[NSNumber numberWithInt:0]];
+        }
+    }
 }
 
 - (BOOL)removePlayer:(GTPlayer *)player {
