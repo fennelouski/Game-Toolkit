@@ -243,7 +243,7 @@
 - (UIButton *)saveButton {
     if (!_saveButton) {
         _saveButton = [[UIButton alloc] initWithFrame:CGRectMake(kScreenWidth/2.0f, 0.0f, kScreenWidth/2.0f, CELL_HEIGHT)];
-        [_saveButton setTitle:@"End Round" forState:UIControlStateNormal];
+        [_saveButton setTitle:@"Add Scores" forState:UIControlStateNormal];
         [_saveButton setTitleColor:[UIColor blue] forState:UIControlStateNormal];
         [_saveButton addTarget:self action:@selector(saveButtonTouched) forControlEvents:UIControlEventTouchUpInside];
     }
