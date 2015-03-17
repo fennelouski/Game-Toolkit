@@ -325,7 +325,7 @@
                 CGPoint ending0Point = CGPointMake(rect.size.width, y);
                 draw1PxStroke(context, starting0Point, ending0Point, [UIColor colorWithWhite:0.8f alpha:0.5f].CGColor);
                 UILabel *valueLabel = [[UILabel alloc] initWithFrame:CGRectMake(1.0f, y, rect.size.width, 20.0f)];
-                [valueLabel setText:[NSString stringWithFormat:@"-%d", i * intervals]];
+                [valueLabel setText:[NSString stringWithFormat:@"-%d", i * intervals + scoreFloor]];
                 [valueLabel setTextColor:[UIColor lightGrayColor]];
                 [valueLabel setAlpha:0.5f];
                 [self addSubview:valueLabel];
