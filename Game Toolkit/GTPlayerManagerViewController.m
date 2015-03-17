@@ -236,6 +236,7 @@
         [_showTimeSwitch setOnTintColor:self.tintColor];
         [_showTimeSwitch setOn:NO animated:YES];
         [_showTimeSwitch addTarget:self action:@selector(updateViews) forControlEvents:UIControlEventTouchUpInside];
+        [_showTimeSwitch addTarget:self action:@selector(updateViews) forControlEvents:UIControlEventTouchUpOutside];
         [_showTimeSwitch addTarget:self action:@selector(updateViews) forControlEvents:UIControlEventTouchDragExit];
         [_showTimeSwitch addTarget:self action:@selector(updateViews) forControlEvents:UIControlEventTouchDragOutside];
     }
