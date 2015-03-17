@@ -9,6 +9,7 @@
 #import "GTGraphView.h"
 #import "GTPlayerManager.h"
 #import "GTPlayer.h"
+#import "UIColor+AppColors.h"
 
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
 
@@ -20,7 +21,7 @@
     if (self) {
         [self.layer setCornerRadius:5.0f];
         [self setClipsToBounds:YES];
-        [self setBackgroundColor:[UIColor whiteColor]];
+        [self setBackgroundColor:[UIColor snow]];
         
         [self performSelector:@selector(setNeedsDisplay) withObject:self afterDelay:0.5f];
     }
@@ -95,14 +96,15 @@
     int scoreRange = highestScore - lowestScore;
     int individualScoreRange = highestIndividualScore - lowestIndividualScore;
     
-    if (self.shouldShowIndividualScores && numberOfRounds < individualScoreRange) {
-        if (/*[[GTPlayerManager sharedReferenceManager] showOnePlayerScore] &&*/ self.player) {
+    if (self.shouldShowIndividualScores && (numberOfRounds < individualScoreRange * 6)) {
+        if (self.player) {
             players = @[self.player];
             
-            UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(kScreenWidth/10.0f, 20.0f, kScreenWidth/2.0f, 20.0f)];
+            UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, rect.size.width, rect.size.height/4.0f)];
             [nameLabel setText:[self.player name]];
-            [nameLabel setTextAlignment:NSTextAlignmentLeft];
+            [nameLabel setTextAlignment:NSTextAlignmentCenter];
             [nameLabel setTextColor:[self.player color]];
+            [nameLabel setAlpha:0.9f];
             [self addSubview:nameLabel];
         }
         
@@ -190,24 +192,45 @@
             [self addSubview:valueLabel];
         }
         
+        float squareRoot = 2;
+        while (squareRoot * squareRoot < numberOfRounds) {
+            squareRoot *= 1.05f;
+        }
+        squareRoot = (float)(int)squareRoot;
+        
+        int numberOfDerivatives = squareRoot;
+        if (numberOfRounds < individualScoreRange * 2) {
+            numberOfDerivatives = 1;
+        }
+        
         for (GTPlayer *player in players) {
-            int currentScore = 0;
             CGPoint lastPoint = CGPointMake(-2.0f, rect.size.height);
             CGPoint currentPoint = CGPointMake(0.0f, rect.size.height);
             
-            int iteration = 0;
             float x = 0.0f;
             float y = 0.0f;
-            for (NSNumber *score in [player scoreHistory]) {
-                currentScore += [score intValue];
+            float alpha = 0.4f;
+            for (int derivative = numberOfDerivatives; derivative > 0; derivative--) {
+                if (derivative == 1) alpha = 0.8f;
+                for (int i = 0; i < [[player scoreHistory] count]; i += derivative) {
+                    NSNumber *score = [[player scoreHistory] objectAtIndex:i];
+                    int currentScore = [score intValue];
+                    int numberOfValuesToAverage = 1;
+                    for (int j = i + 1; j < i + derivative && j < [[player scoreHistory] count]; j++, numberOfValuesToAverage++) {
+                        score = [[player scoreHistory] objectAtIndex:j];
+                        currentScore += [score intValue];
+                    }
+                    currentScore /= numberOfValuesToAverage;
+                    
+                    x = (i + derivative/2) * rect.size.width / numberOfRounds - 1.0f;
+                    y = rect.size.height - (currentScore - lowestIndividualScore) * rect.size.height / (highestIndividualScore - lowestIndividualScore);
+                    currentPoint = CGPointMake(x,y);
+                    if (i > 0) drawStroke(context, lastPoint, currentPoint, [[player color] colorWithAlphaComponent:alpha].CGColor, 1.5f + alpha);
+                    
+                    lastPoint = currentPoint;
+                }
                 
-                x = iteration * rect.size.width / numberOfRounds - 1.0f;
-                y = rect.size.height - ([score intValue] - lowestIndividualScore) * rect.size.height / (highestIndividualScore - lowestIndividualScore);
-                currentPoint = CGPointMake(x,y);
-                drawStroke(context, lastPoint, currentPoint, [[player color] colorWithAlphaComponent:0.5f].CGColor, 1.5f);
-                
-                lastPoint = currentPoint;
-                iteration++;
+                alpha *= 0.5f;
             }
         }
     }

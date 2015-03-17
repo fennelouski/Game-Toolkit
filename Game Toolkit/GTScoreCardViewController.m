@@ -726,19 +726,33 @@
 
 - (void)longPressed:(UILongPressGestureRecognizer *)longPress {
     CGPoint p = [longPress locationInView:self.view];
-    if (p.x < kScreenWidth * 0.75f && self.graphView.shouldShowIndividualScores) {
+    if (p.y > kScreenHeight * 0.25f && self.graphView.shouldShowIndividualScores) {
         [self.graphView setShouldShowIndividualScores:NO];
         [self.graphView setNeedsDisplay];
     }
     
-    else if (p.x > kScreenWidth * 0.75f && !self.graphView.shouldShowIndividualScores) {
+    else if (p.y < kScreenHeight * 0.25f && !self.graphView.shouldShowIndividualScores) {
         [self.graphView setShouldShowIndividualScores:YES];
         [self.graphView setNeedsDisplay];
     }
     
+    if (self.graphView.shouldShowIndividualScores) {
+        for (UITableView *tableView in self.playerTables) {
+            if (CGRectContainsPoint(tableView.frame, [longPress locationInView:self.tableScrollView])) {
+                GTPlayer *player = [[GTPlayerManager sharedReferenceManager] playerAtIndex:[tableView tag]];
+                if (![self.graphView.player isEqual:player]) {
+                    [self.graphView setPlayer:player];
+                    [self.graphView setNeedsDisplay];
+                }
+                
+                break;
+            }
+        }
+
+    }
+    
     if ([longPress state] == UIGestureRecognizerStateBegan) {
-        GTPlayer *player = [[GTPlayerManager sharedReferenceManager] playerAtIndex:[[longPress view] tag]];
-        [self.graphView setPlayer:player];
+//        GTPlayer *player = [[GTPlayerManager sharedReferenceManager] playerAtIndex:[[longPress view] tag]];
         [self.graphView setAlpha:0.0f];
         [self.graphView setNeedsDisplay];
         [self.graphView performSelector:@selector(setNeedsDisplay) withObject:self.graphView afterDelay:0.1f];
