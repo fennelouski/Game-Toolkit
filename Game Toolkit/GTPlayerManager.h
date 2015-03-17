@@ -61,5 +61,7 @@
 - (UIColor *)diceBorderColor;
 - (NSTimeInterval)playAlarmTime;
 - (void)setPlayAlarmTime:(NSTimeInterval)playAlarmTime;
+- (BOOL)showOnePlayerScore;
+- (void)setShowOnePlayerScore:(BOOL)showOnePlayerScore;
 
 @end

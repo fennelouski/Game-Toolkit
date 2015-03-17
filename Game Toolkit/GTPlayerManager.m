@@ -22,6 +22,7 @@
 #define NUMBER_OF_DICE_KEY @"Number 0f D1ce"
 #define COLOR_OF_DICE_KEY @"C0L0UR 0F D1C3"
 #define PLAY_ALARM_TIME_KEY @"PL4Y 4l4rm T1m3"
+#define SHOW_ONLY_ONE_PLAYER_SCORE_KEY @"SH0W 0NLY ON3 PLAYER SCORE K3Y"
 
 @implementation GTPlayerManager {
     NSMutableArray *_players;
@@ -33,6 +34,7 @@
     UIColor *_diceColor;
     NSString *_diceColorName;
     NSTimeInterval _playAlarmTime;
+    BOOL _showOnePlayerScore;
 }
 
 + (instancetype)sharedReferenceManager {
@@ -129,6 +131,8 @@
         _diceColor = [_diceColors objectForKey:_diceColorName];
         
         [defaults setBool:YES forKey:@"Ads have been removed"];
+        
+        _showOnePlayerScore = [defaults boolForKey:SHOW_ONLY_ONE_PLAYER_SCORE_KEY];
     }
     
     return self;
@@ -491,6 +495,17 @@
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:[NSNumber numberWithFloat:playAlarmTime] forKey:PLAY_ALARM_TIME_KEY];
+}
+
+- (BOOL)showOnePlayerScore {
+    return _showOnePlayerScore;
+}
+
+- (void)setShowOnePlayerScore:(BOOL)showOnePlayerScore {
+    _showOnePlayerScore = showOnePlayerScore;
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:showOnePlayerScore forKey:SHOW_ONLY_ONE_PLAYER_SCORE_KEY];
 }
 
 @end

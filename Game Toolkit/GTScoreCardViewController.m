@@ -117,6 +117,11 @@
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                               action:@selector(editScoreForPlayer:)];
         [playerTable addGestureRecognizer:tap];
+        
+        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self
+                                                                                                action:@selector(longPressed:)];
+        [longPress setMinimumPressDuration:0.36f];
+        [playerTable addGestureRecognizer:longPress];
     }
     
     [self layoutTables];
@@ -205,6 +210,11 @@
                                                 HEADER_HEIGHT)];
         [self.saveButton setCenter:CGPointMake(kScreenWidth - self.saveButton.frame.size.width/2.0f,
                                                CELL_HEIGHT/2.0f)];
+        
+        [self.graphView setFrame:CGRectMake(20.0f,
+                                            55.0f,
+                                            kScreenWidth - 40.0f,
+                                            kScreenHeight - 100.0f - self.keyboardHeight)];
     }];
 }
 
@@ -273,6 +283,17 @@
     }
     
     return _headerToolbar;
+}
+
+- (GTGraphView *)graphView {
+    if (!_graphView) {
+        _graphView = [[GTGraphView alloc] initWithFrame:CGRectMake(20.0f,
+                                                                   55.0f,
+                                                                   kScreenWidth - 40.0f,
+                                                                   kScreenHeight - 100.0f - self.keyboardHeight)];
+    }
+    
+    return _graphView;
 }
 
 #pragma mark - Button Actions
@@ -572,6 +593,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
+    [self saveButtonTouched];
     
     return YES;
 }
@@ -700,5 +722,41 @@
     }];
 }
 
+#pragma mark - Graph
+
+- (void)longPressed:(UILongPressGestureRecognizer *)longPress {
+    CGPoint p = [longPress locationInView:self.view];
+    if (p.x < kScreenWidth * 0.75f && self.graphView.shouldShowIndividualScores) {
+        [self.graphView setShouldShowIndividualScores:NO];
+        [self.graphView setNeedsDisplay];
+    }
+    
+    else if (p.x > kScreenWidth * 0.75f && !self.graphView.shouldShowIndividualScores) {
+        [self.graphView setShouldShowIndividualScores:YES];
+        [self.graphView setNeedsDisplay];
+    }
+    
+    if ([longPress state] == UIGestureRecognizerStateBegan) {
+        GTPlayer *player = [[GTPlayerManager sharedReferenceManager] playerAtIndex:[[longPress view] tag]];
+        [self.graphView setPlayer:player];
+        [self.graphView setAlpha:0.0f];
+        [self.graphView setNeedsDisplay];
+        [self.graphView performSelector:@selector(setNeedsDisplay) withObject:self.graphView afterDelay:0.1f];
+        [self.view addSubview:self.graphView];
+        [UIView animateWithDuration:0.35f animations:^{
+            [self.graphView setAlpha:1.0f];
+        } completion:^(BOOL finished) {
+//            [self.graphView setNeedsDisplay];
+        }];
+    }
+    
+    else if ([longPress state] == UIGestureRecognizerStateEnded) {
+        [UIView animateWithDuration:0.35f animations:^{
+            [self.graphView setAlpha:0.0f];
+         } completion:^(BOOL finished) {
+             [self.graphView removeFromSuperview];
+         }];
+    }
+}
 
 @end

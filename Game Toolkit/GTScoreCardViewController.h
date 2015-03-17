@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GTGraphView.h"
 
 @interface GTScoreCardViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 
@@ -17,6 +18,7 @@
 @property (nonatomic, strong) UIButton *negativeButton, *saveButton;
 @property (nonatomic, strong) NSMutableArray *headerSubviews, *textFields;
 @property (nonatomic, strong) UIToolbar *headerToolbar;
+@property (nonatomic, strong) GTGraphView *graphView;
 @property float cellWidth, keyboardHeight;
 @property BOOL firstResponderLoopCheck, keyboardIsShowing;
 @property BOOL allowForPiDay;

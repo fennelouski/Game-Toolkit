@@ -20,6 +20,13 @@
         self.isPendingNegative = YES;
         self.name = name;
         self.color = [UIColor randomDarkColorFromString:name];
+        
+        self.isPendingNegative = NO;
+        for (int i = 0; i < 15; i++) {
+            int randomScore = arc4random()%30 + arc4random()%2 + arc4random()%5%4%3%2 * 40 - 5;
+            self.pendingScore = randomScore;
+            [self commitPendingScore];
+        }
     }
     
     return self;

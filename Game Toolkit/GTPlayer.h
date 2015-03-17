@@ -19,6 +19,7 @@
 @property (nonatomic, strong) NSMutableArray *scoreHistory;
 @property int currentScore, pendingScore;
 @property BOOL isPendingNegative;
+@property CGPoint point;
 
 
 - (instancetype)initWithName:(NSString *)name;
