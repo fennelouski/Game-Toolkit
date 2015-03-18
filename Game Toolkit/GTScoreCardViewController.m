@@ -212,9 +212,9 @@
                                                CELL_HEIGHT/2.0f)];
         
         [self.graphView setFrame:CGRectMake(20.0f,
-                                            55.0f,
+                                            self.headerToolbar.frame.size.height,
                                             kScreenWidth - 40.0f,
-                                            kScreenHeight - 100.0f - self.keyboardHeight)];
+                                            kScreenHeight - self.headerToolbar.frame.size.height - ((self.keyboardHeight > 0.0f) ? self.keyboardHeight : FOOTER_HEIGHT))];
     }];
 }
 
@@ -288,9 +288,9 @@
 - (GTGraphView *)graphView {
     if (!_graphView) {
         _graphView = [[GTGraphView alloc] initWithFrame:CGRectMake(20.0f,
-                                                                   55.0f,
+                                                                   self.headerToolbar.frame.size.height,
                                                                    kScreenWidth - 40.0f,
-                                                                   kScreenHeight - 100.0f - self.keyboardHeight)];
+                                                                   kScreenHeight - 60.0f - self.keyboardHeight)];
     }
     
     return _graphView;
@@ -705,15 +705,30 @@
 #pragma mark - Alert For Pi Day
 
 - (void)handlePiDayAlert {
-    UIAlertController *piDayAlertController = [UIAlertController alertControllerWithTitle:@"Happy π Day!" message:@"For π Day, all P's have been replaced with π! This is for one day only, and will change back tomorrow.\n\nWould you like to change it back now?" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *revertAction = [UIAlertAction actionWithTitle:@"Change it back" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-        [self setAllowForPiDay:NO];
-        [self viewWillAppear:YES];
-    }];
-    UIAlertAction *coolAction = [UIAlertAction actionWithTitle:@"Keep it!" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [self setAllowForPiDay:YES];
-        [self viewWillAppear:YES];
-    }];
+    UIAlertController *piDayAlertController = [UIAlertController alertControllerWithTitle:@"Happy π Day!" message:@"For π Day, all P's have been replaced with π! This is for one day only, and will change back tomorrow.\n\nWould you like to change it back now?"
+                                                                           preferredStyle:UIAlertControllerStyleAlert];
+    NSString *revertTitle = @"Change it back";
+    NSString *coolTitle = @"Keep it!";
+    NSString *tempTitle;
+    
+    if (!self.allowForPiDay) {
+        tempTitle = revertTitle;
+        revertTitle = coolTitle;
+        coolTitle = tempTitle;
+    }
+    
+    UIAlertAction *revertAction = [UIAlertAction actionWithTitle:revertTitle
+                                                           style:UIAlertActionStyleDestructive
+                                                         handler:^(UIAlertAction *action) {
+                                                             [self setAllowForPiDay:NO];
+                                                             [self viewWillAppear:YES];
+                                                         }];
+    UIAlertAction *coolAction = [UIAlertAction actionWithTitle:coolTitle
+                                                         style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction *action) {
+                                                           [self setAllowForPiDay:YES];
+                                                           [self viewWillAppear:YES];
+                                                       }];
     [piDayAlertController addAction:revertAction];
     [piDayAlertController addAction:coolAction];
     
