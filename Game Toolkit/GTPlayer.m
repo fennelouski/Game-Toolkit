@@ -22,17 +22,6 @@
         self.color = [UIColor randomDarkColorFromString:name];
         
         self.isPendingNegative = NO;
-//        for (int i = 0; i < 30; i++) {
-//            float squareRoot = 2;
-//            while (squareRoot * squareRoot < i) {
-//                squareRoot *= 1.05f;
-//            }
-//            squareRoot = (float)(int)squareRoot;
-//
-//            int randomScore = arc4random()%5 + arc4random()%2 + arc4random()%5%4%3%2 * 2 + squareRoot * 2;
-//            self.pendingScore = randomScore;
-//            [self commitPendingScore];
-//        }
     }
     
     return self;

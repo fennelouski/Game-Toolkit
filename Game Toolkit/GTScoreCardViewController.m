@@ -726,12 +726,12 @@
 
 - (void)longPressed:(UILongPressGestureRecognizer *)longPress {
     CGPoint p = [longPress locationInView:self.view];
-    if (p.y > kScreenHeight * 0.25f && self.graphView.shouldShowIndividualScores) {
+    if (p.y > kScreenHeight * 0.4f && self.graphView.shouldShowIndividualScores) {
         [self.graphView setShouldShowIndividualScores:NO];
         [self.graphView setNeedsDisplay];
     }
     
-    else if (p.y < kScreenHeight * 0.25f && !self.graphView.shouldShowIndividualScores) {
+    else if (p.y < kScreenHeight * 0.4f && !self.graphView.shouldShowIndividualScores) {
         [self.graphView setShouldShowIndividualScores:YES];
         [self.graphView setNeedsDisplay];
     }

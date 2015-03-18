@@ -138,6 +138,12 @@
         _playerTableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, kScreenHeight) style:UITableViewStyleGrouped];
         [_playerTableView setDataSource:self];
         [_playerTableView setDelegate:self];
+        
+        UITapGestureRecognizer *tripleTap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                    action:@selector(tripleTapped)];
+        [tripleTap setNumberOfTapsRequired:3];
+        [tripleTap setNumberOfTouchesRequired:2];
+        [_playerTableView addGestureRecognizer:tripleTap];
     }
     
     return _playerTableView;
@@ -1032,6 +1038,26 @@
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:[NSNumber numberWithBool:self.showDiceTotalSwitch.on] forKey:@"showDiceTotal"];
+}
+
+#pragma mark - Gesture Actions
+
+- (void)tripleTapped {
+    for (GTPlayer *player in [[GTPlayerManager sharedReferenceManager] players]) {
+        player.isPendingNegative = NO;
+        for (int i = 0; i < 10; i++) {
+            float squareRoot = 2;
+            while (squareRoot * squareRoot < player.scoreHistory.count + i) {
+                squareRoot *= 1.05f;
+            }
+            squareRoot = (float)(int)squareRoot;
+            
+            int randomScore = arc4random()%5 + arc4random()%2 + arc4random()%5%4%3%2 * 2 + squareRoot * 2 - arc4random()%5%4%3%2 * squareRoot;
+            player.pendingScore = randomScore;
+            [player commitPendingScore];
+        }
+
+    }
 }
 
 #pragma mark - Keyboard Notifications
