@@ -245,6 +245,7 @@
         [_showTimeSwitch addTarget:self action:@selector(updateViews) forControlEvents:UIControlEventTouchUpOutside];
         [_showTimeSwitch addTarget:self action:@selector(updateViews) forControlEvents:UIControlEventTouchDragExit];
         [_showTimeSwitch addTarget:self action:@selector(updateViews) forControlEvents:UIControlEventTouchDragOutside];
+        [_showTimeSwitch addTarget:self action:@selector(updateViews) forControlEvents:UIControlEventTouchCancel];
     }
     
     return _showTimeSwitch;
@@ -815,6 +816,30 @@
     }
     
     return NO;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    NSString *titleForHeader = @"";
+    if ([tableView isEqual:self.playerTableView]) {
+        switch (section) {
+            case 0:
+                titleForHeader = @"Player Names";
+                break;
+                
+            case 1:
+                titleForHeader = @"Clock Time";
+                break;
+            
+            case 5:
+                titleForHeader = @"Dice";
+                break;
+                
+            default:
+                break;
+        }
+    }
+    
+    return titleForHeader;
 }
 
 #pragma mark - Text Field Delegate Methods
