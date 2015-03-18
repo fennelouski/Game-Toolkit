@@ -170,7 +170,7 @@
             }
         }
         
-        scoreFloor = scoreFloor - scoreFloor % intervals;
+//        scoreFloor = scoreFloor - scoreFloor % intervals;
         
         for (int i = 1; i < powersOf2; i++) {
             float y = rect.size.height - (i * intervals) * rect.size.height / individualScoreRange;
@@ -203,6 +203,10 @@
             numberOfDerivatives = 1;
         }
         
+        if (numberOfDerivatives > 10) {
+            numberOfDerivatives = 10;
+        }
+        
         for (GTPlayer *player in players) {
             CGPoint lastPoint = CGPointMake(-2.0f, rect.size.height);
             CGPoint currentPoint = CGPointMake(0.0f, rect.size.height);
@@ -212,25 +216,28 @@
             float alpha = 0.4f;
             for (int derivative = numberOfDerivatives; derivative > 0; derivative--) {
                 if (derivative == 1) alpha = 0.8f;
-                for (int i = 0; i < [[player scoreHistory] count]; i += derivative) {
-                    NSNumber *score = [[player scoreHistory] objectAtIndex:i];
-                    int currentScore = [score intValue];
-                    int numberOfValuesToAverage = 1;
-                    for (int j = i + 1; j < i + derivative && j < [[player scoreHistory] count]; j++, numberOfValuesToAverage++) {
-                        score = [[player scoreHistory] objectAtIndex:j];
-                        currentScore += [score intValue];
+                
+                if (alpha > 0.1f) {
+                    for (int i = 0; i < [[player scoreHistory] count]; i += derivative) {
+                        NSNumber *score = [[player scoreHistory] objectAtIndex:i];
+                        float currentScore = [score intValue];
+                        float numberOfValuesToAverage = 1;
+                        for (int j = i + 1; j < i + derivative && j < [[player scoreHistory] count]; j++, numberOfValuesToAverage++) {
+                            score = [[player scoreHistory] objectAtIndex:j];
+                            currentScore += [score intValue];
+                        }
+                        currentScore /= numberOfValuesToAverage;
+                        
+                        x = (i + 1 + derivative/2) * rect.size.width / numberOfRounds - 1.0f;
+                        y = rect.size.height - (currentScore - lowestIndividualScore) * rect.size.height / (highestIndividualScore - lowestIndividualScore);
+                        currentPoint = CGPointMake(x,y);
+                        if (i > 0) drawStroke(context, lastPoint, currentPoint, [[player color] colorWithAlphaComponent:alpha].CGColor, 1.5f + alpha);
+                        
+                        lastPoint = currentPoint;
                     }
-                    currentScore /= numberOfValuesToAverage;
-                    
-                    x = (i + derivative/2) * rect.size.width / numberOfRounds - 1.0f;
-                    y = rect.size.height - (currentScore - lowestIndividualScore) * rect.size.height / (highestIndividualScore - lowestIndividualScore);
-                    currentPoint = CGPointMake(x,y);
-                    if (i > 0) drawStroke(context, lastPoint, currentPoint, [[player color] colorWithAlphaComponent:alpha].CGColor, 1.5f + alpha);
-                    
-                    lastPoint = currentPoint;
                 }
                 
-                alpha *= 0.5f;
+                alpha *= 0.1f;
             }
         }
     }
@@ -297,8 +304,6 @@
                 }
             }
             
-            scoreFloor = scoreFloor - scoreFloor % intervals;
-            
             for (int i = -10; i < 20; i++) {
                 float y = rect.size.height - (i * intervals) * rect.size.height / scoreRange;
                 CGPoint starting0Point = CGPointMake(0.0f, y);
@@ -349,7 +354,7 @@
                 NSNumber *score = [[player scoreHistory] objectAtIndex:i];
                 currentScore += [score intValue];
                 
-                x = iteration * rect.size.width / numberOfRounds - 1.0f;
+                x = (iteration + 1) * rect.size.width / numberOfRounds - 1.0f;
                 y = rect.size.height - (currentScore - lowestScore) * rect.size.height / scoreRange ;
                 currentPoint = CGPointMake(x,y);
                 if (i > 0) draw2PxStroke(context, lastPoint, currentPoint, [player color].CGColor);
