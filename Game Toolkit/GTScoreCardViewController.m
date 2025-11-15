@@ -12,11 +12,9 @@
 #import "GTPlayerManager.h"
 
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
-#define kStatusBarHeight (([[UIApplication sharedApplication] statusBarFrame].size.height == 20.0f) ? 20.0f : (([[UIApplication sharedApplication] statusBarFrame].size.height == 40.0f) ? 20.0f : 0.0f))
-#define kScreenHeight (([[UIApplication sharedApplication] statusBarFrame].size.height > 20.0f) ? [UIScreen mainScreen].bounds.size.height - 20.0f : [UIScreen mainScreen].bounds.size.height)
+#define kScreenHeight [UIScreen mainScreen].bounds.size.height
 #define ANIMATION_DURATION 0.05f
 #define CELL_HEIGHT 44.0f
-#define HEADER_HEIGHT CELL_HEIGHT + kStatusBarHeight
 #define CELL_BUFFER 20.0f
 #define STARTING_CELL_WIDTH 80.0f
 #define FOOTER_HEIGHT 49.0f
@@ -35,13 +33,11 @@
     UIToolbar *headerBackground = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f,
                                                                               0.0f,
                                                                               kScreenWidth + kScreenHeight,
-                                                                              kStatusBarHeight + kScreenHeight + kScreenWidth)];
+                                                                              kScreenHeight + kScreenWidth)];
     [self.view addSubview:headerBackground];
     [self.view addSubview:self.tableScrollView];
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver:self  selector:@selector(updateViews)    name:UIDeviceOrientationDidChangeNotification  object:nil];
-    [nc addObserver:self selector:@selector(updateViews) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     [nc addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardWillShowNotification object:nil];
     [nc addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardWillHideNotification object:nil];
     
@@ -93,7 +89,7 @@
         
         GTPlayer *player = [[[GTPlayerManager sharedReferenceManager] players] objectAtIndex:i];
         
-        UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(tableXPosition, kStatusBarHeight, self.cellWidth, CELL_HEIGHT)];
+        UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(tableXPosition, self.view.safeAreaInsets.top, self.cellWidth, CELL_HEIGHT)];
         [nameLabel setTextAlignment:NSTextAlignmentCenter];
         [nameLabel setTextColor:[UIColor randomDarkColorFromString:player.name]];
         [nameLabel setText:player.name];
@@ -145,12 +141,22 @@
     [self.tableScrollView addSubview:self.headerToolbar];
 }
 
+- (void)viewSafeAreaInsetsDidChange {
+    [super viewSafeAreaInsetsDidChange];
+    [self updateViews];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [self updateViews];
+}
+
 - (void)updateViews {
+    CGFloat safeAreaTop = self.view.safeAreaInsets.top;
+    CGFloat safeAreaBottom = self.view.safeAreaInsets.bottom;
+
     [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-        [self.tableScrollView setFrame:CGRectMake(0.0,
-                                                  0.0f,
-                                                  kScreenWidth,
-                                                  kScreenHeight)];
+        [self.tableScrollView setFrame:self.view.bounds];
         float tableXPosition = 0.0f;
         self.cellWidth = STARTING_CELL_WIDTH;
         while ([[[GTPlayerManager sharedReferenceManager] players] count] * self.cellWidth < kScreenWidth) self.cellWidth++;
@@ -158,16 +164,16 @@
                                                         kScreenHeight)];
         for (UITableView *tableView in self.playerTables) {
             if (kScreenHeight >= 480.0f) {
-                [tableView setContentInset:UIEdgeInsetsMake(CELL_HEIGHT + kStatusBarHeight,
+                [tableView setContentInset:UIEdgeInsetsMake(CELL_HEIGHT + safeAreaTop,
                                                             0.0f,
-                                                            self.keyboardHeight,
+                                                            self.keyboardHeight + safeAreaBottom,
                                                             0.0f)];
             }
-            
+
             else {
-                [tableView setContentInset:UIEdgeInsetsMake(CELL_HEIGHT + kStatusBarHeight,
+                [tableView setContentInset:UIEdgeInsetsMake(CELL_HEIGHT + safeAreaTop,
                                                             0.0f,
-                                                            FOOTER_HEIGHT,
+                                                            FOOTER_HEIGHT + safeAreaBottom,
                                                             0.0f)];
                 
                 if ([self.currentFirstResponder isFirstResponder]) {
@@ -198,16 +204,17 @@
         for (int i = 0; i < self.headerSubviews.count; i++) {
             UILabel *headerLabel = [self.headerSubviews objectAtIndex:i];
             [headerLabel setFrame:CGRectMake(self.cellWidth * i,
-                                             kStatusBarHeight,
+                                             safeAreaTop,
                                              self.cellWidth,
                                              CELL_HEIGHT)];
             [self.headerToolbar addSubview:headerLabel];
         }
-        
+
+        CGFloat headerHeight = CELL_HEIGHT + safeAreaTop;
         [self.headerToolbar setFrame:CGRectMake(0.0f,
                                                 0.0f,
                                                 (self.tableScrollView.contentSize.width > kScreenWidth) ? self.tableScrollView.contentSize.width : kScreenWidth,
-                                                HEADER_HEIGHT)];
+                                                headerHeight)];
         [self.saveButton setCenter:CGPointMake(kScreenWidth - self.saveButton.frame.size.width/2.0f,
                                                CELL_HEIGHT/2.0f)];
         

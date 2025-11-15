@@ -12,8 +12,7 @@
 #import "GTPlayerTimeButton.h"
 
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
-#define kStatusBarHeight (([[UIApplication sharedApplication] statusBarFrame].size.height == 20.0f) ? 20.0f : (([[UIApplication sharedApplication] statusBarFrame].size.height == 40.0f) ? 20.0f : 0.0f))
-#define kScreenHeight (([[UIApplication sharedApplication] statusBarFrame].size.height > 20.0f) ? [UIScreen mainScreen].bounds.size.height - 20.0f : [UIScreen mainScreen].bounds.size.height)
+#define kScreenHeight [UIScreen mainScreen].bounds.size.height
 #define CELL_HEIGHT 44.0f
 #define FOOTER_HEIGHT 49.0f
 #define DESELECTED_BRIGHTNESS 0.4f
@@ -28,10 +27,6 @@
 //    [self.view addSubview:self.headerToolbar];
     self.playerButtons = [[NSMutableDictionary alloc] initWithCapacity:[[[GTPlayerManager sharedReferenceManager] players] count]];
     
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver:self  selector:@selector(updateViews)    name:UIDeviceOrientationDidChangeNotification  object:nil];
-    [nc addObserver:self selector:@selector(updateViews) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
-    [nc addObserver:self selector:@selector(delayUpdateViews) name:UIApplicationWillChangeStatusBarOrientationNotification object:nil];
         
     [self updateViews];
 }
@@ -43,34 +38,48 @@
     [self timerButtonTouched:nil];
 }
 
+- (void)viewSafeAreaInsetsDidChange {
+    [super viewSafeAreaInsetsDidChange];
+    [self updateViews];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [self updateViews];
+}
+
 - (void)delayUpdateViews {
     [self performSelector:@selector(updateViews) withObject:self afterDelay:0.1f];
 }
 
 - (void)updateViews {
+    CGFloat safeAreaTop = self.view.safeAreaInsets.top;
+
     [UIView animateWithDuration:0.0f animations:^{
-        [self.headerToolbar setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, kStatusBarHeight)];
+        [self.headerToolbar setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, safeAreaTop)];
         [self layoutButtons];
     } completion:^(BOOL finished) {
-        
+
     }];
 }
 
 - (void)layoutButtons {
+    CGFloat safeAreaTop = self.view.safeAreaInsets.top;
+
     if (self.playerButtons.count == [[[GTPlayerManager sharedReferenceManager] players] count]) {
         int playerNumber = 0, totalPlayers = (int)[[[GTPlayerManager sharedReferenceManager] players] count];
         for (GTPlayer *player in [[GTPlayerManager sharedReferenceManager] players]) {
             UIButton *button = [self.playerButtons objectForKey:player.name];
-            
+
             if (!button) {
                 NSLog(@"Button doesn't exist for %@", player.name);
                 [self setUpButtons];
                 break;
             }
-            
+
             [self.view addSubview:button];
             CGRect frame = [self frameForButton:playerNumber totalPlayers:totalPlayers];
-            if (frame.origin.y > 0.0f && frame.origin.y <= kStatusBarHeight) {
+            if (frame.origin.y > 0.0f && frame.origin.y <= safeAreaTop) {
                 frame.size.height += frame.origin.y;
                 frame.origin.y = 0.0f;
             }
@@ -89,15 +98,17 @@
 }
 
 - (void)setUpButtons {
+    CGFloat safeAreaTop = self.view.safeAreaInsets.top;
+
     for (NSObject *key in self.playerButtons.allKeys) {
         UIView *buttonView = [self.playerButtons objectForKey:key];
         [buttonView removeFromSuperview];
     }
-    
+
     int playerNumber = 0, totalPlayers = (int)[[[GTPlayerManager sharedReferenceManager] players] count];
     for (GTPlayer *player in [[GTPlayerManager sharedReferenceManager] players]) {
         CGRect frame = [self frameForButton:playerNumber totalPlayers:totalPlayers];
-        if (frame.origin.y > 0.0f && frame.origin.y <= kStatusBarHeight) {
+        if (frame.origin.y > 0.0f && frame.origin.y <= safeAreaTop) {
             frame.size.height += frame.origin.y;
             frame.origin.y = 0.0f;
         }
