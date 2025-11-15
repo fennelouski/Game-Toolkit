@@ -10,8 +10,7 @@
 #import "GTPlayerManager.h"
 
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
-#define kStatusBarHeight (([[UIApplication sharedApplication] statusBarFrame].size.height == 20.0f) ? 20.0f : (([[UIApplication sharedApplication] statusBarFrame].size.height == 40.0f) ? 20.0f : 0.0f))
-#define kScreenHeight (([[UIApplication sharedApplication] statusBarFrame].size.height > 20.0f) ? [UIScreen mainScreen].bounds.size.height - 20.0f : [UIScreen mainScreen].bounds.size.height)
+#define kScreenHeight [UIScreen mainScreen].bounds.size.height
 #define FONT_SIZE_RATIO 1.8f
 #define CORNER_RADIUS_RATIO 5.0f
 #define degreesToRadians(x) (M_PI * (x) / 180.0)

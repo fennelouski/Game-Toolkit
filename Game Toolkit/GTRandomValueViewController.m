@@ -12,8 +12,7 @@
 #import "UIColor+AppColors.h"
 
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
-#define kStatusBarHeight (([[UIApplication sharedApplication] statusBarFrame].size.height == 20.0f) ? 20.0f : (([[UIApplication sharedApplication] statusBarFrame].size.height == 40.0f) ? 20.0f : 0.0f))
-#define kScreenHeight (([[UIApplication sharedApplication] statusBarFrame].size.height > 20.0f) ? [UIScreen mainScreen].bounds.size.height - 20.0f : [UIScreen mainScreen].bounds.size.height)
+#define kScreenHeight [UIScreen mainScreen].bounds.size.height
 #define ANIMATION_DURATION 0.35f
 #define CELL_HEIGHT 44.0f
 #define BUFFER 20.0f
@@ -37,10 +36,6 @@
     
     [self setUpDice];
     
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver:self  selector:@selector(updateViews)    name:UIDeviceOrientationDidChangeNotification  object:nil];
-    [nc addObserver:self  selector:@selector(updateViews)    name:UIDeviceOrientationDidChangeNotification  object:nil];
-    [nc addObserver:self selector:@selector(updateViews) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     
     [self performSelector:@selector(checkForInstructions) withObject:self afterDelay:WAIT_TIME];
     [self performSelector:@selector(checkForInstructions) withObject:self afterDelay:LONG_WAIT_TIME]; // add a check for 5 minutes later to see if the user has both shaken and double tapped
@@ -120,22 +115,35 @@
     }
 }
 
+- (void)viewSafeAreaInsetsDidChange {
+    [super viewSafeAreaInsetsDidChange];
+    [self updateViews];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [self updateViews];
+}
+
 - (void)updateViews {
-    [self.headerToolbar setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, kStatusBarHeight)];
+    CGFloat safeAreaTop = self.view.safeAreaInsets.top;
+    [self.headerToolbar setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, safeAreaTop)];
     [self.totalLabel setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, -kScreenHeight/2.0f)];
     [self layoutDice];
 }
 
 - (void)setUpDice {
+    CGFloat safeAreaTop = self.view.safeAreaInsets.top;
+
     // make sure that there's at least one die to show
     if ([[GTPlayerManager sharedReferenceManager] numberOfDice] < 1) {
         [[GTPlayerManager sharedReferenceManager] setNumberOfDice:2];
     }
-    
+
     if (self.dice.count != [[GTPlayerManager sharedReferenceManager] numberOfDice]) {
         for (int i = 0; i < [[GTPlayerManager sharedReferenceManager] numberOfDice]; i ++) {
             GTDieView *die = [[GTDieView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 50.0f, 50.0f)];
-            [die setCenter:CGPointMake(kScreenWidth / 2.0f, kStatusBarHeight + 20.0f + 60.0f * i)];
+            [die setCenter:CGPointMake(kScreenWidth / 2.0f, safeAreaTop + 20.0f + 60.0f * i)];
             [self.dice addObject:die];
             [self.view addSubview:die];
         }

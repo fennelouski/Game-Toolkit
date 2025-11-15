@@ -11,8 +11,7 @@
 #import "UIColor+AppColors.h"
 
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
-#define kStatusBarHeight (([[UIApplication sharedApplication] statusBarFrame].size.height == 20.0f) ? 20.0f : (([[UIApplication sharedApplication] statusBarFrame].size.height == 40.0f) ? 20.0f : 0.0f))
-#define kScreenHeight (([[UIApplication sharedApplication] statusBarFrame].size.height > 20.0f) ? [UIScreen mainScreen].bounds.size.height - 20.0f : [UIScreen mainScreen].bounds.size.height)
+#define kScreenHeight [UIScreen mainScreen].bounds.size.height
 #define ANIMATION_DURATION 0.35f
 #define CELL_HEIGHT 44.0f
 #define BUFFER 20.0f
@@ -36,9 +35,6 @@
     self.lastShownDate = [NSDate date];
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver:self  selector:@selector(updateViews)    name:UIDeviceOrientationDidChangeNotification  object:nil];
-    [nc addObserver:self  selector:@selector(reloadPickerView)    name:UIDeviceOrientationDidChangeNotification  object:nil];
-    [nc addObserver:self selector:@selector(updateViews) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     [nc addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
     [nc addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidChangeFrameNotification object:nil];
     [nc addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
@@ -82,12 +78,25 @@
     [[GTPlayerManager sharedReferenceManager] setNumberOfDiceSides:self.numberOfDiceSidesSlider.value];
 }
 
+- (void)viewSafeAreaInsetsDidChange {
+    [super viewSafeAreaInsetsDidChange];
+    [self updateViews];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [self updateViews];
+}
+
 - (void)updateViews {
+    CGFloat safeAreaTop = self.view.safeAreaInsets.top;
+    CGFloat safeAreaBottom = self.view.safeAreaInsets.bottom;
+
     [UIView animateWithDuration:0.35f animations:^{
-        [self.playerTableView setFrame:CGRectMake(0.0, 0.0f, kScreenWidth, kScreenHeight)];
-        [self.playerTableView setContentInset:UIEdgeInsetsMake(kStatusBarHeight, 0.0f, self.keyboardHeight, 0.0f)];
+        [self.playerTableView setFrame:self.view.bounds];
+        [self.playerTableView setContentInset:UIEdgeInsetsMake(safeAreaTop, 0.0f, self.keyboardHeight + safeAreaBottom, 0.0f)];
         [self.playerTableView setScrollIndicatorInsets:self.playerTableView.contentInset];
-        [self.headerToolbar setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, kStatusBarHeight)];
+        [self.headerToolbar setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, safeAreaTop)];
         [self.resetTimeButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
         [self.resetScoreButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
         [self.resetNamesButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
