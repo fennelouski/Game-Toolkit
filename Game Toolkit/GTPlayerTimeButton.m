@@ -21,17 +21,21 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
-    
+
     if (self) {
         [self addTarget:self action:@selector(buttonTouched) forControlEvents:UIControlEventTouchUpInside];
-        
+
         [self performSelector:@selector(updateTimerLabel) withObject:self afterDelay:0.03f];
-        
+
         [self calculateFontSize];
-        
+
         [self.layer addSublayer:self.gradientLayer];
+
+        // Accessibility support
+        self.isAccessibilityElement = YES;
+        self.accessibilityTraits = UIAccessibilityTraitButton;
     }
-    
+
     return self;
 }
 
@@ -71,15 +75,24 @@
     if (self.player && self.nameLabel.text.length == 0) {
         [self updateName];
     }
-    
+
     if (self.player && self.player.timeRemaining > 0.0f) {
         [self.timeLabel setText:[NSString stringWithFormat:@"%d", (int)self.player.timeRemaining]];
     }
-    
+
     else if (self.player && [self.timeLabel.text floatValue] != 0.0f) {
         [self.timeLabel setText:@"0"];
     }
-    
+
+    // Update accessibility label with current state
+    if (self.player) {
+        NSString *timeString = self.player.timeRemaining > 0
+            ? [NSString stringWithFormat:@"%d seconds remaining", (int)self.player.timeRemaining]
+            : @"Time expired";
+        self.accessibilityLabel = [NSString stringWithFormat:@"Player %@, %@", self.player.name, timeString];
+        self.accessibilityHint = @"Tap to select this player";
+    }
+
     [self performSelector:@selector(updateTimerLabel) withObject:self afterDelay:0.03f];
 }
 

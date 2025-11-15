@@ -45,6 +45,8 @@
 		90E83C301A80799900626CE2 /* NSString+AppFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E83C2B1A80799900626CE2 /* NSString+AppFunctions.m */; };
 		90E83C331A807AE600626CE2 /* GTPlayerManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E83C321A807AE600626CE2 /* GTPlayerManagerViewController.m */; };
 		90E83C391A807BEE00626CE2 /* GTPlayerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 90E83C381A807BEE00626CE2 /* GTPlayerManager.m */; };
+		90F83BFD1A80797700626CE2 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 90F83BFB1A80797700626CE2 /* SceneDelegate.m */; };
+		90F83BFE1A80797700626CE2 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 90F83BFC1A80797700626CE2 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,6 +116,9 @@
 		90E83C321A807AE600626CE2 /* GTPlayerManagerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTPlayerManagerViewController.m; sourceTree = "<group>"; };
 		90E83C371A807BEE00626CE2 /* GTPlayerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTPlayerManager.h; sourceTree = "<group>"; };
 		90E83C381A807BEE00626CE2 /* GTPlayerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTPlayerManager.m; sourceTree = "<group>"; };
+		90F83BFA1A80797700626CE2 /* SceneDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
+		90F83BFB1A80797700626CE2 /* SceneDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
+		90F83BFC1A80797700626CE2 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -234,6 +239,9 @@
 			children = (
 				90E83BFD1A80797700626CE2 /* AppDelegate.h */,
 				90E83BFE1A80797700626CE2 /* AppDelegate.m */,
+				90F83BFA1A80797700626CE2 /* SceneDelegate.h */,
+				90F83BFB1A80797700626CE2 /* SceneDelegate.m */,
+				90F83BFC1A80797700626CE2 /* PrivacyInfo.xcprivacy */,
 				90BD2E141A9F8800007080A5 /* Controllers */,
 				90BD2E161A9F8830007080A5 /* Views */,
 				90BD2E151A9F8818007080A5 /* Model */,
@@ -364,6 +372,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90F83BFE1A80797700626CE2 /* PrivacyInfo.xcprivacy in Resources */,
 				90E83C081A80797700626CE2 /* Main.storyboard in Resources */,
 				90D25A9B1A8D4FA4004E18C4 /* Default-667h@2x.png in Resources */,
 				90E83C0D1A80797700626CE2 /* LaunchScreen.xib in Resources */,
@@ -401,6 +410,7 @@
 				90E83C2F1A80799900626CE2 /* UIColor+AppColors.m in Sources */,
 				90E83C301A80799900626CE2 /* NSString+AppFunctions.m in Sources */,
 				90E83BFF1A80797700626CE2 /* AppDelegate.m in Sources */,
+				90F83BFD1A80797700626CE2 /* SceneDelegate.m in Sources */,
 				90E83C331A807AE600626CE2 /* GTPlayerManagerViewController.m in Sources */,
 				90E83C2E1A80799900626CE2 /* GTPlayerView.m in Sources */,
 				90E83C2C1A80799900626CE2 /* GTScoreCardViewController.m in Sources */,

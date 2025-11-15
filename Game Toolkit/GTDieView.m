@@ -22,28 +22,33 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
-    
+
     if (self) {
         self.selectable = YES;
         self.value = arc4random()%[[GTPlayerManager sharedReferenceManager] numberOfDiceSides] + 1;
         [self setClipsToBounds:YES];
-        
+
         [self setBackgroundColor:[[GTPlayerManager sharedReferenceManager] diceColor]];
-        
+
         [self drawSpots];
-        
+
         [self.layer setBorderColor:[[GTPlayerManager sharedReferenceManager] diceBorderColor].CGColor];
         [self.layer setBorderWidth:self.frame.size.height / 20.0f];
         [self.layer setCornerRadius:frame.size.height / CORNER_RADIUS_RATIO];
-        
+
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dieTapped)];
         [self addGestureRecognizer:tap];
-        
+
         [self addSubview:self.deselectedView];
-        
+
         self.defaultFrame = frame;
+
+        // Accessibility support
+        self.isAccessibilityElement = YES;
+        self.accessibilityTraits = UIAccessibilityTraitButton;
+        [self updateAccessibilityLabel];
     }
-    
+
     return self;
 }
 
@@ -86,9 +91,10 @@
 
 - (void)animateSpots:(NSNumber *)changesMade {
     int changesMadeInt = [changesMade intValue];
-    
+
     self.value = arc4random()%[[GTPlayerManager sharedReferenceManager] numberOfDiceSides] + 1;
     [self drawSpots];
+    [self updateAccessibilityLabel];
     
     if (changesMadeInt < self.maximumChanges && changesMadeInt < 30 - [[GTPlayerManager sharedReferenceManager] numberOfDice]) {
         float duration = ((float)(changesMadeInt + 1)) / (180.0f + (float)self.maximumChanges);
@@ -246,18 +252,21 @@
 
 - (void)dieTapped {
     self.selected = !self.selected;
-    
+
     if (self.selected) {
         float grayValue = ((float)((arc4random()%20) + 35.0f) / 100.0f);
         [self.deselectedView setBackgroundColor:[UIColor colorWithWhite:grayValue alpha:0.97f]];
     }
-    
+
     else {
         [self.deselectedView setBackgroundColor:[UIColor clearColor]];
         [self setBackgroundColor:[[GTPlayerManager sharedReferenceManager] diceColor]];
     }
-    
+
     self.selectable = YES;
+
+    // Update accessibility label when selection changes
+    [self updateAccessibilityLabel];
 }
 
 - (void)startJiggling {
@@ -362,5 +371,12 @@
     return headerLayer;
 }
 
+#pragma mark - Accessibility
+
+- (void)updateAccessibilityLabel {
+    NSString *selectionStatus = self.selected ? @"locked" : @"unlocked";
+    self.accessibilityLabel = [NSString stringWithFormat:@"Die showing %d, %@", self.value, selectionStatus];
+    self.accessibilityHint = self.selected ? @"Tap to unlock and include in next roll" : @"Tap to lock and exclude from next roll";
+}
 
 @end

@@ -15,27 +15,58 @@
 
 @implementation UIColor (AppColors)
 
+#pragma mark - Dark Mode Support
+
+// Helper method to create dynamic colors that adapt to light/dark mode
++ (UIColor *)dynamicColorWithLight:(UIColor *)lightColor dark:(UIColor *)darkColor {
+    if (@available(iOS 13.0, *)) {
+        return [UIColor colorWithDynamicProvider:^UIColor * _Nonnull(UITraitCollection * _Nonnull traitCollection) {
+            if (traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+                return darkColor;
+            } else {
+                return lightColor;
+            }
+        }];
+    } else {
+        return lightColor;
+    }
+}
+
 + (UIColor *)appColor {
     UIColor *specialTintColor = [self specialTintColor];
-    if (specialTintColor) return specialTintColor;
-    
-    return [UIColor blueberry];
+    if (specialTintColor) {
+        // Make special tint colors darker in dark mode for better visibility
+        return [self dynamicColorWithLight:specialTintColor dark:[specialTintColor lightenColorBy:0.3f]];
+    }
+
+    // Blueberry with a lighter variant for dark mode
+    UIColor *blueberryLight = [UIColor blueberry];
+    UIColor *blueberryDark = [blueberryLight lightenColorBy:0.3f];
+    return [self dynamicColorWithLight:blueberryLight dark:blueberryDark];
 }
 
 + (UIColor *)appColor1 {
-    return [UIColor colorWithRed:3.0f/255.0f green:166.0f/255.0f blue:110.0f/255.0f alpha:0.97f];
+    UIColor *lightColor = [UIColor colorWithRed:3.0f/255.0f green:166.0f/255.0f blue:110.0f/255.0f alpha:0.97f];
+    UIColor *darkColor = [UIColor colorWithRed:3.0f/255.0f green:200.0f/255.0f blue:140.0f/255.0f alpha:0.97f];
+    return [self dynamicColorWithLight:lightColor dark:darkColor];
 }
 
 + (UIColor *)appColor2 {
-    return [UIColor colorWithRed:238.0f/255.0f green:64.0f/255.0f blue:40.0f/255.0f alpha:0.97f];
+    UIColor *lightColor = [UIColor colorWithRed:238.0f/255.0f green:64.0f/255.0f blue:40.0f/255.0f alpha:0.97f];
+    UIColor *darkColor = [UIColor colorWithRed:255.0f/255.0f green:94.0f/255.0f blue:70.0f/255.0f alpha:0.97f];
+    return [self dynamicColorWithLight:lightColor dark:darkColor];
 }
 
 + (UIColor *)appColor3 {
-    return [UIColor colorWithRed:36.0f/255.0f green:136.0f/255.0f blue:209.0f/255.0f alpha:0.97f];
+    UIColor *lightColor = [UIColor colorWithRed:36.0f/255.0f green:136.0f/255.0f blue:209.0f/255.0f alpha:0.97f];
+    UIColor *darkColor = [UIColor colorWithRed:66.0f/255.0f green:166.0f/255.0f blue:239.0f/255.0f alpha:0.97f];
+    return [self dynamicColorWithLight:lightColor dark:darkColor];
 }
 
 + (UIColor *)appColor4 {
-    return [UIColor colorWithRed:232.0f/255.0f green:190.0f/255.0f blue:48.0f/255.0f alpha:0.97f];
+    UIColor *lightColor = [UIColor colorWithRed:232.0f/255.0f green:190.0f/255.0f blue:48.0f/255.0f alpha:0.97f];
+    UIColor *darkColor = [UIColor colorWithRed:255.0f/255.0f green:220.0f/255.0f blue:78.0f/255.0f alpha:0.97f];
+    return [self dynamicColorWithLight:lightColor dark:darkColor];
 }
 
 + (NSArray *)appColors {
@@ -56,9 +87,15 @@
 
 + (UIColor *)redAppColor {
     UIColor *specialTintColor = [self specialTintColor];
-    if (specialTintColor) return specialTintColor;
-    
-    return [UIColor venetianRed];
+    if (specialTintColor) {
+        // Make special tint colors darker in dark mode for better visibility
+        return [self dynamicColorWithLight:specialTintColor dark:[specialTintColor lightenColorBy:0.3f]];
+    }
+
+    // Venetian red with a lighter variant for dark mode
+    UIColor *venetianRedLight = [UIColor venetianRed];
+    UIColor *venetianRedDark = [venetianRedLight lightenColorBy:0.3f];
+    return [self dynamicColorWithLight:venetianRedLight dark:venetianRedDark];
 }
 
 + (UIColor *)specialTintColor {
