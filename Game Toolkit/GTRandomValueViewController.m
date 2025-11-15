@@ -197,83 +197,85 @@
         NSLog(@"Can't divide by 0");
         return frame;
     }
-    
-    float availableHeight = kScreenHeight - kStatusBarHeight - FOOTER_HEIGHT;
-    
+
+    CGFloat safeAreaTop = self.view.safeAreaInsets.top;
+    CGFloat safeAreaBottom = self.view.safeAreaInsets.bottom;
+    float availableHeight = kScreenHeight - safeAreaTop - safeAreaBottom - FOOTER_HEIGHT;
+
     if (totalDice <= 3) {
         // portrait
         if (kScreenHeight > kScreenWidth) {
             frame = CGRectMake(0.0f,
-                               kStatusBarHeight + (float)dieNumber / (float)totalDice * availableHeight,
+                               safeAreaTop + (float)dieNumber / (float)totalDice * availableHeight,
                                kScreenWidth,
                                availableHeight / (float)totalDice);
         }
-        
+
         // landscape
         else {
             frame = CGRectMake((float)dieNumber / (float)totalDice * kScreenWidth,
-                               kStatusBarHeight,
+                               safeAreaTop,
                                kScreenWidth / (float)totalDice,
                                availableHeight);
         }
     }
-    
+
     else {
         float numberOfRows = 2.0f;
         float numberOfColumns = 2.0f;
-        
+
         // super simple and quick approximation for a square root
         float squareRoot = 1.41421356237f;
         while (squareRoot * squareRoot < totalDice) {
             squareRoot *= 1.05f;
         }
         squareRoot = (float)(int)squareRoot;
-        
-        
+
+
         if (totalDice != squareRoot * squareRoot) {
             // portrait
             if (kScreenHeight > kScreenWidth) {
                 numberOfColumns = squareRoot;
                 numberOfRows = squareRoot + 1;
-                
+
                 while (numberOfColumns * numberOfRows < totalDice) {
                     numberOfRows++;
                 }
             }
-            
+
             else {
                 numberOfRows = squareRoot;
                 numberOfColumns = squareRoot + 1;
-                
+
                 while (numberOfColumns * numberOfRows < totalDice) {
                     numberOfColumns++;
                 }
             }
         }
-        
+
         else {
             numberOfRows = squareRoot;
             numberOfColumns = squareRoot;
         }
-        
+
         float rowPosition = (dieNumber / (int)numberOfColumns);
         float columnPosition = (dieNumber % (int)numberOfColumns);
         // if it's the last row then rearrange so that there's no empty space
         if ((rowPosition + 1) * numberOfColumns >= totalDice) {
             int possibleNumberOfColumns = (int)totalDice % (int)numberOfColumns;
-            
+
             // don't want to divide by 0
             if (possibleNumberOfColumns > 0) {
                 numberOfColumns = possibleNumberOfColumns;
             }
         }
-        
+
         frame = CGRectMake(columnPosition * kScreenWidth / numberOfColumns,
-                           kStatusBarHeight + rowPosition * availableHeight / numberOfRows,
+                           safeAreaTop + rowPosition * availableHeight / numberOfRows,
                            kScreenWidth / numberOfColumns,
                            availableHeight / numberOfRows);
     }
-    
+
     return frame;
 }
 
@@ -282,9 +284,10 @@
 
 - (UIToolbar *)headerToolbar {
     if (!_headerToolbar) {
-        _headerToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, kStatusBarHeight)];
+        CGFloat safeAreaTop = self.view.safeAreaInsets.top;
+        _headerToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, safeAreaTop)];
     }
-    
+
     return _headerToolbar;
 }
 
