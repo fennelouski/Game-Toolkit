@@ -22,8 +22,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    [self.view setBackgroundColor:[UIColor white]];
+
+    // Use system background color for automatic dark mode support
+    if (@available(iOS 13.0, *)) {
+        [self.view setBackgroundColor:[UIColor systemBackgroundColor]];
+    } else {
+        [self.view setBackgroundColor:[UIColor whiteColor]];
+    }
 //    [self.view addSubview:self.headerToolbar];
     self.playerButtons = [[NSMutableDictionary alloc] initWithCapacity:[[[GTPlayerManager sharedReferenceManager] players] count]];
     
