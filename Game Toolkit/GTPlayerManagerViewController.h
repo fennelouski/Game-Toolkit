@@ -40,6 +40,7 @@
 @property float keyboardHeight;
 @property BOOL keyboardIsShowing;
 @property BOOL viewIsShowing;
+@property BOOL isUpdatingViews;
 @property (nonatomic, strong) NSDate *lastShownDate;
 
 @end

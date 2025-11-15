@@ -455,7 +455,7 @@
         if ([tableView isEqual:[self.playerTables objectAtIndex:i]]) {
             GTPlayer *player = [[[GTPlayerManager sharedReferenceManager] players] objectAtIndex:i];
             
-            UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, kStatusBarHeight, self.cellWidth, CELL_HEIGHT)];
+            UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.cellWidth, CELL_HEIGHT)];
             [nameLabel setTextAlignment:NSTextAlignmentCenter];
             [nameLabel setTextColor:[UIColor randomDarkColor]];
             [nameLabel setText:player.name];

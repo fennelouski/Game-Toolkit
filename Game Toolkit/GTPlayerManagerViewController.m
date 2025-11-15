@@ -9,6 +9,7 @@
 #import "GTPlayerManagerViewController.h"
 #import "GTPlayerManager.h"
 #import "UIColor+AppColors.h"
+#import <QuartzCore/QuartzCore.h>
 
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
 #define kScreenHeight [UIScreen mainScreen].bounds.size.height
@@ -86,11 +87,24 @@
 
 - (void)viewSafeAreaInsetsDidChange {
     [super viewSafeAreaInsetsDidChange];
-    [self updateViews];
+    [self scheduleUpdateViews];
 }
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
+    [self scheduleUpdateViews];
+}
+
+- (void)scheduleUpdateViews {
+    // Debounce: prevent multiple updateViews calls in the same run loop cycle
+    if (!self.isUpdatingViews) {
+        self.isUpdatingViews = YES;
+        [self performSelector:@selector(performUpdateViews) withObject:nil afterDelay:0.0];
+    }
+}
+
+- (void)performUpdateViews {
+    self.isUpdatingViews = NO;
     [self updateViews];
 }
 
@@ -98,20 +112,24 @@
     CGFloat safeAreaTop = self.view.safeAreaInsets.top;
     CGFloat safeAreaBottom = self.view.safeAreaInsets.bottom;
 
-    [UIView animateWithDuration:0.35f animations:^{
-        [self.playerTableView setFrame:self.view.bounds];
-        [self.playerTableView setContentInset:UIEdgeInsetsMake(safeAreaTop, 0.0f, self.keyboardHeight + safeAreaBottom, 0.0f)];
-        [self.playerTableView setScrollIndicatorInsets:self.playerTableView.contentInset];
-        [self.headerToolbar setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, safeAreaTop)];
-        [self.resetTimeButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
-        [self.resetScoreButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
-        [self.resetNamesButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
-        [self.timerPicker layoutSubviews];
-    } completion:^(BOOL finished) {
-        if (!self.keyboardIsShowing) {
-            [self.playerTableView reloadData];
-        }
-    }];
+    // Use CATransaction to batch layer updates for better performance
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+
+    [self.playerTableView setFrame:self.view.bounds];
+    [self.playerTableView setContentInset:UIEdgeInsetsMake(safeAreaTop, 0.0f, self.keyboardHeight + safeAreaBottom, 0.0f)];
+    [self.playerTableView setScrollIndicatorInsets:self.playerTableView.contentInset];
+    [self.headerToolbar setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, safeAreaTop)];
+    [self.resetTimeButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
+    [self.resetScoreButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
+    [self.resetNamesButton setFrame:CGRectMake(0.0f, 0.0f, kScreenWidth, CELL_HEIGHT)];
+
+    [CATransaction commit];
+
+    // Only reload data when keyboard is not showing to avoid flicker
+    if (!self.keyboardIsShowing) {
+        [self.playerTableView reloadData];
+    }
 }
 
 - (void)resetExpandedViews {

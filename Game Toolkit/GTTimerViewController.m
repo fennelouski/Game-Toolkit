@@ -138,68 +138,70 @@
         return frame;
     }
 
-    float availableHeight = kScreenHeight - kStatusBarHeight - FOOTER_HEIGHT;
-    
+    CGFloat safeAreaTop = self.view.safeAreaInsets.top;
+    CGFloat safeAreaBottom = self.view.safeAreaInsets.bottom;
+    float availableHeight = kScreenHeight - safeAreaTop - safeAreaBottom - FOOTER_HEIGHT;
+
     if (totalPlayers <= 3 || totalPlayers == 5 || totalPlayers == 7) {
         // portrait
         if (kScreenHeight > kScreenWidth) {
             frame = CGRectMake(0.0f,
-                               kStatusBarHeight + (float)playerNumber / (float)totalPlayers * availableHeight,
+                               safeAreaTop + (float)playerNumber / (float)totalPlayers * availableHeight,
                                kScreenWidth,
                                availableHeight / (float)totalPlayers);
         }
-        
+
         else {
             frame = CGRectMake((float)playerNumber / (float)totalPlayers * kScreenWidth,
-                               kStatusBarHeight,
+                               safeAreaTop,
                                kScreenWidth / (float)totalPlayers,
                                availableHeight);
         }
     }
-    
+
     else if (totalPlayers == 4 || totalPlayers == 6 || totalPlayers == 8 || totalPlayers == 9) {
         float numberOfRows = 2.0f;
         float numberOfColumns = 2.0f;
-        
+
         float squareRoot = 1.41421356237f;
         while (squareRoot * squareRoot < totalPlayers) {
             squareRoot *= 1.05f;
         }
         squareRoot = (float)(int)squareRoot;
-        
-        
+
+
         if (totalPlayers != squareRoot * squareRoot) {
             // portrait
             if (kScreenHeight > kScreenWidth) {
                 numberOfColumns = squareRoot;
                 numberOfRows = squareRoot + 1;
-                
+
                 while (numberOfColumns * numberOfRows < totalPlayers) {
                     numberOfRows++;
                 }
             }
-            
+
             else {
                 numberOfRows = squareRoot;
                 numberOfColumns = squareRoot + 1;
-                
+
                 while (numberOfColumns * numberOfRows < totalPlayers) {
                     numberOfColumns++;
                 }
             }
         }
-        
+
         else {
             numberOfRows = squareRoot;
             numberOfColumns = squareRoot;
         }
-        
+
         frame = CGRectMake((playerNumber % (int)numberOfColumns) * kScreenWidth / numberOfColumns,
-                           kStatusBarHeight + (playerNumber / (int)numberOfColumns) * availableHeight / numberOfRows,
+                           safeAreaTop + (playerNumber / (int)numberOfColumns) * availableHeight / numberOfRows,
                            kScreenWidth / numberOfColumns,
                            availableHeight / numberOfRows);
     }
-    
+
     return frame;
 }
 
