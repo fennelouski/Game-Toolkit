@@ -69,17 +69,20 @@ shoot_simulator() {  # $1 = device udid, $2 = output subdir, $3 = app path
     xcrun simctl launch "$udid" "$BUNDLE_ID" -screenshotMode -ui.selectedTab 2 -showChart >/dev/null 2>&1
     sleep 4
     snap "$udid" "$OUT/$dir/4-chart.png" && echo "  $dir/4-chart.png"
-    # Two more themes to show off the theming system.
-    for themed in "gaslight:0:6-theme-gaslight" "azul:2:7-theme-azul"; do
+    # Two more themes to show off the theming system. Gaslight is captured in dark
+    # appearance — it's the "night mode" shot; Azul stays light.
+    for themed in "gaslight:0:6-theme-gaslight:dark" "azul:2:7-theme-azul:system"; do
         # `local a=x b=$a` expands every argument before assigning any, so these
         # must be separate statements.
         local theme="${themed%%:*}"
         local rest="${themed#*:}"
         local tab="${rest%%:*}"
-        local shot="${rest##*:}"
+        local shot_mode="${rest#*:}"
+        local shot="${shot_mode%%:*}"
+        local mode="${shot_mode##*:}"
         xcrun simctl terminate "$udid" "$BUNDLE_ID" >/dev/null 2>&1
         sleep 1
-        xcrun simctl launch "$udid" "$BUNDLE_ID" -screenshotMode -ui.selectedTab "$tab" -ui.theme "$theme" >/dev/null 2>&1
+        xcrun simctl launch "$udid" "$BUNDLE_ID" -screenshotMode -ui.selectedTab "$tab" -ui.theme "$theme" -settings.appearance "$mode" >/dev/null 2>&1
         sleep 4
         snap "$udid" "$OUT/$dir/$shot.png" && echo "  $dir/$shot.png"
     done

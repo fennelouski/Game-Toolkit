@@ -2,3 +2,5 @@
 public/api/
 node_modules/
 .vercel/
+.vercel
+.env*

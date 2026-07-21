@@ -126,26 +126,33 @@ xcodebuild -project "Game Toolkit.xcodeproj" -scheme "Game Toolkit" \
 ```sh
 ./Scripts/screenshots.sh        # iPhone + iPad + Mac
 ./Scripts/screenshots.sh ios    # just iPhone and iPad
+python3 Scripts/marketing.py    # captioned App Store marketing images
 ```
 
 Output lands in `Screenshots/` at exact App Store sizes — iPhone 6.9" (1320×2868),
 iPad 13" (2064×2752), Mac (1440×900). Demo data comes from a `-screenshotMode` launch argument
-that is compiled only into Debug builds, so it can never ship.
+that is compiled only into Debug builds, so it can never ship. `Scripts/marketing.py`
+(needs Pillow) composites the raw screenshots into captioned marketing images in
+`Screenshots/marketing/`, sized for App Store Connect.
 
 ## Before submitting to the App Store
 
-The code, entitlements, icons, and privacy manifest are in place. A few things need your
-accounts, which cannot be automated here:
+**See [`Docs/AppStore.md`](Docs/AppStore.md)** for the complete listing, field by field —
+name, subtitle, description, keywords, screenshot mapping, age rating, privacy answers,
+export compliance, and review notes. The supporting pages are live:
+
+- Marketing URL: <https://nathanfennel.com/game-toolkit>
+- Support URL: <https://nathanfennel.com/game-toolkit/support>
+- Privacy policy URL: <https://nathanfennel.com/game-toolkit/privacy>
+- Theme service: `https://game-toolkit-themes.vercel.app/api/v1/` (deployed; redeploy with
+  `cd server && npx vercel deploy --prod --yes`)
+
+The code, entitlements, icons, and privacy manifest are in place. Two things need your Apple
+Developer account, which cannot be automated here:
 
 1. **iCloud** capability with CloudKit, container `iCloud.com.nathanfennel.Game-Toolkit`.
 2. **Push Notifications** capability — CloudKit uses silent pushes to signal changes. The matching
    `remote-notification` background mode is already declared in `Config/Info.plist`.
-3. **Deploy the theme service** (optional — the app is fully functional without it):
-   `cd server && npx vercel --prod` with project name `game-toolkit-themes`, or connect the
-   repo in the Vercel dashboard with root directory `server`. See `server/README.md`.
-4. **App Store privacy answers**: the app now makes anonymous GET requests for public theme
-   JSON. Nothing is collected, logged, or linked to the user (searches run on-device), so
-   the privacy-manifest declarations are unchanged — answer "no data collected" as before.
 
 Vision Pro needs no extra work: the app ships there as a Designed-for-iPad app and reuses the
 iPad screenshots. If you would rather ship a **native** visionOS app, the platform install on
