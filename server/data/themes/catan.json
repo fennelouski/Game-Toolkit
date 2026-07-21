@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "id": "catan",
+  "name": "Harvest Isle",
+  "game": {
+    "name": "Catan",
+    "slug": "catan",
+    "aliases": [
+      "settlers of catan",
+      "the settlers of catan"
+    ]
+  },
+  "tags": [
+    "harvest",
+    "warm",
+    "classic"
+  ],
+  "updatedAt": "2026-07-21T00:00:00Z",
+  "light": {
+    "background": "#F2E8D0",
+    "surface": "#F9F2E0",
+    "surfaceElevated": "#FEFAF0",
+    "table": "#84561F",
+    "accent": "#A6531F",
+    "accentSecondary": "#4E7A42",
+    "textPrimary": "#33291B",
+    "textSecondary": "#63563E",
+    "positive": "#4E7A3B",
+    "negative": "#A03A28",
+    "warning": "#8A6420",
+    "diceFace": "#FAF4E4",
+    "dicePip": "#3A3020",
+    "players": [
+      "#2F5B52",
+      "#B85C38",
+      "#46688F",
+      "#77293B",
+      "#C9973B",
+      "#7FA184",
+      "#37818A",
+      "#7B6FAE",
+      "#7A5230",
+      "#BB8FA0"
+    ]
+  },
+  "dark": {
+    "background": "#1C160D",
+    "surface": "#271F13",
+    "surfaceElevated": "#332A1B",
+    "table": "#5C4420",
+    "accent": "#DB9C4A",
+    "accentSecondary": "#8FBA7F",
+    "textPrimary": "#EFE6D2",
+    "textSecondary": "#B3A78E",
+    "positive": "#9BC788",
+    "negative": "#E08D6B",
+    "warning": "#D9AE63",
+    "diceFace": "#F4ECD8",
+    "dicePip": "#3A3020",
+    "players": [
+      "#5E9C86",
+      "#DB8D59",
+      "#668CAE",
+      "#B86664",
+      "#E6B46A",
+      "#9BCCC6",
+      "#74C7DD",
+      "#A79BD6",
+      "#B08A62",
+      "#DA95A7"
+    ]
+  }
+}

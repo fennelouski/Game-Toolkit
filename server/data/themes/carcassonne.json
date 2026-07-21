@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "id": "carcassonne",
+  "name": "Walled Fields",
+  "game": {
+    "name": "Carcassonne",
+    "slug": "carcassonne",
+    "aliases": [
+      "carcasonne",
+      "carcassone"
+    ]
+  },
+  "tags": [
+    "medieval",
+    "fields",
+    "classic"
+  ],
+  "updatedAt": "2026-07-21T00:00:00Z",
+  "light": {
+    "background": "#EDEBDF",
+    "surface": "#F7F5EB",
+    "surfaceElevated": "#FEFCF4",
+    "table": "#5F7A4A",
+    "accent": "#6B7B3D",
+    "accentSecondary": "#A6653C",
+    "textPrimary": "#2C3026",
+    "textSecondary": "#5A5F50",
+    "positive": "#4C7A3B",
+    "negative": "#9A4238",
+    "warning": "#8A6420",
+    "diceFace": "#F9F7ED",
+    "dicePip": "#333828",
+    "players": [
+      "#65926B",
+      "#BD6E4F",
+      "#55AAC8",
+      "#9C5F94",
+      "#C3912D",
+      "#40837C",
+      "#8A5A3F",
+      "#3C5977",
+      "#A93E5C",
+      "#8B7FC1"
+    ]
+  },
+  "dark": {
+    "background": "#14170F",
+    "surface": "#1E2317",
+    "surfaceElevated": "#293020",
+    "table": "#37432F",
+    "accent": "#A9C46A",
+    "accentSecondary": "#D99C6B",
+    "textPrimary": "#E9EBDD",
+    "textSecondary": "#A8AE9A",
+    "positive": "#9BC788",
+    "negative": "#DB9080",
+    "warning": "#D2B266",
+    "diceFace": "#F0EEDC",
+    "dicePip": "#333828",
+    "players": [
+      "#778B53",
+      "#DB8A70",
+      "#D2B8E4",
+      "#9C7EB5",
+      "#D8BA6A",
+      "#31A19E",
+      "#E4AE8F",
+      "#CBB8C0",
+      "#B9768E",
+      "#7CA1D6"
+    ]
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "id": "terraforming-mars",
+  "name": "Red Planet",
+  "game": {
+    "name": "Terraforming Mars",
+    "slug": "terraforming-mars",
+    "aliases": [
+      "tfm",
+      "mars"
+    ]
+  },
+  "tags": [
+    "space",
+    "science",
+    "rust"
+  ],
+  "updatedAt": "2026-07-21T00:00:00Z",
+  "light": {
+    "background": "#F0E5DC",
+    "surface": "#F9F1E9",
+    "surfaceElevated": "#FFFAF4",
+    "table": "#9C4A26",
+    "accent": "#9C4A26",
+    "accentSecondary": "#2E6E68",
+    "textPrimary": "#332621",
+    "textSecondary": "#63524A",
+    "positive": "#2E6E48",
+    "negative": "#A83228",
+    "warning": "#8A6420",
+    "diceFace": "#FAF3EB",
+    "dicePip": "#3A2A22",
+    "players": [
+      "#2F5D50",
+      "#C24C2C",
+      "#2B5E8C",
+      "#8E354C",
+      "#C99022",
+      "#6B8F3D",
+      "#17777F",
+      "#6A4FA3",
+      "#50432D",
+      "#B98BAE"
+    ]
+  },
+  "dark": {
+    "background": "#170F0C",
+    "surface": "#231712",
+    "surfaceElevated": "#2F1F18",
+    "table": "#59301C",
+    "accent": "#E0784A",
+    "accentSecondary": "#66B8B0",
+    "textPrimary": "#F1E4DB",
+    "textSecondary": "#B3A197",
+    "positive": "#7FC796",
+    "negative": "#E08D7D",
+    "warning": "#D9B15C",
+    "diceFace": "#F2E9E0",
+    "dicePip": "#3A2A22",
+    "players": [
+      "#83BD96",
+      "#C5884B",
+      "#A4ACD6",
+      "#CE7295",
+      "#D9B15C",
+      "#97BB6E",
+      "#A7CED2",
+      "#9E8CC9",
+      "#91895C",
+      "#DF9FB5"
+    ]
+  }
+}
