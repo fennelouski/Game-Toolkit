@@ -142,10 +142,11 @@ struct OnboardingView: View {
         ScrollView {
             VStack(spacing: 18) {
                 VStack(spacing: 6) {
-                    Text("Pick your look")
+                    Text("Which look would you like to start with?")
                         .font(.display(.title))
                         .foregroundStyle(palette.textPrimary)
-                    Text("The whole app re-colors live. Change it any time from Settings.")
+                        .multilineTextAlignment(.center)
+                    Text("The whole app re-colors live. You can change it any time in Settings — or even theme it to the game you're playing.")
                         .font(.subheadline)
                         .foregroundStyle(palette.textSecondary)
                         .multilineTextAlignment(.center)

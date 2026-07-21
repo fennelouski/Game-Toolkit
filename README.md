@@ -24,7 +24,8 @@ backend ([`server/`](server/)).
 | **Timer** | Chess-clock turn timer. Tap a player to start their clock and stop everyone else's; tap again to pause. Alarm sounds when someone runs out. |
 | **Scores** | Round-by-round scorecard with running totals, a crown on the leader, and per-round editing. Charts show either everyone's cumulative totals or one player's round-by-round scores. Shake to shuffle the turn order. |
 | **Players** | Manage the shared roster — rename, recolor, reorder, delete. Used by both the timer and the scorecard. |
-| **Settings** | Theme picker, dice and timer defaults, alarm length, haptics and sound, light/dark/system appearance, reset actions, and live iCloud sync status. |
+| **Settings** | Theme picker, dice and timer defaults, alarm length, haptics and sound, light/dark/system appearance, TV scoreboard toggle, reset actions, and live iCloud sync status. |
+| **TV scoreboard** | Mirror to an Apple TV (or plug into any screen) and the big screen becomes a live, theme-aware scoreboard instead of a copy of your phone — totals, last-round deltas, and a crown on the leader. Toggle off in Settings to mirror normally. iPhone/iPad only. |
 
 ## Theming
 

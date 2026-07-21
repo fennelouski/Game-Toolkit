@@ -20,6 +20,8 @@ enum SettingsKey {
     /// Also settable as the launch argument `-ui.theme <id>` for reproducible screenshots.
     static let themeID = "ui.theme"
     static let onboardingCompleted = "onboarding.completed"
+    /// Show the big scoreboard on AirPlay/HDMI screens instead of mirroring. Default true.
+    static let externalScoreboard = "settings.externalScoreboard"
 }
 
 /// The original app replaced every "P" with "π" on 14 March. Kept as an opt-out easter egg.
