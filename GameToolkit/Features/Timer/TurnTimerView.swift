@@ -79,7 +79,7 @@ struct TurnTimerView: View {
     private var statusBar: some View {
         Group {
             if let activeID = engine.activeID, let slot = engine.slots.first(where: { $0.id == activeID }) {
-                Label("\(slot.name)'s turn", systemImage: "hourglass")
+                Label("\(PiDay.decorate(slot.name))'s turn", systemImage: "hourglass")
                     .foregroundStyle(Color(hex: slot.colorHex).readableForeground)
                     .padding(.horizontal, 16).padding(.vertical, 8)
                     .background(Capsule().fill(Color(hex: slot.colorHex).gradient))
@@ -111,7 +111,7 @@ private struct PlayerTimerCard: View {
         VStack(spacing: 10) {
             HStack(spacing: 8) {
                 Circle().fill(color).frame(width: 12, height: 12)
-                Text(slot.name)
+                Text(PiDay.decorate(slot.name))
                     .font(.headline)
                     .lineLimit(1)
                 Spacer(minLength: 0)

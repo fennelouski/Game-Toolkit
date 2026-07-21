@@ -1,5 +1,6 @@
 import SwiftUI
 
+#if os(iOS)
 extension UIDevice {
     static let deviceDidShakeNotification = Notification.Name("GameToolkit.deviceDidShake")
 }
@@ -21,10 +22,18 @@ private struct ShakeDetector: ViewModifier {
         }
     }
 }
+#endif
 
 extension View {
     /// Runs `action` whenever the device is shaken while this view is on screen.
+    ///
+    /// Only iPhone and iPad can be shaken; on Mac and Vision Pro this is a no-op, so every
+    /// shake-triggered feature also has a button or menu item.
     func onShake(perform action: @escaping () -> Void) -> some View {
-        modifier(ShakeDetector(action: action))
+        #if os(iOS)
+        return modifier(ShakeDetector(action: action))
+        #else
+        return self
+        #endif
     }
 }

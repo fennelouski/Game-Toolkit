@@ -60,7 +60,7 @@ struct PlayersView: View {
             .frame(width: 38, height: 38)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(player.name.isEmpty ? "Unnamed" : player.name)
+                Text(PiDay.decorate(player.name.isEmpty ? "Unnamed" : player.name))
                     .font(.headline)
                 Text("\(player.total) pts · \(player.scores.count) rounds")
                     .font(.caption)

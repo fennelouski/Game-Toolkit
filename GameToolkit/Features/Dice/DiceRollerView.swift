@@ -5,6 +5,7 @@ struct DiceRollerView: View {
     @AppStorage(SettingsKey.diceSides) private var diceSides = 6
     @AppStorage(SettingsKey.diceShowTotal) private var showTotal = true
     @AppStorage(SettingsKey.diceColorHex) private var diceColorHex = "#E63946"
+    @AppStorage(SettingsKey.diceDotSize) private var dotSize = 3.0
 
     @State private var engine = DiceEngine()
 
@@ -22,6 +23,17 @@ struct DiceRollerView: View {
             .background(Theme.backgroundGradient.ignoresSafeArea())
             .navigationTitle("Dice")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if engine.lockedCount > 0 {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            engine.unlockAll()
+                        } label: {
+                            Label("Release \(engine.lockedCount)", systemImage: "lock.open.fill")
+                        }
+                    }
+                }
+            }
         }
         .onAppear { engine.configure(count: diceCount, sides: diceSides) }
         .onChange(of: diceCount) { _, new in engine.configure(count: new, sides: diceSides) }
@@ -41,16 +53,25 @@ struct DiceRollerView: View {
                 )
 
             GeometryReader { geo in
-                let columns = gridColumns(for: engine.dice.count, in: geo.size)
+                let columns = gridColumns(for: engine.dice.count)
                 ScrollView {
-                    LazyVGrid(columns: columns, spacing: 16) {
+                    LazyVGrid(columns: columns, spacing: 12) {
                         ForEach(engine.dice) { die in
-                            DieView(value: die.value, sides: engine.sides, spin: die.spin, color: diceColor)
-                                .aspectRatio(1, contentMode: .fit)
+                            DieView(
+                                value: die.value,
+                                sides: engine.sides,
+                                spin: die.spin,
+                                color: diceColor,
+                                isLocked: die.isLocked,
+                                dotSize: dotSize
+                            )
+                            .aspectRatio(1, contentMode: .fit)
+                            .onTapGesture { engine.toggleLock(die.id) }
                         }
                     }
-                    .padding(24)
-                    .frame(minHeight: geo.size.height)
+                    .padding(20)
+                    .padding(.top, showTotal ? 34 : 0)
+                    .frame(minHeight: geo.size.height, alignment: .center)
                 }
                 .scrollBounceBehavior(.basedOnSize)
             }
@@ -60,15 +81,15 @@ struct DiceRollerView: View {
                     .padding(.top, 14)
             }
         }
-        .contentShape(Rectangle())
-        .onTapGesture { engine.roll() }
         .scaleEffect(engine.isRolling ? 0.98 : 1)
         .animation(.spring(response: 0.3, dampingFraction: 0.6), value: engine.rollID)
         .overlay(alignment: .bottom) {
-            Text("Tap the dice or shake to roll")
+            Text(engine.lockedCount > 0
+                 ? "\(engine.lockedCount) held · shake to roll the rest"
+                 : "Tap a die to hold it · shake to roll")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
-                .padding(.bottom, 12)
+                .padding(.bottom, 10)
                 .opacity(engine.isRolling ? 0 : 1)
         }
     }
@@ -98,12 +119,15 @@ struct DiceRollerView: View {
                     ForEach(sideOptions, id: \.self) { side in
                         sideChip(side)
                     }
+                    if !sideOptions.contains(diceSides) {
+                        sideChip(diceSides)
+                    }
                 }
                 .padding(.horizontal, 2)
             }
 
             HStack(spacing: 16) {
-                Stepper(value: $diceCount, in: 1...12) {
+                Stepper(value: $diceCount, in: 1...30) {
                     HStack(spacing: 6) {
                         Image(systemName: "dice")
                         Text("\(diceCount) dice")
@@ -131,7 +155,7 @@ struct DiceRollerView: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .buttonBorderShape(.capsule)
-            .disabled(engine.isRolling)
+            .disabled(engine.isRolling || !engine.hasUnlockedDice)
         }
     }
 
@@ -154,9 +178,18 @@ struct DiceRollerView: View {
         .buttonStyle(.plain)
     }
 
-    private func gridColumns(for count: Int, in size: CGSize) -> [GridItem] {
-        let target = count <= 1 ? 1 : min(count <= 4 ? 2 : (count <= 9 ? 3 : 4), count)
-        return Array(repeating: GridItem(.flexible(), spacing: 16), count: max(1, target))
+    /// Keeps the dice roughly square as the count grows.
+    private func gridColumns(for count: Int) -> [GridItem] {
+        let target: Int
+        switch count {
+        case 0...1: target = 1
+        case 2...4: target = 2
+        case 5...9: target = 3
+        case 10...16: target = 4
+        case 17...25: target = 5
+        default: target = 6
+        }
+        return Array(repeating: GridItem(.flexible(), spacing: 12), count: max(1, min(target, count)))
     }
 }
 

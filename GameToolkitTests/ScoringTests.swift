@@ -61,7 +61,7 @@ struct RosterTests {
     private func makeContext() throws -> ModelContext {
         let container = try ModelContainer(
             for: Schema([Player.self]),
-            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)]
         )
         return ModelContext(container)
     }
