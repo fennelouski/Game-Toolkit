@@ -8,8 +8,10 @@ struct RootView: View {
     @AppStorage(SettingsKey.appearance) private var appearanceRaw = AppearanceMode.system.rawValue
     /// Remembers the last tab the player was on between launches.
     @AppStorage(SettingsKey.selectedTab) private var selectedTab = 0
+    @AppStorage(SettingsKey.onboardingCompleted) private var onboardingCompleted = false
 
     @State private var themeManager = ThemeManager.shared
+    @State private var showOnboarding = false
 
     private var appearance: AppearanceMode {
         AppearanceMode(rawValue: appearanceRaw) ?? .system
@@ -57,7 +59,14 @@ struct RootView: View {
         .environment(\.palette, palette)
         .animation(.easeInOut(duration: 0.35), value: themeManager.selectedThemeID)
         .preferredColorScheme(appearance.colorScheme)
+        .fullScreenCover(isPresented: $showOnboarding) {
+            OnboardingView()
+                .environment(\.palette, palette)
+                .tint(palette.accent)
+                .preferredColorScheme(appearance.colorScheme)
+        }
         .task {
+            GameThemeService.shared.restoreSelectedThemeIfNeeded()
             #if DEBUG
             if ScreenshotSupport.isEnabled {
                 ScreenshotSupport.seed(context, existing: players)
@@ -66,6 +75,9 @@ struct RootView: View {
             #endif
             Roster.seedIfNeeded(context, existing: players)
             Roster.adoptPaletteIndices(context, players: players)
+            if !onboardingCompleted {
+                showOnboarding = true
+            }
         }
     }
 }

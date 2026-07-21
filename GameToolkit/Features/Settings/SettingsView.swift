@@ -24,6 +24,8 @@ struct SettingsView: View {
     @State private var themeManager = ThemeManager.shared
     @State private var showResetAlert = false
     @State private var showResetNamesAlert = false
+    @State private var showGameSearch = false
+    @State private var showOnboarding = false
 
     private let swatchColumns = [GridItem(.adaptive(minimum: 46), spacing: 12)]
 
@@ -50,6 +52,23 @@ struct SettingsView: View {
             .scrollContentBackground(.hidden)
             .background(palette.background.ignoresSafeArea())
             .navigationTitle("Settings")
+            .sheet(isPresented: $showGameSearch) {
+                NavigationStack {
+                    GameThemeSearchView()
+                        .padding()
+                        .background(palette.background.ignoresSafeArea())
+                        .navigationTitle("Match a Game")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Done") { showGameSearch = false }.fontWeight(.semibold)
+                            }
+                        }
+                }
+            }
+            .fullScreenCover(isPresented: $showOnboarding) {
+                OnboardingView()
+            }
             .alert("Reset all scores?", isPresented: $showResetAlert) {
                 Button("Reset", role: .destructive) {
                     Roster.resetScores(context, players: players)
@@ -78,6 +97,14 @@ struct SettingsView: View {
             ThemeGridPicker()
                 .listRowBackground(palette.surface)
 
+            Button {
+                showGameSearch = true
+            } label: {
+                Label("Match a Board Game…", systemImage: "magnifyingglass")
+                    .foregroundStyle(palette.accent)
+            }
+            .listRowBackground(palette.surface)
+
             Picker("Appearance", selection: $appearanceRaw) {
                 ForEach(AppearanceMode.allCases) { Text($0.label).tag($0.rawValue) }
             }
@@ -86,7 +113,7 @@ struct SettingsView: View {
         } header: {
             Text("Theme")
         } footer: {
-            Text("Themes recolor the whole app, including player colors. Every feature works with every theme.")
+            Text("Themes recolor the whole app, including player colors. Every feature works with every theme, online or offline.")
         }
     }
 
@@ -233,6 +260,7 @@ struct SettingsView: View {
     private var aboutSection: some View {
         Section("About") {
             Group {
+                Button("Show Welcome Tour") { showOnboarding = true }
                 LabeledContent("Version", value: appVersion)
                 LabeledContent("Made by", value: "Nathan Fennel")
             }

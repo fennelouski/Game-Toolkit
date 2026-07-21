@@ -11,10 +11,12 @@ final class ThemeManager {
     /// Every theme the picker can offer right now (built-ins plus any cached game themes).
     private(set) var availableThemes: [AppTheme]
 
+    @ObservationIgnored private let defaults: UserDefaults
+
     var selectedThemeID: String {
         didSet {
             guard oldValue != selectedThemeID else { return }
-            UserDefaults.standard.set(selectedThemeID, forKey: SettingsKey.themeID)
+            defaults.set(selectedThemeID, forKey: SettingsKey.themeID)
         }
     }
 
@@ -24,6 +26,7 @@ final class ThemeManager {
     }
 
     init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
         availableThemes = BuiltInThemes.all
         // `-ui.theme <id>` (used by the screenshot script) lands in UserDefaults' argument
         // domain under the same key, so a plain read honors both the stored choice and the

@@ -187,6 +187,8 @@ struct ThemePickerSheet: View {
 
     private var columns: [GridItem] { [GridItem(.adaptive(minimum: 150), spacing: 14)] }
 
+    @State private var showGameSearch = false
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -208,6 +210,19 @@ struct ThemePickerSheet: View {
                                 }
                             }
                         }
+                    }
+
+                    if showGameSearch {
+                        GameThemeSearchView()
+                    } else {
+                        Button {
+                            withAnimation(.snappy) { showGameSearch = true }
+                        } label: {
+                            Label("Match a board game…", systemImage: "magnifyingglass")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(palette.accent)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding()

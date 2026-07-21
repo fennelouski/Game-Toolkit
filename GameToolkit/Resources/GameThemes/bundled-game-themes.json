@@ -1,0 +1,586 @@
+[
+  {
+    "schemaVersion": 1,
+    "id": "wingspan",
+    "name": "Feathered Meadow",
+    "game": {
+      "name": "Wingspan",
+      "slug": "wingspan",
+      "aliases": [
+        "wing span"
+      ]
+    },
+    "tags": [
+      "nature",
+      "birds",
+      "soft",
+      "light"
+    ],
+    "updatedAt": "2026-07-21T00:00:00Z",
+    "light": {
+      "background": "#EFF2E9",
+      "surface": "#FAFBF3",
+      "surfaceElevated": "#FFFFFF",
+      "table": "#4A7089",
+      "accent": "#3E7CA6",
+      "accentSecondary": "#C97B54",
+      "textPrimary": "#28313A",
+      "textSecondary": "#54616B",
+      "positive": "#3E7D53",
+      "negative": "#A84A3F",
+      "warning": "#8A6420",
+      "diceFace": "#FDFCF3",
+      "dicePip": "#37414A",
+      "players": [
+        "#65926B",
+        "#BD6E4F",
+        "#55AAC8",
+        "#9C5F94",
+        "#C3912D",
+        "#40837C",
+        "#8A5A3F",
+        "#3C5977",
+        "#A93E5C",
+        "#8B7FC1"
+      ]
+    },
+    "dark": {
+      "background": "#141A1E",
+      "surface": "#1D262C",
+      "surfaceElevated": "#273239",
+      "table": "#2C4A5C",
+      "accent": "#7FB6D9",
+      "accentSecondary": "#DB9B70",
+      "textPrimary": "#E6EBEE",
+      "textSecondary": "#A2AEB8",
+      "positive": "#8FC796",
+      "negative": "#DB9080",
+      "warning": "#D2B266",
+      "diceFace": "#EFF2E9",
+      "dicePip": "#37414A",
+      "players": [
+        "#778B53",
+        "#DB8A70",
+        "#D2B8E4",
+        "#9C7EB5",
+        "#D8BA6A",
+        "#31A19E",
+        "#E4AE8F",
+        "#CBB8C0",
+        "#B9768E",
+        "#7CA1D6"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "catan",
+    "name": "Harvest Isle",
+    "game": {
+      "name": "Catan",
+      "slug": "catan",
+      "aliases": [
+        "settlers of catan",
+        "the settlers of catan"
+      ]
+    },
+    "tags": [
+      "harvest",
+      "warm",
+      "classic"
+    ],
+    "updatedAt": "2026-07-21T00:00:00Z",
+    "light": {
+      "background": "#F2E8D0",
+      "surface": "#F9F2E0",
+      "surfaceElevated": "#FEFAF0",
+      "table": "#84561F",
+      "accent": "#A6531F",
+      "accentSecondary": "#4E7A42",
+      "textPrimary": "#33291B",
+      "textSecondary": "#63563E",
+      "positive": "#4E7A3B",
+      "negative": "#A03A28",
+      "warning": "#8A6420",
+      "diceFace": "#FAF4E4",
+      "dicePip": "#3A3020",
+      "players": [
+        "#2F5B52",
+        "#B85C38",
+        "#46688F",
+        "#77293B",
+        "#C9973B",
+        "#7FA184",
+        "#37818A",
+        "#7B6FAE",
+        "#7A5230",
+        "#BB8FA0"
+      ]
+    },
+    "dark": {
+      "background": "#1C160D",
+      "surface": "#271F13",
+      "surfaceElevated": "#332A1B",
+      "table": "#5C4420",
+      "accent": "#DB9C4A",
+      "accentSecondary": "#8FBA7F",
+      "textPrimary": "#EFE6D2",
+      "textSecondary": "#B3A78E",
+      "positive": "#9BC788",
+      "negative": "#E08D6B",
+      "warning": "#D9AE63",
+      "diceFace": "#F4ECD8",
+      "dicePip": "#3A3020",
+      "players": [
+        "#5E9C86",
+        "#DB8D59",
+        "#668CAE",
+        "#B86664",
+        "#E6B46A",
+        "#9BCCC6",
+        "#74C7DD",
+        "#A79BD6",
+        "#B08A62",
+        "#DA95A7"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "gloomhaven",
+    "name": "Dark Hollow",
+    "game": {
+      "name": "Gloomhaven",
+      "slug": "gloomhaven",
+      "aliases": [
+        "frosthaven",
+        "jaws of the lion"
+      ]
+    },
+    "tags": [
+      "dark",
+      "dungeon",
+      "moody"
+    ],
+    "updatedAt": "2026-07-21T00:00:00Z",
+    "light": {
+      "background": "#E7E4DE",
+      "surface": "#F2F0EA",
+      "surfaceElevated": "#FBF9F5",
+      "table": "#4A5058",
+      "accent": "#5A6B7C",
+      "accentSecondary": "#9A5B36",
+      "textPrimary": "#26292E",
+      "textSecondary": "#565C64",
+      "positive": "#3F6B4F",
+      "negative": "#9A4238",
+      "warning": "#7D6420",
+      "diceFace": "#F4F2EC",
+      "dicePip": "#2C3036",
+      "players": [
+        "#347353",
+        "#A6653C",
+        "#629CBD",
+        "#824862",
+        "#AF7E37",
+        "#788258",
+        "#496C7E",
+        "#7A6698",
+        "#6B4F3A",
+        "#A87686"
+      ]
+    },
+    "dark": {
+      "background": "#101214",
+      "surface": "#191C20",
+      "surfaceElevated": "#23272D",
+      "table": "#2A2F37",
+      "accent": "#D98E52",
+      "accentSecondary": "#7C93A8",
+      "textPrimary": "#E4E4DE",
+      "textSecondary": "#A2A8B0",
+      "positive": "#8FC2A0",
+      "negative": "#D98B76",
+      "warning": "#D9B366",
+      "diceFace": "#3E4E61",
+      "dicePip": "#E8B87A",
+      "players": [
+        "#8A9C87",
+        "#DC8F5D",
+        "#91A5BC",
+        "#BF7696",
+        "#DCC095",
+        "#9DB873",
+        "#89D9D0",
+        "#9899CC",
+        "#B08A62",
+        "#DFA3B2"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "ticket-to-ride",
+    "name": "Rail Journey",
+    "game": {
+      "name": "Ticket to Ride",
+      "slug": "ticket-to-ride",
+      "aliases": [
+        "ttr",
+        "ticket 2 ride"
+      ]
+    },
+    "tags": [
+      "trains",
+      "classic",
+      "bright"
+    ],
+    "updatedAt": "2026-07-21T00:00:00Z",
+    "light": {
+      "background": "#F3EDDF",
+      "surface": "#FBF7EB",
+      "surfaceElevated": "#FFFFFF",
+      "table": "#37556E",
+      "accent": "#A83228",
+      "accentSecondary": "#37556E",
+      "textPrimary": "#2A2C31",
+      "textSecondary": "#5C5E63",
+      "positive": "#2C6A47",
+      "negative": "#A83228",
+      "warning": "#8A6420",
+      "diceFace": "#FBF7EB",
+      "dicePip": "#2A2C31",
+      "players": [
+        "#2D5BCF",
+        "#E13C4C",
+        "#099A4E",
+        "#DEB413",
+        "#966DDA",
+        "#F97316",
+        "#0FA3A3",
+        "#D30876",
+        "#64748B",
+        "#62AC1F"
+      ]
+    },
+    "dark": {
+      "background": "#15130F",
+      "surface": "#201D17",
+      "surfaceElevated": "#2B2820",
+      "table": "#452F26",
+      "accent": "#E06A5E",
+      "accentSecondary": "#8FAEC9",
+      "textPrimary": "#EFEBE0",
+      "textSecondary": "#ACA89D",
+      "positive": "#7FC796",
+      "negative": "#E08D7D",
+      "warning": "#D9B15C",
+      "diceFace": "#F1EDE2",
+      "dicePip": "#2A2C31",
+      "players": [
+        "#7E97D7",
+        "#F2777C",
+        "#75E1A0",
+        "#D5BD19",
+        "#C79BFF",
+        "#FF9E45",
+        "#39D2E6",
+        "#D98492",
+        "#B9BEC7",
+        "#B5F560"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "azul",
+    "name": "Glazed Tiles",
+    "game": {
+      "name": "Azul",
+      "slug": "azul",
+      "aliases": [
+        "azul stained glass",
+        "azul summer pavilion"
+      ]
+    },
+    "tags": [
+      "tiles",
+      "elegant",
+      "blue"
+    ],
+    "updatedAt": "2026-07-21T00:00:00Z",
+    "light": {
+      "background": "#EDF1F4",
+      "surface": "#F8FAFC",
+      "surfaceElevated": "#FFFFFF",
+      "table": "#2E5E8C",
+      "accent": "#2E5E8C",
+      "accentSecondary": "#C9862E",
+      "textPrimary": "#25303A",
+      "textSecondary": "#556370",
+      "positive": "#3E7D53",
+      "negative": "#A84A3F",
+      "warning": "#8A6420",
+      "diceFace": "#FBFCFD",
+      "dicePip": "#2E5E8C",
+      "players": [
+        "#2F5D50",
+        "#C24C2C",
+        "#2B5E8C",
+        "#8E354C",
+        "#C99022",
+        "#6B8F3D",
+        "#17777F",
+        "#6A4FA3",
+        "#50432D",
+        "#B98BAE"
+      ]
+    },
+    "dark": {
+      "background": "#0F1519",
+      "surface": "#182126",
+      "surfaceElevated": "#212D34",
+      "table": "#1F3D57",
+      "accent": "#77AEDB",
+      "accentSecondary": "#DBA84E",
+      "textPrimary": "#E4ECF1",
+      "textSecondary": "#9FAEB8",
+      "positive": "#8FC796",
+      "negative": "#DB9080",
+      "warning": "#D9B366",
+      "diceFace": "#F0F4F7",
+      "dicePip": "#25303A",
+      "players": [
+        "#83BD96",
+        "#C5884B",
+        "#A4ACD6",
+        "#CE7295",
+        "#D9B15C",
+        "#97BB6E",
+        "#A7CED2",
+        "#9E8CC9",
+        "#91895C",
+        "#DF9FB5"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "carcassonne",
+    "name": "Walled Fields",
+    "game": {
+      "name": "Carcassonne",
+      "slug": "carcassonne",
+      "aliases": [
+        "carcasonne",
+        "carcassone"
+      ]
+    },
+    "tags": [
+      "medieval",
+      "fields",
+      "classic"
+    ],
+    "updatedAt": "2026-07-21T00:00:00Z",
+    "light": {
+      "background": "#EDEBDF",
+      "surface": "#F7F5EB",
+      "surfaceElevated": "#FEFCF4",
+      "table": "#5F7A4A",
+      "accent": "#6B7B3D",
+      "accentSecondary": "#A6653C",
+      "textPrimary": "#2C3026",
+      "textSecondary": "#5A5F50",
+      "positive": "#4C7A3B",
+      "negative": "#9A4238",
+      "warning": "#8A6420",
+      "diceFace": "#F9F7ED",
+      "dicePip": "#333828",
+      "players": [
+        "#65926B",
+        "#BD6E4F",
+        "#55AAC8",
+        "#9C5F94",
+        "#C3912D",
+        "#40837C",
+        "#8A5A3F",
+        "#3C5977",
+        "#A93E5C",
+        "#8B7FC1"
+      ]
+    },
+    "dark": {
+      "background": "#14170F",
+      "surface": "#1E2317",
+      "surfaceElevated": "#293020",
+      "table": "#37432F",
+      "accent": "#A9C46A",
+      "accentSecondary": "#D99C6B",
+      "textPrimary": "#E9EBDD",
+      "textSecondary": "#A8AE9A",
+      "positive": "#9BC788",
+      "negative": "#DB9080",
+      "warning": "#D2B266",
+      "diceFace": "#F0EEDC",
+      "dicePip": "#333828",
+      "players": [
+        "#778B53",
+        "#DB8A70",
+        "#D2B8E4",
+        "#9C7EB5",
+        "#D8BA6A",
+        "#31A19E",
+        "#E4AE8F",
+        "#CBB8C0",
+        "#B9768E",
+        "#7CA1D6"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "root",
+    "name": "Woodland Clearing",
+    "game": {
+      "name": "Root",
+      "slug": "root",
+      "aliases": [
+        "root board game",
+        "root woodland"
+      ]
+    },
+    "tags": [
+      "woodland",
+      "animals",
+      "cozy"
+    ],
+    "updatedAt": "2026-07-21T00:00:00Z",
+    "light": {
+      "background": "#F0EADC",
+      "surface": "#FAF5E9",
+      "surfaceElevated": "#FFFDF6",
+      "table": "#4E6E48",
+      "accent": "#C25A2E",
+      "accentSecondary": "#4E6E48",
+      "textPrimary": "#2F2B24",
+      "textSecondary": "#5F594C",
+      "positive": "#43753B",
+      "negative": "#A83E28",
+      "warning": "#8A6420",
+      "diceFace": "#FBF6EA",
+      "dicePip": "#33302A",
+      "players": [
+        "#2F5B52",
+        "#B85C38",
+        "#46688F",
+        "#77293B",
+        "#C9973B",
+        "#7FA184",
+        "#37818A",
+        "#7B6FAE",
+        "#7A5230",
+        "#BB8FA0"
+      ]
+    },
+    "dark": {
+      "background": "#171310",
+      "surface": "#221D18",
+      "surfaceElevated": "#2E2720",
+      "table": "#334027",
+      "accent": "#E0793F",
+      "accentSecondary": "#8FB482",
+      "textPrimary": "#EFE8DC",
+      "textSecondary": "#B0A896",
+      "positive": "#9BC788",
+      "negative": "#E08D6B",
+      "warning": "#D9AE63",
+      "diceFace": "#F3ECDF",
+      "dicePip": "#33302A",
+      "players": [
+        "#5E9C86",
+        "#DB8D59",
+        "#668CAE",
+        "#B86664",
+        "#E6B46A",
+        "#9BCCC6",
+        "#74C7DD",
+        "#A79BD6",
+        "#B08A62",
+        "#DA95A7"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "terraforming-mars",
+    "name": "Red Planet",
+    "game": {
+      "name": "Terraforming Mars",
+      "slug": "terraforming-mars",
+      "aliases": [
+        "tfm",
+        "mars"
+      ]
+    },
+    "tags": [
+      "space",
+      "science",
+      "rust"
+    ],
+    "updatedAt": "2026-07-21T00:00:00Z",
+    "light": {
+      "background": "#F0E5DC",
+      "surface": "#F9F1E9",
+      "surfaceElevated": "#FFFAF4",
+      "table": "#9C4A26",
+      "accent": "#9C4A26",
+      "accentSecondary": "#2E6E68",
+      "textPrimary": "#332621",
+      "textSecondary": "#63524A",
+      "positive": "#2E6E48",
+      "negative": "#A83228",
+      "warning": "#8A6420",
+      "diceFace": "#FAF3EB",
+      "dicePip": "#3A2A22",
+      "players": [
+        "#2F5D50",
+        "#C24C2C",
+        "#2B5E8C",
+        "#8E354C",
+        "#C99022",
+        "#6B8F3D",
+        "#17777F",
+        "#6A4FA3",
+        "#50432D",
+        "#B98BAE"
+      ]
+    },
+    "dark": {
+      "background": "#170F0C",
+      "surface": "#231712",
+      "surfaceElevated": "#2F1F18",
+      "table": "#59301C",
+      "accent": "#E0784A",
+      "accentSecondary": "#66B8B0",
+      "textPrimary": "#F1E4DB",
+      "textSecondary": "#B3A197",
+      "positive": "#7FC796",
+      "negative": "#E08D7D",
+      "warning": "#D9B15C",
+      "diceFace": "#F2E9E0",
+      "dicePip": "#3A2A22",
+      "players": [
+        "#83BD96",
+        "#C5884B",
+        "#A4ACD6",
+        "#CE7295",
+        "#D9B15C",
+        "#97BB6E",
+        "#A7CED2",
+        "#9E8CC9",
+        "#91895C",
+        "#DF9FB5"
+      ]
+    }
+  }
+]
