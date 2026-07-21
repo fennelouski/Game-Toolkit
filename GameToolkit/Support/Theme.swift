@@ -1,9 +1,12 @@
 import SwiftUI
 
-/// Central place for colors, gradients and the player palette so the whole app feels like one system.
+/// Legacy color lists kept for migration and the die-color picker. The semantic theme
+/// system lives in `Support/Theme/` (`ThemeModels`, `BuiltInThemes`, `ThemeManager`).
 enum Theme {
-    /// Vibrant, reasonably color-blind-friendly palette assigned to new players in order.
-    static let playerPalette: [String] = [
+    /// The player palette shipped in 2.0, before themes existed. Players created back then
+    /// stored one of these hexes; `Roster.adoptPaletteIndices` maps them onto theme palette
+    /// ordinals so the roster recolors when the theme changes.
+    static let legacyPlayerPalette: [String] = [
         "#4D96FF", // blue
         "#FF6B6B", // coral
         "#6BCB77", // green
@@ -18,7 +21,7 @@ enum Theme {
         "#FF7AA2", // rose
     ]
 
-    /// The die colors offered in the roller and settings.
+    /// The die colors offered in the roller and settings, alongside the theme default.
     static let diceColors: [(name: String, hex: String)] = [
         ("Classic", "#F5F5F7"),
         ("Ruby", "#E63946"),
@@ -30,22 +33,8 @@ enum Theme {
         ("Rose", "#FF6B9D"),
     ]
 
-    static func nextPlayerColor(existingCount: Int) -> String {
-        playerPalette[existingCount % playerPalette.count]
-    }
-
-    /// A soft, theme-aware background gradient used behind feature screens.
-    static var backgroundGradient: LinearGradient {
-        LinearGradient(
-            colors: [
-                Color(.systemBackground),
-                Color.accentColor.opacity(0.08),
-                Color(.systemBackground),
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-    }
+    /// Sentinel stored in the die-color setting meaning "follow the current theme".
+    static let themeDiceColor = "theme"
 }
 
 extension Int {

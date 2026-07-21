@@ -7,6 +7,7 @@ struct DiceRollerView: View {
     @AppStorage(SettingsKey.diceColorHex) private var diceColorHex = "#E63946"
     @AppStorage(SettingsKey.diceDotSize) private var dotSize = 3.0
 
+    @Environment(\.palette) private var palette
     @State private var engine = DiceEngine()
 
     private let sideOptions = [4, 6, 8, 10, 12, 20, 100]
@@ -20,7 +21,7 @@ struct DiceRollerView: View {
             }
             .padding(.horizontal)
             .padding(.bottom, 8)
-            .background(Theme.backgroundGradient.ignoresSafeArea())
+            .background(palette.background.ignoresSafeArea())
             .navigationTitle("Dice")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

@@ -9,6 +9,7 @@ import Charts
 struct ScoreChartView: View {
     let players: [Player]
 
+    @Environment(\.palette) private var palette
     @State private var focusedPlayerID: PersistentIdentifier?
 
     private struct Point: Identifiable {
@@ -47,7 +48,7 @@ struct ScoreChartView: View {
                 running += player.score(inRound: round)
                 points.append(Point(round: round + 1, total: running))
             }
-            return Series(id: index, label: label, color: player.color, points: points)
+            return Series(id: index, label: label, color: player.color(in: palette), points: points)
         }
     }
 
@@ -150,7 +151,7 @@ struct ScoreChartView: View {
                     x: .value("Round", "R\(round + 1)"),
                     y: .value("Score", player.score(inRound: round))
                 )
-                .foregroundStyle(player.color.gradient)
+                .foregroundStyle(player.color(in: palette).gradient)
                 .cornerRadius(5)
                 .annotation(position: .top) {
                     Text("\(player.score(inRound: round))")
@@ -168,7 +169,7 @@ struct ScoreChartView: View {
             Text("Total \(player.total)")
                 .font(.caption.weight(.semibold))
                 .padding(.horizontal, 10).padding(.vertical, 5)
-                .background(Capsule().fill(player.color.opacity(0.18)))
+                .background(Capsule().fill(player.color(in: palette).opacity(0.18)))
                 .padding(10)
         }
         .background(

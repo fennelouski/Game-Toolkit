@@ -3,6 +3,7 @@ import SwiftData
 
 struct ScorecardView: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.palette) private var palette
     @Query(sort: \Player.sortIndex) private var players: [Player]
 
     @State private var mode: Mode = ScorecardView.initialMode
@@ -39,7 +40,7 @@ struct ScorecardView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Theme.backgroundGradient.ignoresSafeArea()
+                palette.background.ignoresSafeArea()
                 content
             }
             .navigationTitle("Scorecard")
@@ -153,7 +154,7 @@ struct ScorecardView: View {
             ForEach(players) { player in
                 VStack(spacing: 4) {
                     Circle()
-                        .fill(player.color.gradient)
+                        .fill(player.color(in: palette).gradient)
                         .frame(width: 10, height: 10)
                     Text(PiDay.decorate(player.name.isEmpty ? "—" : player.name))
                         .font(.caption.weight(.semibold))

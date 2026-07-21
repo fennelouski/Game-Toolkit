@@ -7,6 +7,7 @@ struct TurnTimerView: View {
     @AppStorage(SettingsKey.secondsPerPlayer) private var secondsPerPlayer = 90.0
     @AppStorage(SettingsKey.alarmDuration) private var alarmDuration = 3.0
 
+    @Environment(\.palette) private var palette
     @State private var engine = TimerEngine()
     @State private var showingTimeSheet = false
 
@@ -15,7 +16,7 @@ struct TurnTimerView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Theme.backgroundGradient.ignoresSafeArea()
+                palette.background.ignoresSafeArea()
 
                 VStack(spacing: 12) {
                     statusBar
@@ -25,6 +26,7 @@ struct TurnTimerView: View {
                                 ForEach(engine.slots) { slot in
                                     PlayerTimerCard(
                                         slot: slot,
+                                        color: color(for: slot),
                                         isActive: engine.activeID == slot.id,
                                         isExpired: engine.expiredID == slot.id
                                     )
@@ -76,13 +78,22 @@ struct TurnTimerView: View {
         .onChange(of: alarmDuration) { _, new in engine.alarmDuration = new }
     }
 
+    /// Resolves a slot's display color through the theme, falling back to the snapshot hex
+    /// if the player has since been deleted.
+    private func color(for slot: TimerEngine.Slot) -> Color {
+        if let player = players.first(where: { $0.persistentModelID == slot.id }) {
+            return player.color(in: palette)
+        }
+        return Color(hex: slot.colorHex)
+    }
+
     private var statusBar: some View {
         Group {
             if let activeID = engine.activeID, let slot = engine.slots.first(where: { $0.id == activeID }) {
                 Label("\(PiDay.decorate(slot.name))'s turn", systemImage: "hourglass")
-                    .foregroundStyle(Color(hex: slot.colorHex).readableForeground)
+                    .foregroundStyle(color(for: slot).readableForeground)
                     .padding(.horizontal, 16).padding(.vertical, 8)
-                    .background(Capsule().fill(Color(hex: slot.colorHex).gradient))
+                    .background(Capsule().fill(color(for: slot).gradient))
             } else if engine.expiredID != nil {
                 Label("Time's up!", systemImage: "bell.fill")
                     .foregroundStyle(.white)
@@ -101,10 +112,10 @@ struct TurnTimerView: View {
 
 private struct PlayerTimerCard: View {
     let slot: TimerEngine.Slot
+    let color: Color
     let isActive: Bool
     let isExpired: Bool
 
-    private var color: Color { Color(hex: slot.colorHex) }
     private var isLow: Bool { slot.remaining <= 10 && slot.remaining > 0 }
 
     var body: some View {

@@ -7,8 +7,11 @@ struct PlayerEditorSheet: View {
     @Bindable var player: Player
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
+    @Environment(\.palette) private var palette
 
     private let columns = [GridItem(.adaptive(minimum: 52), spacing: 12)]
+
+    private var displayColor: Color { player.color(in: palette) }
 
     var body: some View {
         NavigationStack {
@@ -16,10 +19,10 @@ struct PlayerEditorSheet: View {
                 Section {
                     HStack(spacing: 14) {
                         ZStack {
-                            Circle().fill(player.color.gradient)
+                            Circle().fill(displayColor.gradient)
                             Text(String(player.name.prefix(1)).uppercased())
                                 .font(.title2.weight(.bold))
-                                .foregroundStyle(player.color.readableForeground)
+                                .foregroundStyle(displayColor.readableForeground)
                         }
                         .frame(width: 52, height: 52)
 
@@ -30,18 +33,27 @@ struct PlayerEditorSheet: View {
                     .padding(.vertical, 4)
                 }
 
-                Section("Color") {
+                Section {
                     LazyVGrid(columns: columns, spacing: 12) {
-                        ForEach(Theme.playerPalette, id: \.self) { hex in
-                            swatch(hex)
+                        ForEach(palette.playerHexes.indices, id: \.self) { index in
+                            swatch(index)
                         }
                     }
                     .padding(.vertical, 4)
 
                     ColorPicker("Custom color", selection: Binding(
-                        get: { player.color },
-                        set: { player.colorHex = $0.hexString }
+                        get: { displayColor },
+                        set: {
+                            player.colorHex = $0.hexString
+                            player.paletteIndex = nil
+                        }
                     ))
+                } header: {
+                    Text("Color")
+                } footer: {
+                    Text(player.paletteIndex == nil
+                         ? "Custom colors stay fixed when the theme changes."
+                         : "Palette colors follow the app theme.")
                 }
 
                 Section("Scores") {
@@ -73,10 +85,13 @@ struct PlayerEditorSheet: View {
         }
     }
 
-    private func swatch(_ hex: String) -> some View {
-        let selected = hex.caseInsensitiveCompare(player.colorHex) == .orderedSame
+    private func swatch(_ index: Int) -> some View {
+        let hex = palette.playerHex(index)
+        let selected = player.paletteIndex.map { $0 % palette.playerHexes.count == index } ?? false
         return Button {
             Haptics.selection()
+            player.paletteIndex = index
+            // Snapshot the resolved hex for older app versions sharing the CloudKit store.
             player.colorHex = hex
         } label: {
             Circle()
@@ -92,6 +107,8 @@ struct PlayerEditorSheet: View {
                             .foregroundStyle(Color(hex: hex).readableForeground)
                     }
                 }
+                .accessibilityLabel("Palette color \(index + 1)")
+                .accessibilityAddTraits(selected ? .isSelected : [])
         }
         .buttonStyle(.plain)
     }

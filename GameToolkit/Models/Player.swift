@@ -10,23 +10,41 @@ import SwiftUI
 final class Player {
     var name: String = ""
     var colorHex: String = "#4D96FF"
+    /// Ordinal into the active theme's player palette. When set, the player recolors
+    /// automatically with the theme; `nil` means `colorHex` is a deliberate custom color
+    /// that themes must not override. Optional keeps the schema CloudKit-compatible.
+    var paletteIndex: Int? = nil
     var sortIndex: Int = 0
     var createdAt: Date = Date.now
 
     /// One entry per completed round. Index 0 is round 1. Kept in sync across players by the scorecard.
     var scores: [Int] = []
 
-    init(name: String, colorHex: String = "#4D96FF", sortIndex: Int = 0) {
+    init(name: String, colorHex: String = "#4D96FF", paletteIndex: Int? = nil, sortIndex: Int = 0) {
         self.name = name
         self.colorHex = colorHex
+        self.paletteIndex = paletteIndex
         self.sortIndex = sortIndex
         self.createdAt = .now
         self.scores = []
     }
 
+    /// The literal stored color, ignoring themes. Prefer `color(in:)` in UI code.
     var color: Color {
         get { Color(hex: colorHex) }
         set { colorHex = newValue.hexString }
+    }
+
+    /// Resolves the display color: the theme palette when the player follows it, or the
+    /// stored hex when the user picked a custom color.
+    func color(in palette: ThemePalette) -> Color {
+        if let paletteIndex { return palette.playerColor(paletteIndex) }
+        return Color(hex: colorHex)
+    }
+
+    func colorHex(in palette: ThemePalette) -> String {
+        if let paletteIndex { return palette.playerHex(paletteIndex) }
+        return colorHex
     }
 
     var total: Int { scores.reduce(0, +) }

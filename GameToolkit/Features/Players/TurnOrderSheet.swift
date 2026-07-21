@@ -5,6 +5,7 @@ import SwiftUI
 struct TurnOrderSheet: View {
     let players: [Player]
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.palette) private var palette
     @State private var order: [Player] = []
 
     var body: some View {
@@ -14,10 +15,10 @@ struct TurnOrderSheet: View {
                     ForEach(Array(order.enumerated()), id: \.element.id) { index, player in
                         HStack(spacing: 14) {
                             ZStack {
-                                Circle().fill(player.color.gradient)
+                                Circle().fill(player.color(in: palette).gradient)
                                 Text("\(index + 1)")
                                     .font(.headline.weight(.bold))
-                                    .foregroundStyle(player.color.readableForeground)
+                                    .foregroundStyle(player.color(in: palette).readableForeground)
                             }
                             .frame(width: 34, height: 34)
 

@@ -17,6 +17,8 @@ enum SettingsKey {
     static let appearance = "settings.appearance"
     static let selectedTab = "ui.selectedTab"
     static let piDayEnabled = "settings.piDayEnabled"
+    /// Also settable as the launch argument `-ui.theme <id>` for reproducible screenshots.
+    static let themeID = "ui.theme"
 }
 
 /// The original app replaced every "P" with "π" on 14 March. Kept as an opt-out easter egg.

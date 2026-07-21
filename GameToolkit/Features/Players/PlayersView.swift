@@ -3,6 +3,7 @@ import SwiftData
 
 struct PlayersView: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.palette) private var palette
     @Query(sort: \Player.sortIndex) private var players: [Player]
     @State private var editing: Player?
 
@@ -52,10 +53,10 @@ struct PlayersView: View {
     private func row(_ player: Player) -> some View {
         HStack(spacing: 14) {
             ZStack {
-                Circle().fill(player.color.gradient)
+                Circle().fill(player.color(in: palette).gradient)
                 Text(String(player.name.prefix(1)).uppercased())
                     .font(.headline)
-                    .foregroundStyle(player.color.readableForeground)
+                    .foregroundStyle(player.color(in: palette).readableForeground)
             }
             .frame(width: 38, height: 38)
 

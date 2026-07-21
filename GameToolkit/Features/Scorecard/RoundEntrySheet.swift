@@ -8,6 +8,7 @@ struct RoundEntrySheet: View {
     let onSave: ([Int]) -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.palette) private var palette
     @State private var values: [Int]
     @FocusState private var focusedField: Int?
 
@@ -58,7 +59,7 @@ struct RoundEntrySheet: View {
     private func row(index: Int, player: Player) -> some View {
         HStack(spacing: 12) {
             Circle()
-                .fill(player.color.gradient)
+                .fill(player.color(in: palette).gradient)
                 .frame(width: 14, height: 14)
 
             Text(PiDay.decorate(player.name.isEmpty ? "Unnamed" : player.name))
