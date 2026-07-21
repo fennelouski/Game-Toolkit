@@ -1,0 +1,46 @@
+import Foundation
+import SwiftData
+import SwiftUI
+
+/// A player in the shared roster. Persisted with SwiftData and synced through iCloud/CloudKit.
+///
+/// Every stored property has a default value and there are no unique constraints, which keeps the
+/// schema compatible with CloudKit's mirroring requirements.
+@Model
+final class Player {
+    var name: String = ""
+    var colorHex: String = "#4D96FF"
+    var sortIndex: Int = 0
+    var createdAt: Date = Date.now
+
+    /// One entry per completed round. Index 0 is round 1. Kept in sync across players by the scorecard.
+    var scores: [Int] = []
+
+    init(name: String, colorHex: String = "#4D96FF", sortIndex: Int = 0) {
+        self.name = name
+        self.colorHex = colorHex
+        self.sortIndex = sortIndex
+        self.createdAt = .now
+        self.scores = []
+    }
+
+    var color: Color {
+        get { Color(hex: colorHex) }
+        set { colorHex = newValue.hexString }
+    }
+
+    var total: Int { scores.reduce(0, +) }
+
+    /// Reads a round's score safely, treating missing rounds as zero.
+    func score(inRound round: Int) -> Int {
+        guard round >= 0, round < scores.count else { return 0 }
+        return scores[round]
+    }
+
+    /// Writes a round's score, padding earlier rounds with zeros if needed.
+    func setScore(_ value: Int, inRound round: Int) {
+        guard round >= 0 else { return }
+        while scores.count <= round { scores.append(0) }
+        scores[round] = value
+    }
+}
