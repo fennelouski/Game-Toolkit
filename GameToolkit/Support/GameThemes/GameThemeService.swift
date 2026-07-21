@@ -84,14 +84,22 @@ final class GameThemeService {
     // MARK: - Applying
 
     /// Makes a game theme selectable and selects it.
-    func apply(_ theme: AppTheme, in manager: ThemeManager = .shared) {
+    func apply(_ theme: AppTheme) {
+        apply(theme, in: .shared)
+    }
+
+    func apply(_ theme: AppTheme, in manager: ThemeManager) {
         manager.register(theme)
         manager.select(theme)
     }
 
     /// Re-registers previously used game themes after launch so a stored selection
     /// resolves. Called once from the root view.
-    func restoreSelectedThemeIfNeeded(in manager: ThemeManager = .shared) {
+    func restoreSelectedThemeIfNeeded() {
+        restoreSelectedThemeIfNeeded(in: .shared)
+    }
+
+    func restoreSelectedThemeIfNeeded(in manager: ThemeManager) {
         let selectedID = manager.selectedThemeID
         guard BuiltInThemes.theme(id: selectedID) == nil,
               let theme = themes.first(where: { $0.id == selectedID }) else { return }

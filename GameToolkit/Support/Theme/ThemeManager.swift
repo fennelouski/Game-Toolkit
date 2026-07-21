@@ -50,7 +50,8 @@ final class ThemeManager {
                 object: cloudStore, queue: .main
             ) { [weak self] _ in
                 MainActor.assumeIsolated {
-                    guard let self, let remote = cloudStore.string(forKey: SettingsKey.themeID) else { return }
+                    let store = NSUbiquitousKeyValueStore.default
+                    guard let self, let remote = store.string(forKey: SettingsKey.themeID) else { return }
                     self.selectedThemeID = remote
                     // The other device may have picked a game theme we haven't registered yet.
                     GameThemeService.shared.restoreSelectedThemeIfNeeded(in: self)
