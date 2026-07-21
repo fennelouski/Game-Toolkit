@@ -28,7 +28,7 @@ struct ScorecardView: View {
     /// Identifies which round the entry sheet is editing (`id` is the round index).
     private struct RoundEdit: Identifiable { let id: Int }
 
-    private let roundColumnWidth: CGFloat = 54
+    private let roundColumnWidth: CGFloat = 46
     private let playerColumnWidth: CGFloat = 92
 
     private var rounds: Int { Roster.roundCount(players) }
@@ -82,18 +82,15 @@ struct ScorecardView: View {
             }
         } else {
             VStack(spacing: 12) {
-                Picker("View", selection: $mode) {
-                    ForEach(Mode.allCases) { Text($0.rawValue).tag($0) }
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
+                modePicker
 
                 switch mode {
                 case .table:
-                    if rounds == 0 { emptyRounds } else { table }
+                    if rounds == 0 { emptyRounds } else { scorepad }
                 case .chart:
                     ScoreChartView(players: players)
                         .padding(.horizontal)
+                        .frame(maxHeight: .infinity)
                 }
 
                 addRoundButton
@@ -103,61 +100,96 @@ struct ScorecardView: View {
         }
     }
 
+    private var modePicker: some View {
+        HStack(spacing: 8) {
+            ForEach(Mode.allCases) { candidate in
+                SelectableChip(label: candidate.rawValue, isSelected: mode == candidate) {
+                    withAnimation(.snappy) { mode = candidate }
+                }
+            }
+            Spacer()
+            ThemeSwitcherButton()
+        }
+        .padding(.horizontal)
+    }
+
     private var emptyRounds: some View {
         VStack(spacing: 10) {
             Spacer()
-            Image(systemName: "list.number")
+            Image(systemName: "pencil.and.list.clipboard")
                 .font(.system(size: 44))
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(palette.textSecondary.opacity(0.6))
             Text("No rounds yet")
-                .font(.headline)
+                .font(.display(.headline))
+                .foregroundStyle(palette.textPrimary)
             Text("Add a round to start tracking scores.")
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(palette.textSecondary)
             Spacer()
         }
         .frame(maxWidth: .infinity)
     }
 
-    // MARK: - Table
+    // MARK: - Scorepad
 
-    private var table: some View {
+    /// The paper pad: ruled rows, tabular numerals, a serif totals line. Sized to its
+    /// content so the pad ends where the writing ends.
+    private var scorepad: some View {
         ScrollView([.horizontal, .vertical]) {
             VStack(spacing: 0) {
                 headerRow
-                Divider()
+                rule(2)
                 ForEach(0..<rounds, id: \.self) { round in
                     roundRow(round)
-                    Divider().opacity(0.4)
+                    if round < rounds - 1 { rule(0.8).opacity(0.5) }
                 }
+                rule(2)
                 totalsRow
             }
-            .padding(.horizontal, 12)
-            .frame(maxWidth: .infinity, alignment: .topLeading)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 6)
+            .background {
+                let shape = RoundedRectangle(cornerRadius: 18, style: .continuous)
+                shape
+                    .fill(palette.surface)
+                    .overlay { shape.strokeBorder(.white.opacity(0.25), lineWidth: 0.8).blendMode(.overlay) }
+                    .shadow(color: .black.opacity(0.10), radius: 10, y: 5)
+                    .shadow(color: .black.opacity(0.06), radius: 1.5, y: 1)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 4)
+            .frame(maxWidth: .infinity)
         }
         .defaultScrollAnchor(.topLeading)
-        .background(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(.ultraThinMaterial)
-                .padding(.horizontal, 8)
-        )
-        .padding(.horizontal, 8)
+        .scrollBounceBehavior(.basedOnSize, axes: [.horizontal, .vertical])
+    }
+
+    /// A horizontal pad rule, drawn in the ink color.
+    private func rule(_ height: CGFloat) -> some View {
+        Rectangle()
+            .fill(palette.textSecondary.opacity(height > 1 ? 0.45 : 0.35))
+            .frame(height: height)
     }
 
     private var headerRow: some View {
         HStack(spacing: 0) {
             Text("#")
                 .font(.caption.weight(.bold))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(palette.textSecondary)
                 .frame(width: roundColumnWidth, alignment: .leading)
 
             ForEach(players) { player in
-                VStack(spacing: 4) {
-                    Circle()
-                        .fill(player.color(in: palette).gradient)
-                        .frame(width: 10, height: 10)
+                VStack(spacing: 5) {
+                    ZStack {
+                        Circle().fill(player.color(in: palette).gradient)
+                        Text(String((player.name.isEmpty ? "?" : player.name).prefix(1)).uppercased())
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(player.color(in: palette).readableForeground)
+                    }
+                    .frame(width: 22, height: 22)
                     Text(PiDay.decorate(player.name.isEmpty ? "—" : player.name))
                         .font(.caption.weight(.semibold))
+                        .foregroundStyle(palette.textPrimary)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                 }
@@ -175,13 +207,14 @@ struct ScorecardView: View {
             HStack(spacing: 0) {
                 Text("R\(round + 1)")
                     .font(.caption.weight(.bold))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(palette.textSecondary)
                     .frame(width: roundColumnWidth, alignment: .leading)
 
                 ForEach(players) { player in
                     Text("\(player.score(inRound: round))")
-                        .font(.body.weight(.medium).monospacedDigit())
-                        .foregroundStyle(.primary)
+                        .font(.body.weight(.medium))
+                        .monospacedDigit()
+                        .foregroundStyle(palette.textPrimary)
                         .frame(width: playerColumnWidth)
                 }
             }
@@ -204,29 +237,29 @@ struct ScorecardView: View {
 
     private var totalsRow: some View {
         HStack(spacing: 0) {
-            Image(systemName: "sum")
-                .font(.caption.weight(.bold))
-                .foregroundStyle(.secondary)
+            Text("Σ")
+                .font(.display(.subheadline))
+                .foregroundStyle(palette.textSecondary)
                 .frame(width: roundColumnWidth, alignment: .leading)
 
             ForEach(players) { player in
                 let isLeader = rounds > 0 && player.total == leadingTotal
-                HStack(spacing: 3) {
+                VStack(spacing: 1) {
                     if isLeader {
                         Image(systemName: "crown.fill")
                             .font(.caption2)
-                            .foregroundStyle(.yellow)
+                            .foregroundStyle(palette.warning)
                     }
                     Text("\(player.total)")
-                        .font(.title3.weight(.heavy).monospacedDigit())
+                        .font(.display(.title2))
+                        .monospacedDigit()
                         .contentTransition(.numericText())
                 }
                 .frame(width: playerColumnWidth)
-                .foregroundStyle(isLeader ? Color.primary : Color.secondary)
+                .foregroundStyle(isLeader ? palette.textPrimary : palette.textSecondary)
             }
         }
-        .padding(.vertical, 12)
-        .background(Color.accentColor.opacity(0.08))
+        .padding(.vertical, 10)
         .animation(.snappy, value: leadingTotal)
     }
 
@@ -236,13 +269,8 @@ struct ScorecardView: View {
             roundEdit = RoundEdit(id: rounds)
         } label: {
             Label("Add Round \(rounds + 1)", systemImage: "plus.circle.fill")
-                .font(.headline)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
         }
-        .buttonStyle(.borderedProminent)
-        .buttonBorderShape(.capsule)
-        .controlSize(.large)
+        .buttonStyle(PrimaryButtonStyle())
     }
 
     @ToolbarContentBuilder

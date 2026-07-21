@@ -11,7 +11,7 @@ struct TurnTimerView: View {
     @State private var engine = TimerEngine()
     @State private var showingTimeSheet = false
 
-    private let columns = [GridItem(.adaptive(minimum: 150), spacing: 14)]
+    private let columns = [GridItem(.adaptive(minimum: 156), spacing: 14)]
 
     var body: some View {
         NavigationStack {
@@ -27,6 +27,7 @@ struct TurnTimerView: View {
                                     PlayerTimerCard(
                                         slot: slot,
                                         color: color(for: slot),
+                                        fraction: fraction(for: slot),
                                         isActive: engine.activeID == slot.id,
                                         isExpired: engine.expiredID == slot.id
                                     )
@@ -87,22 +88,29 @@ struct TurnTimerView: View {
         return Color(hex: slot.colorHex)
     }
 
+    private func fraction(for slot: TimerEngine.Slot) -> Double {
+        guard engine.perPlayerSeconds > 0 else { return 0 }
+        return (slot.remaining / engine.perPlayerSeconds).clamped(to: 0...1)
+    }
+
     private var statusBar: some View {
         Group {
             if let activeID = engine.activeID, let slot = engine.slots.first(where: { $0.id == activeID }) {
                 Label("\(PiDay.decorate(slot.name))'s turn", systemImage: "hourglass")
+                    .font(.subheadline.weight(.semibold))
                     .foregroundStyle(color(for: slot).readableForeground)
                     .padding(.horizontal, 16).padding(.vertical, 8)
                     .background(Capsule().fill(color(for: slot).gradient))
             } else if engine.expiredID != nil {
                 Label("Time's up!", systemImage: "bell.fill")
-                    .foregroundStyle(.white)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(palette.negative.readableForeground)
                     .padding(.horizontal, 16).padding(.vertical, 8)
-                    .background(Capsule().fill(Color.red.gradient))
+                    .background(Capsule().fill(palette.negative.gradient))
             } else {
                 Text("Tap a player to start their clock")
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(palette.textSecondary)
                     .padding(.vertical, 8)
             }
         }
@@ -111,53 +119,83 @@ struct TurnTimerView: View {
 }
 
 private struct PlayerTimerCard: View {
+    @Environment(\.palette) private var palette
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     let slot: TimerEngine.Slot
     let color: Color
+    /// Remaining time as a share of the full budget, 0...1, drawn as the gauge line.
+    let fraction: Double
     let isActive: Bool
     let isExpired: Bool
 
     private var isLow: Bool { slot.remaining <= 10 && slot.remaining > 0 }
 
+    private var timeColor: Color {
+        if isExpired { return palette.negative }
+        if isLow { return palette.warning }
+        return palette.textPrimary
+    }
+
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 8) {
             HStack(spacing: 8) {
                 Circle().fill(color).frame(width: 12, height: 12)
                 Text(PiDay.decorate(slot.name))
                     .font(.headline)
+                    .foregroundStyle(palette.textPrimary)
                     .lineLimit(1)
                 Spacer(minLength: 0)
                 if isActive {
-                    Image(systemName: "play.fill").foregroundStyle(color)
+                    Image(systemName: "play.fill")
+                        .foregroundStyle(color)
+                        .symbolEffect(.pulse, options: .repeating, isActive: !reduceMotion)
+                }
+                if isExpired {
+                    Image(systemName: "bell.fill").foregroundStyle(palette.negative)
                 }
             }
 
             Text(slot.remaining.clockString)
-                .font(.system(size: 46, weight: .heavy, design: .rounded))
+                .font(.display(44))
                 .monospacedDigit()
-                .foregroundStyle(isExpired ? Color.red : (isLow ? Color.orange : Color.primary))
+                .foregroundStyle(timeColor)
                 .contentTransition(.numericText())
                 .frame(maxWidth: .infinity)
-        }
-        .frame(minHeight: 110)
-        .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(.ultraThinMaterial)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .strokeBorder(isActive ? color : Color.secondary.opacity(0.15),
-                              lineWidth: isActive ? 3 : 1)
-        )
-        .overlay(alignment: .topTrailing) {
-            if isExpired {
-                Image(systemName: "bell.fill")
-                    .foregroundStyle(.red)
-                    .padding(10)
+
+            // Remaining-time gauge: drains left to right in the player's color.
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(palette.textPrimary.opacity(0.10))
+                    Capsule()
+                        .fill(isExpired ? palette.negative : color)
+                        .frame(width: max(6, geo.size.width * fraction))
+                        .opacity(slot.remaining > 0 || isExpired ? 1 : 0.4)
+                }
             }
+            .frame(height: 5)
+            .animation(.linear(duration: 0.2), value: fraction)
         }
-        .scaleEffect(isActive ? 1.03 : 1)
-        .shadow(color: isActive ? color.opacity(0.4) : .clear, radius: 12)
+        .padding(16)
+        .frame(minHeight: 118)
+        .background {
+            let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
+            shape
+                .fill(palette.surface)
+                .overlay { shape.strokeBorder(.white.opacity(0.25), lineWidth: 0.8).blendMode(.overlay) }
+                .overlay {
+                    shape.strokeBorder(isActive ? color : palette.textSecondary.opacity(0.15),
+                                       lineWidth: isActive ? 2.5 : 1)
+                }
+                .shadow(color: isActive ? color.opacity(0.35) : .black.opacity(0.08),
+                        radius: isActive ? 12 : 8, y: 4)
+        }
+        .scaleEffect(isActive && !reduceMotion ? 1.03 : 1)
+        .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(slot.name), \(Int(slot.remaining)) seconds remaining\(isActive ? ", running" : "")")
+        .accessibilityHint(isActive ? "Tap to pause" : "Tap to start this player's clock")
+        .accessibilityAddTraits(.isButton)
     }
 }
 

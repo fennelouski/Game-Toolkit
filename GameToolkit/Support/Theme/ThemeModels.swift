@@ -8,6 +8,8 @@ struct ThemePalette: Codable, Hashable {
     var backgroundHex: String
     var surfaceHex: String
     var surfaceElevatedHex: String
+    /// The tabletop itself — the felt the dice roll on and other hero surfaces.
+    var tableHex: String
     var accentHex: String
     var accentSecondaryHex: String
     var textPrimaryHex: String
@@ -24,6 +26,7 @@ struct ThemePalette: Codable, Hashable {
         case backgroundHex = "background"
         case surfaceHex = "surface"
         case surfaceElevatedHex = "surfaceElevated"
+        case tableHex = "table"
         case accentHex = "accent"
         case accentSecondaryHex = "accentSecondary"
         case textPrimaryHex = "textPrimary"
@@ -41,6 +44,7 @@ struct ThemePalette: Codable, Hashable {
     var background: Color { Color(hex: backgroundHex) }
     var surface: Color { Color(hex: surfaceHex) }
     var surfaceElevated: Color { Color(hex: surfaceElevatedHex) }
+    var table: Color { Color(hex: tableHex) }
     var accent: Color { Color(hex: accentHex) }
     var accentSecondary: Color { Color(hex: accentSecondaryHex) }
     var textPrimary: Color { Color(hex: textPrimaryHex) }

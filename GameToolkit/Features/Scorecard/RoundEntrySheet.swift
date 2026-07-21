@@ -35,6 +35,8 @@ struct RoundEntrySheet: View {
                         .contentTransition(.numericText())
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(palette.background.ignoresSafeArea())
             .navigationTitle("Round \(round + 1)")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

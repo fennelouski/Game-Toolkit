@@ -31,6 +31,8 @@ struct TurnOrderSheet: View {
                     Text("Shake the device on the Scores tab to shuffle again.")
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(palette.background.ignoresSafeArea())
             .navigationTitle("Turn Order")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

@@ -105,6 +105,17 @@ struct ThemeContrastTests {
         }
     }
 
+    @Test("The tabletop keeps captions readable and dice visible")
+    func tableContrast() {
+        for (tag, p) in variants {
+            let fg = Color(hex: p.tableHex).readableForeground == .black ? "#000000" : "#FFFFFF"
+            let caption = ColorMath.contrast(fg, p.tableHex)
+            #expect(caption >= 4.5, "\(tag): caption on table is \(caption)")
+            let dice = ColorMath.contrast(p.diceFaceHex, p.tableHex)
+            #expect(dice >= 1.3, "\(tag): dice fade into the table (\(dice))")
+        }
+    }
+
     @Test("Semantic colors are visible (3:1, WCAG AA for large text / UI components)")
     func semanticContrast() {
         for (tag, p) in variants {
@@ -169,6 +180,7 @@ struct ThemeDecodingTests {
     static let paletteJSON = """
     {
       "background": "#F3EFE6", "surface": "#FFFFFF", "surfaceElevated": "#E8E1D4",
+      "table": "#2F5D50",
       "accent": "#2F5D50", "accentSecondary": "#B85C38",
       "textPrimary": "#1E2A24", "textSecondary": "#5C6660",
       "positive": "#3F7D5A", "negative": "#A8433A", "warning": "#C08A3E",

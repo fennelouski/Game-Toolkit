@@ -24,25 +24,32 @@ struct RootView: View {
         themeManager.current.palette(for: effectiveColorScheme)
     }
 
+    /// Gives every tab the themed tab bar without repeating the modifiers five times.
+    private func themedTab(_ content: some View) -> some View {
+        content
+            .toolbarBackground(palette.surface, for: .tabBar)
+            .toolbarBackground(.visible, for: .tabBar)
+    }
+
     var body: some View {
         TabView(selection: $selectedTab) {
-            DiceRollerView()
+            themedTab(DiceRollerView())
                 .tabItem { Label("Dice", systemImage: "dice.fill") }
                 .tag(0)
 
-            TurnTimerView()
+            themedTab(TurnTimerView())
                 .tabItem { Label("Timer", systemImage: "timer") }
                 .tag(1)
 
-            ScorecardView()
+            themedTab(ScorecardView())
                 .tabItem { Label("Scores", systemImage: "list.number") }
                 .tag(2)
 
-            PlayersView()
+            themedTab(PlayersView())
                 .tabItem { Label("Players", systemImage: "person.2.fill") }
                 .tag(3)
 
-            SettingsView()
+            themedTab(SettingsView())
                 .tabItem { Label("Settings", systemImage: "gearshape.fill") }
                 .tag(4)
         }

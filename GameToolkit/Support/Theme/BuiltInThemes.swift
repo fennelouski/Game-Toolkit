@@ -20,6 +20,7 @@ enum BuiltInThemes {
         tags: ["earthy", "soft", "default"],
         light: ThemePalette(
             backgroundHex: "#EDE4D2", surfaceHex: "#F6F0E2", surfaceElevatedHex: "#FCF8EE",
+            tableHex: "#2F5D50",
             accentHex: "#A6512E", accentSecondaryHex: "#2F5D50",
             textPrimaryHex: "#26322B", textSecondaryHex: "#57604F",
             positiveHex: "#2E6B4A", negativeHex: "#9C3F35", warningHex: "#8F6A2B",
@@ -28,6 +29,7 @@ enum BuiltInThemes {
                           "#7FA184", "#37818A", "#7B6FAE", "#7A5230", "#BB8FA0"]),
         dark: ThemePalette(
             backgroundHex: "#121A15", surfaceHex: "#1B2620", surfaceElevatedHex: "#243129",
+            tableHex: "#24443B",
             accentHex: "#C97B54", accentSecondaryHex: "#8FB49B",
             textPrimaryHex: "#EDE6D6", textSecondaryHex: "#A9B2A6",
             positiveHex: "#86C29A", negativeHex: "#E08D7D", warningHex: "#D9AE63",
@@ -42,6 +44,7 @@ enum BuiltInThemes {
         tags: ["nature", "soft", "light"],
         light: ThemePalette(
             backgroundHex: "#EDF1E8", surfaceHex: "#F8FAF3", surfaceElevatedHex: "#FFFFFF",
+            tableHex: "#54774F",
             accentHex: "#4E7A42", accentSecondaryHex: "#C25F4A",
             textPrimaryHex: "#2C332B", textSecondaryHex: "#59614F",
             positiveHex: "#41754B", negativeHex: "#A84A3F", warningHex: "#84651F",
@@ -50,6 +53,7 @@ enum BuiltInThemes {
                           "#40837C", "#8A5A3F", "#3C5977", "#A93E5C", "#8B7FC1"]),
         dark: ThemePalette(
             backgroundHex: "#161B14", surfaceHex: "#202619", surfaceElevatedHex: "#2A3222",
+            tableHex: "#37432F",
             accentHex: "#8FBA7F", accentSecondaryHex: "#D98B6A",
             textPrimaryHex: "#EAEBDD", textSecondaryHex: "#A8AF9E",
             positiveHex: "#8FC796", negativeHex: "#DB9080", warningHex: "#D2B266",
@@ -64,6 +68,7 @@ enum BuiltInThemes {
         tags: ["print", "graphic", "bold"],
         light: ThemePalette(
             backgroundHex: "#F2F1EA", surfaceHex: "#FBFAF4", surfaceElevatedHex: "#FFFFFF",
+            tableHex: "#2F5D50",
             accentHex: "#C24C2C", accentSecondaryHex: "#2F5D50",
             textPrimaryHex: "#1D211F", textSecondaryHex: "#555E59",
             positiveHex: "#2C6A47", negativeHex: "#A63A2A", warningHex: "#8A6420",
@@ -72,6 +77,7 @@ enum BuiltInThemes {
                           "#6B8F3D", "#17777F", "#6A4FA3", "#50432D", "#B98BAE"]),
         dark: ThemePalette(
             backgroundHex: "#121719", surfaceHex: "#1A2124", surfaceElevatedHex: "#232B2F",
+            tableHex: "#253238",
             accentHex: "#E68A62", accentSecondaryHex: "#7FB09A",
             textPrimaryHex: "#ECECE4", textSecondaryHex: "#A6ADA9",
             positiveHex: "#7FC796", negativeHex: "#E08D7D", warningHex: "#D9B15C",
@@ -86,6 +92,7 @@ enum BuiltInThemes {
         tags: ["dark", "elegant", "night"],
         light: ThemePalette(
             backgroundHex: "#EAE6DA", surfaceHex: "#F5F2E8", surfaceElevatedHex: "#FCFAF2",
+            tableHex: "#567163",
             accentHex: "#8F6A26", accentSecondaryHex: "#3E5E52",
             textPrimaryHex: "#2A2E28", textSecondaryHex: "#5B5F55",
             positiveHex: "#3F6B4F", negativeHex: "#9A4238", warningHex: "#8A6420",
@@ -94,10 +101,11 @@ enum BuiltInThemes {
                           "#788258", "#496C7E", "#7A6698", "#6B4F3A", "#A87686"]),
         dark: ThemePalette(
             backgroundHex: "#0F1613", surfaceHex: "#18211C", surfaceElevatedHex: "#212D26",
+            tableHex: "#22352C",
             accentHex: "#C9A45C", accentSecondaryHex: "#8FA895",
             textPrimaryHex: "#E9E2D0", textSecondaryHex: "#A3AB9C",
             positiveHex: "#8FC2A0", negativeHex: "#D98B76", warningHex: "#D9B366",
-            diceFaceHex: "#24382F", dicePipHex: "#E9C87E",
+            diceFaceHex: "#2E4A3D", dicePipHex: "#E9C87E",
             playerHexes: ["#8A9C87", "#DC8F5D", "#91A5BC", "#BF7696", "#DCC095",
                           "#9DB873", "#89D9D0", "#9899CC", "#B08A62", "#DFA3B2"]))
 
@@ -108,6 +116,7 @@ enum BuiltInThemes {
         tags: ["bright", "playful", "classic"],
         light: ThemePalette(
             backgroundHex: "#F2F2F6", surfaceHex: "#FFFFFF", surfaceElevatedHex: "#FFFFFF",
+            tableHex: "#2E7D5B",
             accentHex: "#E1580E", accentSecondaryHex: "#2A6FDB",
             textPrimaryHex: "#1C1C1E", textSecondaryHex: "#55555C",
             positiveHex: "#1E7A46", negativeHex: "#C0392B", warningHex: "#8A6400",
@@ -116,6 +125,7 @@ enum BuiltInThemes {
                           "#F97316", "#0FA3A3", "#D30876", "#64748B", "#62AC1F"]),
         dark: ThemePalette(
             backgroundHex: "#0E0E10", surfaceHex: "#1B1B1E", surfaceElevatedHex: "#242428",
+            tableHex: "#1E4D39",
             accentHex: "#FF7A33", accentSecondaryHex: "#6EA8FF",
             textPrimaryHex: "#F2F2F5", textSecondaryHex: "#A5A5AC",
             positiveHex: "#4ADE80", negativeHex: "#F87171", warningHex: "#FACC15",
@@ -130,6 +140,7 @@ enum BuiltInThemes {
         tags: ["accessible", "high-contrast"],
         light: ThemePalette(
             backgroundHex: "#FFFFFF", surfaceHex: "#FFFFFF", surfaceElevatedHex: "#F2F2F2",
+            tableHex: "#D8D8D8",
             accentHex: "#0A50C0", accentSecondaryHex: "#6A0DAD",
             textPrimaryHex: "#000000", textSecondaryHex: "#3C3C43",
             positiveHex: "#006B3F", negativeHex: "#B00020", warningHex: "#704F00",
@@ -138,6 +149,7 @@ enum BuiltInThemes {
                           "#C2185B", "#006D77", "#3F5046", "#4E342E", "#626832"]),
         dark: ThemePalette(
             backgroundHex: "#000000", surfaceHex: "#111114", surfaceElevatedHex: "#1D1D21",
+            tableHex: "#26262B",
             accentHex: "#6EB2FF", accentSecondaryHex: "#D0A3FF",
             textPrimaryHex: "#FFFFFF", textSecondaryHex: "#C7C7CF",
             positiveHex: "#5EDB8E", negativeHex: "#FF8080", warningHex: "#FFD54D",

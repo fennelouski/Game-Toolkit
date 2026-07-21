@@ -68,6 +68,8 @@ struct PlayerEditorSheet: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(palette.background.ignoresSafeArea())
             .navigationTitle("Edit Player")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
