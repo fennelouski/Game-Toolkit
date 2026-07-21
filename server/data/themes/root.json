@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "id": "root",
+  "name": "Woodland Clearing",
+  "game": {
+    "name": "Root",
+    "slug": "root",
+    "aliases": [
+      "root board game",
+      "root woodland"
+    ]
+  },
+  "tags": [
+    "woodland",
+    "animals",
+    "cozy"
+  ],
+  "updatedAt": "2026-07-21T00:00:00Z",
+  "light": {
+    "background": "#F0EADC",
+    "surface": "#FAF5E9",
+    "surfaceElevated": "#FFFDF6",
+    "table": "#4E6E48",
+    "accent": "#C25A2E",
+    "accentSecondary": "#4E6E48",
+    "textPrimary": "#2F2B24",
+    "textSecondary": "#5F594C",
+    "positive": "#43753B",
+    "negative": "#A83E28",
+    "warning": "#8A6420",
+    "diceFace": "#FBF6EA",
+    "dicePip": "#33302A",
+    "players": [
+      "#2F5B52",
+      "#B85C38",
+      "#46688F",
+      "#77293B",
+      "#C9973B",
+      "#7FA184",
+      "#37818A",
+      "#7B6FAE",
+      "#7A5230",
+      "#BB8FA0"
+    ]
+  },
+  "dark": {
+    "background": "#171310",
+    "surface": "#221D18",
+    "surfaceElevated": "#2E2720",
+    "table": "#334027",
+    "accent": "#E0793F",
+    "accentSecondary": "#8FB482",
+    "textPrimary": "#EFE8DC",
+    "textSecondary": "#B0A896",
+    "positive": "#9BC788",
+    "negative": "#E08D6B",
+    "warning": "#D9AE63",
+    "diceFace": "#F3ECDF",
+    "dicePip": "#33302A",
+    "players": [
+      "#5E9C86",
+      "#DB8D59",
+      "#668CAE",
+      "#B86664",
+      "#E6B46A",
+      "#9BCCC6",
+      "#74C7DD",
+      "#A79BD6",
+      "#B08A62",
+      "#DA95A7"
+    ]
+  }
+}

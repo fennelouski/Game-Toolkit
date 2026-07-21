@@ -6,6 +6,7 @@ struct TimeSetupSheet: View {
     let onApply: (Double) -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.palette) private var palette
     @State private var minutes: Int
     @State private var seconds: Int
 
@@ -35,14 +36,25 @@ struct TimeSetupSheet: View {
                                 dismiss()
                             } label: {
                                 Text(preset.clockString)
-                                    .font(.title3.weight(.bold).monospacedDigit())
+                                    .font(.display(.title3))
+                                    .monospacedDigit()
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 16)
                                     .background(
                                         RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                            .fill(preset == currentSeconds ? AnyShapeStyle(Color.accentColor.gradient) : AnyShapeStyle(.ultraThinMaterial))
+                                            .fill(preset == currentSeconds
+                                                  ? AnyShapeStyle(palette.accent.gradient)
+                                                  : AnyShapeStyle(palette.surface))
                                     )
-                                    .foregroundStyle(preset == currentSeconds ? .white : .primary)
+                                    .overlay {
+                                        if preset != currentSeconds {
+                                            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                                .strokeBorder(palette.textSecondary.opacity(0.25), lineWidth: 1)
+                                        }
+                                    }
+                                    .foregroundStyle(preset == currentSeconds
+                                                     ? palette.accent.readableForeground
+                                                     : palette.textPrimary)
                             }
                             .buttonStyle(.plain)
                         }
@@ -69,16 +81,13 @@ struct TimeSetupSheet: View {
                         dismiss()
                     } label: {
                         Text("Set \(max(5, Int(customTotal)).clockString)")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .buttonBorderShape(.capsule)
+                    .buttonStyle(PrimaryButtonStyle())
                     .disabled(customTotal < 5)
                 }
                 .padding()
             }
+            .background(palette.background.ignoresSafeArea())
             .navigationTitle("Time per Turn")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

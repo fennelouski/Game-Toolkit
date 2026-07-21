@@ -1,0 +1,12 @@
+{
+  "name": "game-toolkit-themes",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static repository of board-game-inspired color themes for Game Toolkit",
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/validate.mjs"
+  }
+}

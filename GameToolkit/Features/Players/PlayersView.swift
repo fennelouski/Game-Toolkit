@@ -3,8 +3,15 @@ import SwiftData
 
 struct PlayersView: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.palette) private var palette
     @Query(sort: \Player.sortIndex) private var players: [Player]
     @State private var editing: Player?
+
+    private var rounds: Int { Roster.roundCount(players) }
+    private var leadingTotal: Int? {
+        guard rounds > 0 else { return nil }
+        return players.map(\.total).max()
+    }
 
     var body: some View {
         NavigationStack {
@@ -23,12 +30,16 @@ struct PlayersView: View {
                         ForEach(players) { player in
                             Button { editing = player } label: { row(player) }
                                 .buttonStyle(.plain)
+                                .listRowBackground(palette.surface)
+                                .listRowSeparatorTint(palette.textSecondary.opacity(0.25))
                         }
                         .onDelete(perform: delete)
                         .onMove(perform: move)
                     }
+                    .scrollContentBackground(.hidden)
                 }
             }
+            .background(palette.background.ignoresSafeArea())
             .navigationTitle("Players")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -50,26 +61,35 @@ struct PlayersView: View {
     }
 
     private func row(_ player: Player) -> some View {
-        HStack(spacing: 14) {
+        let color = player.color(in: palette)
+        let isLeader = rounds > 0 && player.total == leadingTotal
+        return HStack(spacing: 14) {
             ZStack {
-                Circle().fill(player.color.gradient)
-                Text(String(player.name.prefix(1)).uppercased())
-                    .font(.headline)
-                    .foregroundStyle(player.color.readableForeground)
+                Circle().fill(color.gradient)
+                Text(String((player.name.isEmpty ? "?" : player.name).prefix(1)).uppercased())
+                    .font(.display(.headline))
+                    .foregroundStyle(color.readableForeground)
             }
-            .frame(width: 38, height: 38)
+            .frame(width: 40, height: 40)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(PiDay.decorate(player.name.isEmpty ? "Unnamed" : player.name))
                     .font(.headline)
+                    .foregroundStyle(palette.textPrimary)
                 Text("\(player.total) pts · \(player.scores.count) rounds")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(palette.textSecondary)
             }
             Spacer()
+            if isLeader {
+                Image(systemName: "crown.fill")
+                    .font(.subheadline)
+                    .foregroundStyle(palette.warning)
+                    .accessibilityLabel("Current leader")
+            }
             Image(systemName: "chevron.right")
                 .font(.caption.weight(.bold))
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(palette.textSecondary.opacity(0.6))
         }
         .padding(.vertical, 4)
         .contentShape(Rectangle())

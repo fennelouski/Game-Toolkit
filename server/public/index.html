@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Game Toolkit Themes</title>
+  <style>
+    :root { --bg: #EDE4D2; --surface: #F6F0E2; --ink: #26322B; --muted: #57604F; --accent: #A6512E; --felt: #2F5D50; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #121A15; --surface: #1B2620; --ink: #EDE6D6; --muted: #A9B2A6; --accent: #C97B54; --felt: #24443B; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 Georgia, 'Times New Roman', serif; }
+    main { max-width: 640px; margin: 0 auto; padding: 48px 24px 80px; }
+    h1 { font-size: 30px; margin: 18px 0 6px; }
+    .felt { background: var(--felt); border-radius: 14px; width: 84px; height: 56px; display: grid; place-items: center; }
+    .die { width: 26px; height: 26px; border-radius: 6px; background: #F9F4E7; position: relative; }
+    .die::after { content: ""; position: absolute; inset: 0; margin: auto; width: 6px; height: 6px; border-radius: 50%; background: #2B382F; }
+    .lede { color: var(--muted); margin: 0 0 28px; font-family: -apple-system, system-ui, sans-serif; }
+    h2 { font-size: 18px; margin: 30px 0 8px; }
+    code, pre { font: 13.5px/1.5 ui-monospace, Menlo, monospace; }
+    pre { background: var(--surface); padding: 14px 16px; border-radius: 10px; overflow-x: auto; }
+    p, li { font-family: -apple-system, system-ui, sans-serif; font-size: 15px; }
+    a { color: var(--accent); }
+    .disclaimer { border-left: 3px solid var(--accent); padding-left: 14px; color: var(--muted); font-size: 13.5px; }
+  </style>
+</head>
+<body>
+<main>
+  <div class="felt"><div class="die"></div></div>
+  <h1>Game Toolkit Themes</h1>
+  <p class="lede">A small, git-backed repository of board-game-inspired color schemes for the
+  <a href="https://github.com/fennelouski/Game-Toolkit">Game Toolkit</a> app. Static JSON, versioned API, no accounts, no tracking.</p>
+
+  <h2>API</h2>
+  <pre>GET /api/v1/index.json          manifest: id, name, game, tags, 3-color previews
+GET /api/v1/themes.json         every full theme document
+GET /api/v1/themes/:id          one theme document
+GET /api/v1/search?q=wingspan   fuzzy search (never logged)</pre>
+
+  <h2>Adding a theme</h2>
+  <p>Open a pull request adding one file to <code>server/data/themes/&lt;slug&gt;.json</code>.
+  CI validates the schema and WCAG AA contrast; the theme goes live on merge.</p>
+
+  <p class="disclaimer">Themes are fan-made color schemes inspired by the look of the games
+  they reference. Theme names are descriptive and never use game titles. This project is not
+  affiliated with, endorsed by, or sponsored by any game publisher. No game artwork, logos,
+  or other protected assets are hosted here. Publishers with concerns are welcome to open an
+  issue and we will remove the association promptly.</p>
+</main>
+</body>
+</html>

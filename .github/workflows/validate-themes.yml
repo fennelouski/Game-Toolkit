@@ -1,0 +1,20 @@
+name: Validate themes
+
+on:
+  push:
+    paths: ["server/**"]
+  pull_request:
+    paths: ["server/**"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate theme documents
+        run: node server/scripts/validate.mjs
+      - name: Build API surface
+        run: cd server && npm run build

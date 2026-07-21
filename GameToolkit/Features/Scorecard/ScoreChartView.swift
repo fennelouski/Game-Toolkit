@@ -9,6 +9,7 @@ import Charts
 struct ScoreChartView: View {
     let players: [Player]
 
+    @Environment(\.palette) private var palette
     @State private var focusedPlayerID: PersistentIdentifier?
 
     private struct Point: Identifiable {
@@ -47,7 +48,7 @@ struct ScoreChartView: View {
                 running += player.score(inRound: round)
                 points.append(Point(round: round + 1, total: running))
             }
-            return Series(id: index, label: label, color: player.color, points: points)
+            return Series(id: index, label: label, color: player.color(in: palette), points: points)
         }
     }
 
@@ -136,10 +137,16 @@ struct ScoreChartView: View {
         .chartYAxis { AxisMarks(position: .leading) }
         .chartLegend(position: .bottom, spacing: 12)
         .padding(12)
-        .background(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(.ultraThinMaterial)
-        )
+        .background(cardBackground)
+    }
+
+    private var cardBackground: some View {
+        let shape = RoundedRectangle(cornerRadius: 18, style: .continuous)
+        return shape
+            .fill(palette.surface)
+            .overlay { shape.strokeBorder(.white.opacity(0.25), lineWidth: 0.8).blendMode(.overlay) }
+            .shadow(color: .black.opacity(0.10), radius: 10, y: 5)
+            .shadow(color: .black.opacity(0.06), radius: 1.5, y: 1)
     }
 
     /// One player's per-round scores, so you can see where the points actually came from.
@@ -150,7 +157,7 @@ struct ScoreChartView: View {
                     x: .value("Round", "R\(round + 1)"),
                     y: .value("Score", player.score(inRound: round))
                 )
-                .foregroundStyle(player.color.gradient)
+                .foregroundStyle(player.color(in: palette).gradient)
                 .cornerRadius(5)
                 .annotation(position: .top) {
                     Text("\(player.score(inRound: round))")
@@ -167,13 +174,11 @@ struct ScoreChartView: View {
         .overlay(alignment: .topTrailing) {
             Text("Total \(player.total)")
                 .font(.caption.weight(.semibold))
+                .foregroundStyle(palette.textPrimary)
                 .padding(.horizontal, 10).padding(.vertical, 5)
-                .background(Capsule().fill(player.color.opacity(0.18)))
+                .background(Capsule().fill(player.color(in: palette).opacity(0.18)))
                 .padding(10)
         }
-        .background(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(.ultraThinMaterial)
-        )
+        .background(cardBackground)
     }
 }

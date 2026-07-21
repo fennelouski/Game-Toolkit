@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "id": "wingspan",
+  "name": "Feathered Meadow",
+  "game": {
+    "name": "Wingspan",
+    "slug": "wingspan",
+    "aliases": [
+      "wing span"
+    ]
+  },
+  "tags": [
+    "nature",
+    "birds",
+    "soft",
+    "light"
+  ],
+  "updatedAt": "2026-07-21T00:00:00Z",
+  "light": {
+    "background": "#EFF2E9",
+    "surface": "#FAFBF3",
+    "surfaceElevated": "#FFFFFF",
+    "table": "#4A7089",
+    "accent": "#3E7CA6",
+    "accentSecondary": "#C97B54",
+    "textPrimary": "#28313A",
+    "textSecondary": "#54616B",
+    "positive": "#3E7D53",
+    "negative": "#A84A3F",
+    "warning": "#8A6420",
+    "diceFace": "#FDFCF3",
+    "dicePip": "#37414A",
+    "players": [
+      "#65926B",
+      "#BD6E4F",
+      "#55AAC8",
+      "#9C5F94",
+      "#C3912D",
+      "#40837C",
+      "#8A5A3F",
+      "#3C5977",
+      "#A93E5C",
+      "#8B7FC1"
+    ]
+  },
+  "dark": {
+    "background": "#141A1E",
+    "surface": "#1D262C",
+    "surfaceElevated": "#273239",
+    "table": "#2C4A5C",
+    "accent": "#7FB6D9",
+    "accentSecondary": "#DB9B70",
+    "textPrimary": "#E6EBEE",
+    "textSecondary": "#A2AEB8",
+    "positive": "#8FC796",
+    "negative": "#DB9080",
+    "warning": "#D2B266",
+    "diceFace": "#EFF2E9",
+    "dicePip": "#37414A",
+    "players": [
+      "#778B53",
+      "#DB8A70",
+      "#D2B8E4",
+      "#9C7EB5",
+      "#D8BA6A",
+      "#31A19E",
+      "#E4AE8F",
+      "#CBB8C0",
+      "#B9768E",
+      "#7CA1D6"
+    ]
+  }
+}

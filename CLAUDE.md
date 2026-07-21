@@ -2,7 +2,7 @@
 
 SwiftUI board-game companion (dice roller, chess-clock turn timer, scorecard) backed by
 SwiftData + CloudKit. iOS 17+, Mac Catalyst, Designed-for-iPad on visionOS. Xcode 26, Swift 5
-language mode.
+language mode. `server/` holds the Vercel theme repository (plain Node, no dependencies).
 
 ## Commands
 
@@ -31,8 +31,40 @@ Mac Catalyst is the opposite: the shipping entitlements include App Sandbox, whi
 `codesign --force --deep --sign -`. `Scripts/screenshot-mac.sh` already does this.
 
 The tab bar honours launch arguments, which is what the screenshot script drives:
-`-ui.selectedTab 0..4` (Dice/Timer/Scores/Players/Settings), `-showChart`, and `-screenshotMode`
+`-ui.selectedTab 0..4` (Dice/Timer/Scores/Players/Settings), `-showChart`, `-ui.theme <id>`
+(forces a theme, e.g. `hearth`, `gaslight`, or a bundled game theme like `azul`),
+`-ui.onboardingStep 0..2` (DEBUG, jumps into the onboarding tour), and `-screenshotMode`
 (DEBUG-only demo roster, see `ScreenshotSupport.swift`).
+
+```sh
+# Theme server (Node 20+; on this machine node lives at /opt/homebrew/bin, npm has no symlink)
+cd server && node scripts/validate.mjs   # schema + WCAG contrast for data/themes/*.json
+cd server && node scripts/build.mjs      # emits public/api/v1/** (validates first)
+# Deploy: npx vercel --prod   (needs the user's Vercel login; root dir = server)
+```
+
+## Theming
+
+- Views read semantic roles from `@Environment(\.palette)` (a `ThemePalette`), injected by
+  `RootView` from `ThemeManager.shared` + the effective color scheme. **Never hard-code a
+  color in a feature view** — add a role only if truly necessary (schema change ripples to
+  the server and tests).
+- Built-in palettes are gated by `ThemeContrastTests`: WCAG AA (4.5:1) for text roles, 3:1
+  for semantic colors, pairwise ΔE thresholds for player colors under normal vision and
+  simulated protanopia/deuteranopia. If a new palette fails, tune it — don't loosen the
+  test. The player palettes were produced by a hill-climbing optimizer; reuse an existing
+  validated `players` array when authoring new themes unless you re-verify.
+- `Player.paletteIndex` (optional, CloudKit-safe) maps players onto the theme palette;
+  `colorHex` is both the custom-color storage *and* a compatibility snapshot for older app
+  versions sharing the CloudKit store. Resolve display colors via `player.color(in: palette)`.
+- Theme JSON is forward-compatible: unknown fields are ignored, `schemaVersion` is checked
+  (`isSupported`), required color missing ⇒ decode throws ⇒ theme skipped. The same schema
+  is validated server-side by `server/scripts/validate.mjs` (which also rejects theme names
+  containing the game's title — trademark hygiene).
+- `GameThemeService` must stay offline-first: bundled JSON → cache → optional network, all
+  failures silent, and search stays on-device (privacy: queries never leave the phone).
+- The serif display face comes from `Font.display(...)` and a `UINavigationBar` appearance
+  set once in `GameToolkitApp` — don't set per-view title fonts.
 
 ## Conventions and gotchas
 

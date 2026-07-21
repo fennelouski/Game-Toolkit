@@ -3,12 +3,13 @@ import SwiftData
 
 struct SettingsView: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.palette) private var palette
     @Query private var players: [Player]
 
     @AppStorage(SettingsKey.diceCount) private var diceCount = 2
     @AppStorage(SettingsKey.diceSides) private var diceSides = 6
     @AppStorage(SettingsKey.diceShowTotal) private var diceShowTotal = true
-    @AppStorage(SettingsKey.diceColorHex) private var diceColorHex = "#E63946"
+    @AppStorage(SettingsKey.diceColorHex) private var diceColorHex = Theme.themeDiceColor
     @AppStorage(SettingsKey.diceDotSize) private var dotSize = 3.0
     @AppStorage(SettingsKey.piDayEnabled) private var piDayEnabled = true
 
@@ -20,10 +21,12 @@ struct SettingsView: View {
     @AppStorage(SettingsKey.soundEnabled) private var soundEnabled = true
     @AppStorage(SettingsKey.appearance) private var appearanceRaw = AppearanceMode.system.rawValue
 
+    @State private var themeManager = ThemeManager.shared
     @State private var showResetAlert = false
     @State private var showResetNamesAlert = false
+    @State private var showGameSearch = false
+    @State private var showOnboarding = false
 
-    private let sideOptions = [4, 6, 8, 10, 12, 20, 100]
     private let swatchColumns = [GridItem(.adaptive(minimum: 46), spacing: 12)]
 
     private var iCloudAvailable: Bool { FileManager.default.ubiquityIdentityToken != nil }
@@ -37,16 +40,35 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
+                themeSection
                 iCloudSection
                 diceSection
                 timerSection
                 feedbackSection
-                appearanceSection
                 funSection
                 dataSection
                 aboutSection
             }
+            .scrollContentBackground(.hidden)
+            .background(palette.background.ignoresSafeArea())
             .navigationTitle("Settings")
+            .sheet(isPresented: $showGameSearch) {
+                NavigationStack {
+                    GameThemeSearchView()
+                        .padding()
+                        .background(palette.background.ignoresSafeArea())
+                        .navigationTitle("Match a Game")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Done") { showGameSearch = false }.fontWeight(.semibold)
+                            }
+                        }
+                }
+            }
+            .fullScreenCover(isPresented: $showOnboarding) {
+                OnboardingView()
+            }
             .alert("Reset all scores?", isPresented: $showResetAlert) {
                 Button("Reset", role: .destructive) {
                     Roster.resetScores(context, players: players)
@@ -70,12 +92,37 @@ struct SettingsView: View {
 
     // MARK: - Sections
 
+    private var themeSection: some View {
+        Section {
+            ThemeGridPicker()
+                .listRowBackground(palette.surface)
+
+            Button {
+                showGameSearch = true
+            } label: {
+                Label("Match a Board Game…", systemImage: "magnifyingglass")
+                    .foregroundStyle(palette.accent)
+            }
+            .listRowBackground(palette.surface)
+
+            Picker("Appearance", selection: $appearanceRaw) {
+                ForEach(AppearanceMode.allCases) { Text($0.label).tag($0.rawValue) }
+            }
+            .pickerStyle(.segmented)
+            .listRowBackground(palette.surface)
+        } header: {
+            Text("Theme")
+        } footer: {
+            Text("Themes recolor the whole app, including player colors. Every feature works with every theme, online or offline.")
+        }
+    }
+
     private var iCloudSection: some View {
         Section {
             HStack(spacing: 12) {
                 Image(systemName: iCloudAvailable ? "checkmark.icloud.fill" : "exclamationmark.icloud")
                     .font(.title2)
-                    .foregroundStyle(iCloudAvailable ? Color.green : Color.orange)
+                    .foregroundStyle(iCloudAvailable ? palette.positive : palette.warning)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(iCloudAvailable ? "iCloud Sync On" : "iCloud Unavailable")
                         .font(.headline)
@@ -83,10 +130,11 @@ struct SettingsView: View {
                          ? "Players and scores sync across your devices."
                          : "Sign in to iCloud in Settings to sync. Your data is still saved on this device.")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(palette.textSecondary)
                 }
             }
             .padding(.vertical, 2)
+            .listRowBackground(palette.surface)
         } header: {
             Text("Sync")
         }
@@ -94,79 +142,80 @@ struct SettingsView: View {
 
     private var diceSection: some View {
         Section("Dice") {
-            Stepper("Number of dice: \(diceCount)", value: $diceCount, in: 1...30)
+            Group {
+                Stepper("Number of dice: \(diceCount)", value: $diceCount, in: 1...30)
 
-            Stepper("Sides per die: \(diceSides)", value: $diceSides, in: 2...100)
+                Stepper("Sides per die: \(diceSides)", value: $diceSides, in: 2...100)
 
-            Toggle("Show total", isOn: $diceShowTotal)
+                Toggle("Show total", isOn: $diceShowTotal)
 
-            VStack(alignment: .leading, spacing: 6) {
-                HStack {
-                    Text("Dot size")
-                    Spacer()
-                    Text(DotSize.name(for: dotSize))
-                        .foregroundStyle(.secondary)
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        Text("Dot size")
+                        Spacer()
+                        Text(DotSize.name(for: dotSize))
+                            .foregroundStyle(palette.textSecondary)
+                    }
+                    Slider(value: $dotSize, in: DotSize.range, step: 1)
                 }
-                Slider(value: $dotSize, in: DotSize.range, step: 1)
-            }
-            .padding(.vertical, 2)
+                .padding(.vertical, 2)
 
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Die color").font(.subheadline)
-                LazyVGrid(columns: swatchColumns, spacing: 12) {
-                    ForEach(Theme.diceColors, id: \.hex) { entry in
-                        diceSwatch(entry.hex, name: entry.name)
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Die color").font(.subheadline)
+                    LazyVGrid(columns: swatchColumns, spacing: 12) {
+                        themeDiceSwatch
+                        ForEach(Theme.diceColors, id: \.hex) { entry in
+                            diceSwatch(entry.hex, name: entry.name)
+                        }
                     }
                 }
+                .padding(.vertical, 4)
             }
-            .padding(.vertical, 4)
+            .listRowBackground(palette.surface)
         }
     }
 
     private var timerSection: some View {
         Section("Turn Timer") {
-            VStack(alignment: .leading, spacing: 6) {
-                HStack {
-                    Text("Time per player")
-                    Spacer()
-                    Text(secondsPerPlayer.clockString)
-                        .font(.body.monospacedDigit().weight(.semibold))
-                        .foregroundStyle(.secondary)
-                }
-                Slider(value: $secondsPerPlayer, in: 10...900, step: 5)
-            }
-            .padding(.vertical, 2)
-
-            Toggle("Play alarm when time runs out", isOn: $alarmEnabled)
-
-            if alarmEnabled {
+            Group {
                 VStack(alignment: .leading, spacing: 6) {
                     HStack {
-                        Text("Alarm length")
+                        Text("Time per player")
                         Spacer()
-                        Text("\(Int(alarmDuration))s")
-                            .foregroundStyle(.secondary)
+                        Text(secondsPerPlayer.clockString)
+                            .font(.body.monospacedDigit().weight(.semibold))
+                            .foregroundStyle(palette.textSecondary)
                     }
-                    Slider(value: $alarmDuration, in: 1...10, step: 1)
+                    Slider(value: $secondsPerPlayer, in: 10...900, step: 5)
                 }
                 .padding(.vertical, 2)
+
+                Toggle("Play alarm when time runs out", isOn: $alarmEnabled)
+
+                if alarmEnabled {
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Text("Alarm length")
+                            Spacer()
+                            Text("\(Int(alarmDuration))s")
+                                .foregroundStyle(palette.textSecondary)
+                        }
+                        Slider(value: $alarmDuration, in: 1...10, step: 1)
+                    }
+                    .padding(.vertical, 2)
+                }
             }
+            .listRowBackground(palette.surface)
         }
     }
 
     private var feedbackSection: some View {
         Section("Feedback") {
-            Toggle("Haptics", isOn: $hapticsEnabled)
-            Toggle("Sound", isOn: $soundEnabled)
-        }
-    }
-
-    private var appearanceSection: some View {
-        Section("Appearance") {
-            Picker("Theme", selection: $appearanceRaw) {
-                ForEach(AppearanceMode.allCases) { Text($0.label).tag($0.rawValue) }
+            Group {
+                Toggle("Haptics", isOn: $hapticsEnabled)
+                Toggle("Sound", isOn: $soundEnabled)
             }
-            .pickerStyle(.segmented)
+            .listRowBackground(palette.surface)
         }
     }
 
@@ -175,6 +224,7 @@ struct SettingsView: View {
         if PiDay.isToday {
             Section {
                 Toggle("Happy π Day!", isOn: $piDayEnabled)
+                    .listRowBackground(palette.surface)
             } footer: {
                 Text("Every P becomes π — today only.")
             }
@@ -183,11 +233,14 @@ struct SettingsView: View {
 
     private var dataSection: some View {
         Section {
-            LabeledContent("Players", value: "\(players.count)")
-            LabeledContent("Rounds recorded", value: "\(Roster.roundCount(players))")
-            Button("Reset dice settings", role: .destructive) { resetDiceSettings() }
-            Button("Reset player names", role: .destructive) { showResetNamesAlert = true }
-            Button("Reset all scores", role: .destructive) { showResetAlert = true }
+            Group {
+                LabeledContent("Players", value: "\(players.count)")
+                LabeledContent("Rounds recorded", value: "\(Roster.roundCount(players))")
+                Button("Reset dice settings", role: .destructive) { resetDiceSettings() }
+                Button("Reset player names", role: .destructive) { showResetNamesAlert = true }
+                Button("Reset all scores", role: .destructive) { showResetAlert = true }
+            }
+            .listRowBackground(palette.surface)
         } header: {
             Text("Data")
         } footer: {
@@ -199,16 +252,56 @@ struct SettingsView: View {
         diceCount = 2
         diceSides = 6
         diceShowTotal = true
-        diceColorHex = "#E63946"
+        diceColorHex = Theme.themeDiceColor
         dotSize = 3
         Haptics.notify(.success)
     }
 
     private var aboutSection: some View {
         Section("About") {
-            LabeledContent("Version", value: appVersion)
-            LabeledContent("Made by", value: "Nathan Fennel")
+            Group {
+                Button("Show Welcome Tour") { showOnboarding = true }
+                LabeledContent("Version", value: appVersion)
+                LabeledContent("Made by", value: "Nathan Fennel")
+            }
+            .listRowBackground(palette.surface)
         }
+    }
+
+    // MARK: - Die color swatches
+
+    /// The default: dice take their colors from the active theme.
+    private var themeDiceSwatch: some View {
+        let selected = diceColorHex == Theme.themeDiceColor
+        return Button {
+            Haptics.selection()
+            diceColorHex = Theme.themeDiceColor
+        } label: {
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(palette.diceFace)
+                .frame(height: 40)
+                .overlay {
+                    Circle()
+                        .fill(palette.dicePip)
+                        .frame(width: 10, height: 10)
+                }
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .strokeBorder(palette.textPrimary.opacity(selected ? 0.9 : 0.15),
+                                      lineWidth: selected ? 3 : 1)
+                )
+                .overlay {
+                    if selected {
+                        Image(systemName: "checkmark")
+                            .font(.subheadline.weight(.black))
+                            .foregroundStyle(palette.diceFace.readableForeground)
+                            .offset(x: 12, y: -10)
+                    }
+                }
+                .accessibilityLabel("Theme dice")
+                .accessibilityAddTraits(selected ? .isSelected : [])
+        }
+        .buttonStyle(.plain)
     }
 
     private func diceSwatch(_ hex: String, name: String) -> some View {
@@ -222,7 +315,8 @@ struct SettingsView: View {
                 .frame(height: 40)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .strokeBorder(Color.primary.opacity(selected ? 0.9 : 0.15), lineWidth: selected ? 3 : 1)
+                        .strokeBorder(palette.textPrimary.opacity(selected ? 0.9 : 0.15),
+                                      lineWidth: selected ? 3 : 1)
                 )
                 .overlay {
                     if selected {
@@ -232,8 +326,33 @@ struct SettingsView: View {
                     }
                 }
                 .accessibilityLabel(name)
+                .accessibilityAddTraits(selected ? .isSelected : [])
         }
         .buttonStyle(.plain)
+    }
+}
+
+/// The inline theme grid used in Settings; the sheet version is `ThemePickerSheet`.
+struct ThemeGridPicker: View {
+    @State private var themeManager = ThemeManager.shared
+
+    private let columns = [GridItem(.adaptive(minimum: 140), spacing: 12)]
+
+    var body: some View {
+        LazyVGrid(columns: columns, spacing: 12) {
+            ForEach(themeManager.availableThemes) { theme in
+                ThemePreviewTile(
+                    theme: theme,
+                    isSelected: theme.id == themeManager.selectedThemeID
+                ) {
+                    Haptics.impact(.light)
+                    withAnimation(.easeInOut(duration: 0.35)) {
+                        themeManager.select(theme)
+                    }
+                }
+            }
+        }
+        .padding(.vertical, 6)
     }
 }
 

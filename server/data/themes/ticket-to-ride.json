@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "id": "ticket-to-ride",
+  "name": "Rail Journey",
+  "game": {
+    "name": "Ticket to Ride",
+    "slug": "ticket-to-ride",
+    "aliases": [
+      "ttr",
+      "ticket 2 ride"
+    ]
+  },
+  "tags": [
+    "trains",
+    "classic",
+    "bright"
+  ],
+  "updatedAt": "2026-07-21T00:00:00Z",
+  "light": {
+    "background": "#F3EDDF",
+    "surface": "#FBF7EB",
+    "surfaceElevated": "#FFFFFF",
+    "table": "#37556E",
+    "accent": "#A83228",
+    "accentSecondary": "#37556E",
+    "textPrimary": "#2A2C31",
+    "textSecondary": "#5C5E63",
+    "positive": "#2C6A47",
+    "negative": "#A83228",
+    "warning": "#8A6420",
+    "diceFace": "#FBF7EB",
+    "dicePip": "#2A2C31",
+    "players": [
+      "#2D5BCF",
+      "#E13C4C",
+      "#099A4E",
+      "#DEB413",
+      "#966DDA",
+      "#F97316",
+      "#0FA3A3",
+      "#D30876",
+      "#64748B",
+      "#62AC1F"
+    ]
+  },
+  "dark": {
+    "background": "#15130F",
+    "surface": "#201D17",
+    "surfaceElevated": "#2B2820",
+    "table": "#452F26",
+    "accent": "#E06A5E",
+    "accentSecondary": "#8FAEC9",
+    "textPrimary": "#EFEBE0",
+    "textSecondary": "#ACA89D",
+    "positive": "#7FC796",
+    "negative": "#E08D7D",
+    "warning": "#D9B15C",
+    "diceFace": "#F1EDE2",
+    "dicePip": "#2A2C31",
+    "players": [
+      "#7E97D7",
+      "#F2777C",
+      "#75E1A0",
+      "#D5BD19",
+      "#C79BFF",
+      "#FF9E45",
+      "#39D2E6",
+      "#D98492",
+      "#B9BEC7",
+      "#B5F560"
+    ]
+  }
+}

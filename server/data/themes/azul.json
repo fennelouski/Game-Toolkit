@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "id": "azul",
+  "name": "Glazed Tiles",
+  "game": {
+    "name": "Azul",
+    "slug": "azul",
+    "aliases": [
+      "azul stained glass",
+      "azul summer pavilion"
+    ]
+  },
+  "tags": [
+    "tiles",
+    "elegant",
+    "blue"
+  ],
+  "updatedAt": "2026-07-21T00:00:00Z",
+  "light": {
+    "background": "#EDF1F4",
+    "surface": "#F8FAFC",
+    "surfaceElevated": "#FFFFFF",
+    "table": "#2E5E8C",
+    "accent": "#2E5E8C",
+    "accentSecondary": "#C9862E",
+    "textPrimary": "#25303A",
+    "textSecondary": "#556370",
+    "positive": "#3E7D53",
+    "negative": "#A84A3F",
+    "warning": "#8A6420",
+    "diceFace": "#FBFCFD",
+    "dicePip": "#2E5E8C",
+    "players": [
+      "#2F5D50",
+      "#C24C2C",
+      "#2B5E8C",
+      "#8E354C",
+      "#C99022",
+      "#6B8F3D",
+      "#17777F",
+      "#6A4FA3",
+      "#50432D",
+      "#B98BAE"
+    ]
+  },
+  "dark": {
+    "background": "#0F1519",
+    "surface": "#182126",
+    "surfaceElevated": "#212D34",
+    "table": "#1F3D57",
+    "accent": "#77AEDB",
+    "accentSecondary": "#DBA84E",
+    "textPrimary": "#E4ECF1",
+    "textSecondary": "#9FAEB8",
+    "positive": "#8FC796",
+    "negative": "#DB9080",
+    "warning": "#D9B366",
+    "diceFace": "#F0F4F7",
+    "dicePip": "#25303A",
+    "players": [
+      "#83BD96",
+      "#C5884B",
+      "#A4ACD6",
+      "#CE7295",
+      "#D9B15C",
+      "#97BB6E",
+      "#A7CED2",
+      "#9E8CC9",
+      "#91895C",
+      "#DF9FB5"
+    ]
+  }
+}

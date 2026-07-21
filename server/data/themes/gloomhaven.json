@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "id": "gloomhaven",
+  "name": "Dark Hollow",
+  "game": {
+    "name": "Gloomhaven",
+    "slug": "gloomhaven",
+    "aliases": [
+      "frosthaven",
+      "jaws of the lion"
+    ]
+  },
+  "tags": [
+    "dark",
+    "dungeon",
+    "moody"
+  ],
+  "updatedAt": "2026-07-21T00:00:00Z",
+  "light": {
+    "background": "#E7E4DE",
+    "surface": "#F2F0EA",
+    "surfaceElevated": "#FBF9F5",
+    "table": "#4A5058",
+    "accent": "#5A6B7C",
+    "accentSecondary": "#9A5B36",
+    "textPrimary": "#26292E",
+    "textSecondary": "#565C64",
+    "positive": "#3F6B4F",
+    "negative": "#9A4238",
+    "warning": "#7D6420",
+    "diceFace": "#F4F2EC",
+    "dicePip": "#2C3036",
+    "players": [
+      "#347353",
+      "#A6653C",
+      "#629CBD",
+      "#824862",
+      "#AF7E37",
+      "#788258",
+      "#496C7E",
+      "#7A6698",
+      "#6B4F3A",
+      "#A87686"
+    ]
+  },
+  "dark": {
+    "background": "#101214",
+    "surface": "#191C20",
+    "surfaceElevated": "#23272D",
+    "table": "#2A2F37",
+    "accent": "#D98E52",
+    "accentSecondary": "#7C93A8",
+    "textPrimary": "#E4E4DE",
+    "textSecondary": "#A2A8B0",
+    "positive": "#8FC2A0",
+    "negative": "#D98B76",
+    "warning": "#D9B366",
+    "diceFace": "#3E4E61",
+    "dicePip": "#E8B87A",
+    "players": [
+      "#8A9C87",
+      "#DC8F5D",
+      "#91A5BC",
+      "#BF7696",
+      "#DCC095",
+      "#9DB873",
+      "#89D9D0",
+      "#9899CC",
+      "#B08A62",
+      "#DFA3B2"
+    ]
+  }
+}
