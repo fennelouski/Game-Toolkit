@@ -5,20 +5,31 @@ with everything synced across your devices through iCloud.
 
 Version 2.0 is a complete SwiftUI rebuild of the original 2015 Objective-C app.
 
+## Platforms
+
+| Platform | How |
+| --- | --- |
+| iPhone, iPad | Native, iOS 17+ |
+| Mac | Mac Catalyst (a real Mac app, sandboxed for the Mac App Store) |
+| Apple Vision Pro | Runs as a Designed-for-iPad app |
+
 ## Features
 
 | Screen | What it does |
 | --- | --- |
-| **Dice** | Roll 1–12 dice from d4 to d100. Animated tumble, haptics, running total, eight die colors. Tap the dice or shake the device to roll. |
+| **Dice** | 1–30 dice, any number of sides from 2 to 100. Animated tumble roll, haptics, running total, eight die colors, seven dot sizes. **Tap a die to hold it** so it sits out the next roll (Yahtzee-style); shake or press Roll to throw the rest. |
 | **Timer** | Chess-clock turn timer. Tap a player to start their clock and stop everyone else's; tap again to pause. Alarm sounds when someone runs out. |
-| **Scores** | A round-by-round scorecard with running totals, a crown on the leader, and a cumulative Swift Charts graph. Tap any round to edit it. |
+| **Scores** | Round-by-round scorecard with running totals, a crown on the leader, and per-round editing. Charts show either everyone's cumulative totals or one player's round-by-round scores. Shake to shuffle the turn order. |
 | **Players** | Manage the shared roster — rename, recolor, reorder, delete. Used by both the timer and the scorecard. |
-| **Settings** | Dice and timer defaults, alarm length, haptics and sound toggles, light/dark/system theme, and live iCloud sync status. |
+| **Settings** | Dice and timer defaults, alarm length, haptics and sound, light/dark/system theme, reset actions, and live iCloud sync status. |
+
+Every feature of the original app is present. Shake gestures (roll dice, shuffle turn order) only
+exist on iPhone and iPad, so each one also has a button or menu item for Mac and Vision Pro.
 
 ## Requirements
 
-- iOS 17.0 or later (iPhone and iPad)
-- Xcode 26 / Swift 5.0 language mode
+- iOS 17.0+ / macOS 14.0+ (Catalyst)
+- Xcode 26, Swift 5 language mode
 
 ## Architecture
 
@@ -26,18 +37,18 @@ Version 2.0 is a complete SwiftUI rebuild of the original 2015 Objective-C app.
 - **SwiftData** for persistence, mirrored to the user's **private CloudKit database**. The
   `Player` model is CloudKit-compatible by construction: every property has a default value and
   there are no unique constraints.
-- **Swift Charts** for the score graph (replacing the original's OpenGL-based `GTGraphView`).
+- **Swift Charts** for the score graphs (replacing the original's OpenGL `GTGraphView`).
 - **Observation** (`@Observable`) for the dice and timer engines. The timer computes elapsed time
   from wall-clock deltas, so it never drifts even if a tick is late.
 - The Xcode project uses a **file-system-synchronized group**, so any file added under
-  `GameToolkit/` is picked up automatically — there is no need to edit `project.pbxproj`.
+  `GameToolkit/` is picked up automatically — no `project.pbxproj` editing required.
 
 ### Graceful degradation
 
-`GameToolkitApp` creates its `ModelContainer` with CloudKit enabled, and falls back to an
-in-memory store if the on-disk store cannot be opened. The app always launches, and it works
-fully offline or when the user is signed out of iCloud — it simply stops syncing until iCloud
-is available again. The Settings screen reports the current state.
+`GameToolkitApp` creates its `ModelContainer` with CloudKit enabled and falls back to an
+in-memory store if the on-disk store cannot be opened. The app always launches, and works fully
+offline or when signed out of iCloud — it simply stops syncing until iCloud is available again.
+Settings reports the current state.
 
 ## Project layout
 
@@ -49,13 +60,16 @@ GameToolkit/
     Dice/      DiceEngine, DieView, DiceRollerView
     Timer/     TimerEngine, TurnTimerView, TimeSetupSheet
     Scorecard/ ScorecardView, RoundEntrySheet, ScoreChartView
-    Players/   PlayersView, PlayerEditorSheet
+    Players/   PlayersView, PlayerEditorSheet, TurnOrderSheet
     Settings/  SettingsView
-  Support/     Color+Hex, Theme, Haptics, AudioManager, ShakeDetector, SettingsKey
+  Support/     Color+Hex, Theme, Haptics, AudioManager, ShakeDetector,
+               SettingsKey, ScreenshotSupport (DEBUG only)
   Resources/   Assets.xcassets, alarm sound, PrivacyInfo.xcprivacy
-GameToolkitTests/   Swift Testing suites for scoring, roster and formatting logic
+GameToolkitTests/   33 Swift Testing tests across 7 suites
 Config/Info.plist   Base plist (background modes); all other keys are generated
-Design/             Source artwork (app icon, splash screens, PSD/SVG)
+Scripts/            Screenshot automation
+Screenshots/        Generated App Store screenshots
+Design/             Source artwork, plus a ready-made visionOS layered icon
 ```
 
 ## Build and test
@@ -63,27 +77,49 @@ Design/             Source artwork (app icon, splash screens, PSD/SVG)
 ```sh
 # Build for the simulator
 xcodebuild -project "Game Toolkit.xcodeproj" -scheme "Game Toolkit" \
-  -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max' build
 
-# Run the unit tests
+# Run the tests
 xcodebuild -project "Game Toolkit.xcodeproj" -scheme "Game Toolkit" \
-  -destination 'platform=iOS Simulator,name=iPhone 17 Pro' test
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max' test
+
+# Mac Catalyst
+xcodebuild -project "Game Toolkit.xcodeproj" -scheme "Game Toolkit" \
+  -destination 'platform=macOS,variant=Mac Catalyst' build
 ```
 
-## Enabling iCloud sync
+## Screenshots
 
-The code and entitlements are already in place. To sync on real devices, the app's App ID needs
-these capabilities in the Apple Developer portal (Xcode's automatic signing can add them):
+```sh
+./Scripts/screenshots.sh        # iPhone + iPad + Mac
+./Scripts/screenshots.sh ios    # just iPhone and iPad
+```
 
-1. **iCloud** with CloudKit, using the container `iCloud.com.nathanfennel.Game-Toolkit`.
-2. **Push Notifications** — CloudKit uses silent pushes to tell the app that data changed. The
-   matching `remote-notification` background mode is already declared in `Config/Info.plist`.
+Output lands in `Screenshots/` at exact App Store sizes — iPhone 6.9" (1320×2868),
+iPad 13" (2064×2752), Mac (1440×900). Demo data comes from a `-screenshotMode` launch argument
+that is compiled only into Debug builds, so it can never ship.
 
-Without those, the app still builds and runs; it just keeps data on-device only.
+## Before submitting to the App Store
+
+The code, entitlements, icons, and privacy manifest are in place. Two things need your Apple
+Developer account, which cannot be automated here:
+
+1. **iCloud** capability with CloudKit, container `iCloud.com.nathanfennel.Game-Toolkit`.
+2. **Push Notifications** capability — CloudKit uses silent pushes to signal changes. The matching
+   `remote-notification` background mode is already declared in `Config/Info.plist`.
+
+Vision Pro needs no extra work: the app ships there as a Designed-for-iPad app and reuses the
+iPad screenshots. If you would rather ship a **native** visionOS app, the platform install on
+this machine is incomplete (the simulator runtime downloads but never mounts, which needs
+elevated privileges). Finish it via Xcode ▸ Settings ▸ Components, then set
+`SUPPORTED_PLATFORMS` to include `xros xrsimulator`, set `SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD`
+to `NO`, add `7` to `TARGETED_DEVICE_FAMILY`, and move
+`Design/visionOS-AppIcon/AppIconVision.solidimagestack` into `Assets.xcassets` (a layered icon is
+already prepared).
 
 ## Notes on the rebuild
 
 The original app stored player names in `NSUserDefaults` under obfuscated keys and never
-persisted scores at all — closing the app lost the game. Scores are now first-class, durable,
-and synced. Roughly 1.3 MB of dead Objective-C was removed in the rewrite, including
-`BRReferenceManager`, which belonged to an entirely different app.
+persisted scores at all — closing the app lost the game. Scores are now first-class, durable, and
+synced. Roughly 1.3 MB of dead Objective-C was removed, including `BRReferenceManager`, which
+belonged to an entirely different app.

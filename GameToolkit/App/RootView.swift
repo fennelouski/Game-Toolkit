@@ -37,6 +37,12 @@ struct RootView: View {
         .tint(.accentColor)
         .preferredColorScheme(appearance.colorScheme)
         .task {
+            #if DEBUG
+            if ScreenshotSupport.isEnabled {
+                ScreenshotSupport.seed(context, existing: players)
+                return
+            }
+            #endif
             Roster.seedIfNeeded(context, existing: players)
         }
     }

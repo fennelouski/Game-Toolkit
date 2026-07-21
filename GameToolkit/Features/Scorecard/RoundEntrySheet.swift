@@ -61,7 +61,7 @@ struct RoundEntrySheet: View {
                 .fill(player.color.gradient)
                 .frame(width: 14, height: 14)
 
-            Text(player.name.isEmpty ? "Unnamed" : player.name)
+            Text(PiDay.decorate(player.name.isEmpty ? "Unnamed" : player.name))
                 .font(.body.weight(.medium))
                 .lineLimit(1)
 

@@ -1,9 +1,15 @@
 import SwiftUI
+import SwiftData
 import Charts
 
-/// Cumulative score over rounds — the modern replacement for the old OpenGL graph view.
+/// Score visualisation — the modern replacement for the old OpenGL graph view.
+///
+/// Mirrors the original's two modes: everyone's cumulative totals, or one player's
+/// round-by-round scores (which the old app revealed with a long press).
 struct ScoreChartView: View {
     let players: [Player]
+
+    @State private var focusedPlayerID: PersistentIdentifier?
 
     private struct Point: Identifiable {
         let id = UUID()
@@ -20,12 +26,17 @@ struct ScoreChartView: View {
 
     private var rounds: Int { players.map(\.scores.count).max() ?? 0 }
 
+    private var focusedPlayer: Player? {
+        guard let focusedPlayerID else { return nil }
+        return players.first { $0.id == focusedPlayerID }
+    }
+
     /// Builds one cumulative series per player, with de-duplicated labels so the color scale
     /// maps correctly even when two players share a name.
     private var series: [Series] {
         var seen: [String: Int] = [:]
         return players.enumerated().map { index, player in
-            let base = player.name.isEmpty ? "Player \(index + 1)" : player.name
+            let base = PiDay.decorate(player.name.isEmpty ? "Player \(index + 1)" : player.name)
             let occurrence = (seen[base] ?? 0) + 1
             seen[base] = occurrence
             let label = occurrence > 1 ? "\(base) (\(occurrence))" : base
@@ -49,12 +60,42 @@ struct ScoreChartView: View {
                     Text("Add a round to see the score chart.")
                 }
             } else {
-                chart
+                VStack(spacing: 10) {
+                    focusPicker
+                    if let player = focusedPlayer {
+                        individualChart(for: player)
+                    } else {
+                        cumulativeChart
+                    }
+                }
             }
         }
     }
 
-    private var chart: some View {
+    private var focusPicker: some View {
+        Menu {
+            Button { focusedPlayerID = nil } label: {
+                Label("All players", systemImage: focusedPlayerID == nil ? "checkmark" : "person.2")
+            }
+            Divider()
+            ForEach(players) { player in
+                Button { focusedPlayerID = player.id } label: {
+                    Label(PiDay.decorate(player.name), systemImage: focusedPlayerID == player.id ? "checkmark" : "person")
+                }
+            }
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: "line.3.horizontal.decrease.circle")
+                Text(focusedPlayer.map { PiDay.decorate($0.name) } ?? "All players")
+                    .fontWeight(.medium)
+                Image(systemName: "chevron.down").font(.caption2)
+            }
+            .font(.subheadline)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var cumulativeChart: some View {
         let data = series
         return Chart {
             ForEach(data) { item in
@@ -95,6 +136,41 @@ struct ScoreChartView: View {
         .chartYAxis { AxisMarks(position: .leading) }
         .chartLegend(position: .bottom, spacing: 12)
         .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(.ultraThinMaterial)
+        )
+    }
+
+    /// One player's per-round scores, so you can see where the points actually came from.
+    private func individualChart(for player: Player) -> some View {
+        Chart {
+            ForEach(0..<rounds, id: \.self) { round in
+                BarMark(
+                    x: .value("Round", "R\(round + 1)"),
+                    y: .value("Score", player.score(inRound: round))
+                )
+                .foregroundStyle(player.color.gradient)
+                .cornerRadius(5)
+                .annotation(position: .top) {
+                    Text("\(player.score(inRound: round))")
+                        .font(.caption2.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                }
+            }
+            RuleMark(y: .value("Zero", 0))
+                .foregroundStyle(.secondary.opacity(0.4))
+                .lineStyle(StrokeStyle(lineWidth: 1))
+        }
+        .chartYAxis { AxisMarks(position: .leading) }
+        .padding(12)
+        .overlay(alignment: .topTrailing) {
+            Text("Total \(player.total)")
+                .font(.caption.weight(.semibold))
+                .padding(.horizontal, 10).padding(.vertical, 5)
+                .background(Capsule().fill(player.color.opacity(0.18)))
+                .padding(10)
+        }
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .fill(.ultraThinMaterial)

@@ -64,4 +64,12 @@ enum Roster {
         for player in players { player.scores = [] }
         try? context.save()
     }
+
+    /// Renames everyone back to "Player 1", "Player 2", ... keeping scores and colors.
+    static func resetNames(_ context: ModelContext, players: [Player]) {
+        for (index, player) in players.sorted(by: { $0.sortIndex < $1.sortIndex }).enumerated() {
+            player.name = "Player \(index + 1)"
+        }
+        try? context.save()
+    }
 }

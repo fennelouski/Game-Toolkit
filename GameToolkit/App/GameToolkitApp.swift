@@ -20,7 +20,7 @@ struct GameToolkitApp: App {
             print("⚠️ Falling back to in-memory store: \(error)")
             container = try! ModelContainer(
                 for: schema,
-                configurations: [ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)]
+                configurations: [ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)]
             )
         }
     }

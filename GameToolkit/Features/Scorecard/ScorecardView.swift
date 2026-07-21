@@ -5,9 +5,18 @@ struct ScorecardView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \Player.sortIndex) private var players: [Player]
 
-    @State private var mode: Mode = .table
+    @State private var mode: Mode = ScorecardView.initialMode
+
+    /// Lets the screenshot script open straight to the chart. Release builds always start on the table.
+    private static var initialMode: Mode {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-showChart") { return .chart }
+        #endif
+        return .table
+    }
     @State private var roundEdit: RoundEdit?
     @State private var showResetAlert = false
+    @State private var showTurnOrder = false
 
     private enum Mode: String, CaseIterable, Identifiable {
         case table = "Table"
@@ -40,6 +49,15 @@ struct ScorecardView: View {
                 RoundEntrySheet(players: players, round: edit.id) { values in
                     apply(values, toRound: edit.id)
                 }
+            }
+            .sheet(isPresented: $showTurnOrder) {
+                TurnOrderSheet(players: players)
+                    .presentationDetents([.medium, .large])
+            }
+            // The original app shuffled the turn order when you shook the scorecard.
+            .onShake {
+                guard !players.isEmpty else { return }
+                showTurnOrder = true
             }
             .alert("Reset all scores?", isPresented: $showResetAlert) {
                 Button("Reset", role: .destructive) {
@@ -137,7 +155,7 @@ struct ScorecardView: View {
                     Circle()
                         .fill(player.color.gradient)
                         .frame(width: 10, height: 10)
-                    Text(player.name.isEmpty ? "—" : player.name)
+                    Text(PiDay.decorate(player.name.isEmpty ? "—" : player.name))
                         .font(.caption.weight(.semibold))
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
@@ -234,6 +252,11 @@ struct ScorecardView: View {
                     roundEdit = RoundEdit(id: rounds)
                 } label: {
                     Label("Add Round", systemImage: "plus")
+                }
+                Button {
+                    showTurnOrder = true
+                } label: {
+                    Label("Random Turn Order", systemImage: "shuffle")
                 }
                 if rounds > 0 {
                     Button(role: .destructive) {

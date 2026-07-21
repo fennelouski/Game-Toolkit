@@ -9,6 +9,8 @@ struct SettingsView: View {
     @AppStorage(SettingsKey.diceSides) private var diceSides = 6
     @AppStorage(SettingsKey.diceShowTotal) private var diceShowTotal = true
     @AppStorage(SettingsKey.diceColorHex) private var diceColorHex = "#E63946"
+    @AppStorage(SettingsKey.diceDotSize) private var dotSize = 3.0
+    @AppStorage(SettingsKey.piDayEnabled) private var piDayEnabled = true
 
     @AppStorage(SettingsKey.secondsPerPlayer) private var secondsPerPlayer = 90.0
     @AppStorage(SettingsKey.alarmEnabled) private var alarmEnabled = true
@@ -19,6 +21,7 @@ struct SettingsView: View {
     @AppStorage(SettingsKey.appearance) private var appearanceRaw = AppearanceMode.system.rawValue
 
     @State private var showResetAlert = false
+    @State private var showResetNamesAlert = false
 
     private let sideOptions = [4, 6, 8, 10, 12, 20, 100]
     private let swatchColumns = [GridItem(.adaptive(minimum: 46), spacing: 12)]
@@ -39,6 +42,7 @@ struct SettingsView: View {
                 timerSection
                 feedbackSection
                 appearanceSection
+                funSection
                 dataSection
                 aboutSection
             }
@@ -51,6 +55,15 @@ struct SettingsView: View {
                 Button("Cancel", role: .cancel) {}
             } message: {
                 Text("This clears every round for all players. The roster is kept.")
+            }
+            .alert("Reset player names?", isPresented: $showResetNamesAlert) {
+                Button("Reset", role: .destructive) {
+                    Roster.resetNames(context, players: players)
+                    Haptics.notify(.warning)
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Renames everyone back to Player 1, Player 2, and so on. Scores are kept.")
             }
         }
     }
@@ -81,13 +94,22 @@ struct SettingsView: View {
 
     private var diceSection: some View {
         Section("Dice") {
-            Stepper("Number of dice: \(diceCount)", value: $diceCount, in: 1...12)
+            Stepper("Number of dice: \(diceCount)", value: $diceCount, in: 1...30)
 
-            Picker("Sides", selection: $diceSides) {
-                ForEach(sideOptions, id: \.self) { Text("d\($0)").tag($0) }
-            }
+            Stepper("Sides per die: \(diceSides)", value: $diceSides, in: 2...100)
 
             Toggle("Show total", isOn: $diceShowTotal)
+
+            VStack(alignment: .leading, spacing: 6) {
+                HStack {
+                    Text("Dot size")
+                    Spacer()
+                    Text(DotSize.name(for: dotSize))
+                        .foregroundStyle(.secondary)
+                }
+                Slider(value: $dotSize, in: DotSize.range, step: 1)
+            }
+            .padding(.vertical, 2)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Die color").font(.subheadline)
@@ -148,16 +170,38 @@ struct SettingsView: View {
         }
     }
 
+    @ViewBuilder
+    private var funSection: some View {
+        if PiDay.isToday {
+            Section {
+                Toggle("Happy π Day!", isOn: $piDayEnabled)
+            } footer: {
+                Text("Every P becomes π — today only.")
+            }
+        }
+    }
+
     private var dataSection: some View {
         Section {
             LabeledContent("Players", value: "\(players.count)")
             LabeledContent("Rounds recorded", value: "\(Roster.roundCount(players))")
+            Button("Reset dice settings", role: .destructive) { resetDiceSettings() }
+            Button("Reset player names", role: .destructive) { showResetNamesAlert = true }
             Button("Reset all scores", role: .destructive) { showResetAlert = true }
         } header: {
             Text("Data")
         } footer: {
             Text("Players and scores are stored with SwiftData and mirrored to your private iCloud database.")
         }
+    }
+
+    private func resetDiceSettings() {
+        diceCount = 2
+        diceSides = 6
+        diceShowTotal = true
+        diceColorHex = "#E63946"
+        dotSize = 3
+        Haptics.notify(.success)
     }
 
     private var aboutSection: some View {
