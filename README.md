@@ -3,7 +3,10 @@
 A companion app for board and tabletop games: roll dice, run a turn timer, and keep score —
 with everything synced across your devices through iCloud.
 
-Version 2.0 is a complete SwiftUI rebuild of the original 2015 Objective-C app.
+Version 2.0 is a complete SwiftUI rebuild of the original 2015 Objective-C app. Version 2.1
+adds the **Hearth** design language — felt, paper, and serif type instead of stock SwiftUI —
+plus a full theming system with board-game-inspired themes served from a tiny Vercel
+backend ([`server/`](server/)).
 
 ## Platforms
 
@@ -21,7 +24,31 @@ Version 2.0 is a complete SwiftUI rebuild of the original 2015 Objective-C app.
 | **Timer** | Chess-clock turn timer. Tap a player to start their clock and stop everyone else's; tap again to pause. Alarm sounds when someone runs out. |
 | **Scores** | Round-by-round scorecard with running totals, a crown on the leader, and per-round editing. Charts show either everyone's cumulative totals or one player's round-by-round scores. Shake to shuffle the turn order. |
 | **Players** | Manage the shared roster — rename, recolor, reorder, delete. Used by both the timer and the scorecard. |
-| **Settings** | Dice and timer defaults, alarm length, haptics and sound, light/dark/system theme, reset actions, and live iCloud sync status. |
+| **Settings** | Theme picker, dice and timer defaults, alarm length, haptics and sound, light/dark/system appearance, reset actions, and live iCloud sync status. |
+
+## Theming
+
+Every screen reads a small set of **semantic color roles** (background, surface, table,
+accent, text, dice, an ordered 10-color player palette, …) from a `ThemePalette` in the
+SwiftUI environment — no view touches a literal color. Six built-in themes ship in the app
+(each with light *and* dark variants): **Hearth** (the default — deep green felt, parchment,
+clay), Meadow, Table Rules, Gaslight, Toolbox (the 2.0 look), and High Contrast.
+
+- **Contrast is enforced by tests.** `ThemeContrastTests` fails the build if any text/surface
+  pair drops below WCAG AA (4.5:1), semantic colors below 3:1, or if any two player colors
+  become hard to tell apart — including under simulated protanopia and deuteranopia.
+- **Players follow the theme.** `Player.paletteIndex` maps a player onto the palette, so the
+  roster (and the score chart) recolors when the theme changes; explicitly chosen custom
+  colors are stored as hex and never overridden.
+- **Game themes.** Search "what are you playing tonight" (onboarding, Settings, or the
+  toolbar swatch) and the app re-skins to match — eight game-inspired themes ship in the
+  bundle and more sync quietly from the [theme repository](server/). Search runs entirely
+  on-device; queries never leave the phone. Themes are purely cosmetic: **no feature is ever
+  gated by a theme, a game, or the network**, and the app works fully offline forever.
+- The chosen theme syncs across devices through iCloud's key-value store.
+
+To add a game theme, see [`server/README.md`](server/README.md) — one JSON file, one PR;
+CI validates schema and contrast.
 
 Every feature of the original app is present. Shake gestures (roll dice, shuffle turn order) only
 exist on iPhone and iPad, so each one also has a button or menu item for Mac and Vision Pro.
@@ -54,7 +81,7 @@ Settings reports the current state.
 
 ```
 GameToolkit/
-  App/         GameToolkitApp (ModelContainer setup), RootView (tabs)
+  App/         GameToolkitApp (ModelContainer setup), RootView (tabs), OnboardingView
   Models/      Player (@Model), Roster (roster + round operations)
   Features/
     Dice/      DiceEngine, DieView, DiceRollerView
@@ -62,10 +89,15 @@ GameToolkit/
     Scorecard/ ScorecardView, RoundEntrySheet, ScoreChartView
     Players/   PlayersView, PlayerEditorSheet, TurnOrderSheet
     Settings/  SettingsView
-  Support/     Color+Hex, Theme, Haptics, AudioManager, ShakeDetector,
-               SettingsKey, ScreenshotSupport (DEBUG only)
-  Resources/   Assets.xcassets, alarm sound, PrivacyInfo.xcprivacy
-GameToolkitTests/   33 Swift Testing tests across 7 suites
+  Support/
+    Theme/     ThemeModels (ThemePalette/AppTheme), BuiltInThemes, ThemeManager,
+               ThemeComponents (FeltSurface, buttons, chips, theme pickers)
+    GameThemes/ GameThemeService (offline-first fetch/cache/search), GameThemeSearchView
+    Color+Hex, Theme (legacy palettes), Haptics, AudioManager, ShakeDetector,
+    SettingsKey, ScreenshotSupport (DEBUG only)
+  Resources/   Assets.xcassets, alarm sound, bundled game themes, PrivacyInfo.xcprivacy
+GameToolkitTests/   57 Swift Testing tests across 11 suites
+server/             Theme repository for Vercel (static JSON API + search function)
 Config/Info.plist   Base plist (background modes); all other keys are generated
 Scripts/            Screenshot automation
 Screenshots/        Generated App Store screenshots
@@ -101,12 +133,18 @@ that is compiled only into Debug builds, so it can never ship.
 
 ## Before submitting to the App Store
 
-The code, entitlements, icons, and privacy manifest are in place. Two things need your Apple
-Developer account, which cannot be automated here:
+The code, entitlements, icons, and privacy manifest are in place. A few things need your
+accounts, which cannot be automated here:
 
 1. **iCloud** capability with CloudKit, container `iCloud.com.nathanfennel.Game-Toolkit`.
 2. **Push Notifications** capability — CloudKit uses silent pushes to signal changes. The matching
    `remote-notification` background mode is already declared in `Config/Info.plist`.
+3. **Deploy the theme service** (optional — the app is fully functional without it):
+   `cd server && npx vercel --prod` with project name `game-toolkit-themes`, or connect the
+   repo in the Vercel dashboard with root directory `server`. See `server/README.md`.
+4. **App Store privacy answers**: the app now makes anonymous GET requests for public theme
+   JSON. Nothing is collected, logged, or linked to the user (searches run on-device), so
+   the privacy-manifest declarations are unchanged — answer "no data collected" as before.
 
 Vision Pro needs no extra work: the app ships there as a Designed-for-iPad app and reuses the
 iPad screenshots. If you would rather ship a **native** visionOS app, the platform install on

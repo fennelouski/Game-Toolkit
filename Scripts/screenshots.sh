@@ -55,6 +55,16 @@ shoot_simulator() {  # $1 = device udid, $2 = output subdir, $3 = app path
     sleep 4
     xcrun simctl io "$udid" screenshot "$OUT/$dir/4-chart.png" >/dev/null 2>&1 \
         && echo "  $dir/4-chart.png"
+    # Two more themes to show off the theming system.
+    for themed in "gaslight:0:6-theme-gaslight" "azul:2:7-theme-azul"; do
+        local theme="${themed%%:*}" rest="${themed#*:}" tab="${rest%%:*}" shot="${rest##*:}"
+        xcrun simctl terminate "$udid" "$BUNDLE_ID" >/dev/null 2>&1
+        sleep 1
+        xcrun simctl launch "$udid" "$BUNDLE_ID" -screenshotMode -ui.selectedTab "$tab" -ui.theme "$theme" >/dev/null 2>&1
+        sleep 4
+        xcrun simctl io "$udid" screenshot "$OUT/$dir/$shot.png" >/dev/null 2>&1 \
+            && echo "  $dir/$shot.png"
+    done
     xcrun simctl terminate "$udid" "$BUNDLE_ID" >/dev/null 2>&1
 }
 
