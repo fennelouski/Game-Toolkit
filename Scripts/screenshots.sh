@@ -29,6 +29,22 @@ app_path() {    # $1 = build dir suffix (e.g. Debug-iphonesimulator)
         | awk -F' = ' '/ BUILD_DIR /{print $2; exit}')/$1/$SCHEME.app"
 }
 
+# Capture via a temp file: freshly booted simulators sometimes refuse screenshots
+# ("Timeout waiting for screen surfaces"), and sandboxed environments can deny simctl
+# direct writes into the repo while plain file moves succeed.
+snap() {  # $1 = udid, $2 = output path
+    local attempt tmp
+    tmp="$(mktemp -t gt-shot).png"
+    for attempt in 1 2 3 4; do
+        if xcrun simctl io "$1" screenshot "$tmp" >/dev/null 2>&1; then
+            mv -f "$tmp" "$2" && return 0
+        fi
+        sleep 4
+    done
+    rm -f "$tmp"
+    return 1
+}
+
 shoot_simulator() {  # $1 = device udid, $2 = output subdir, $3 = app path
     local udid="$1" dir="$2" app="$3"
     mkdir -p "$OUT/$dir"
@@ -45,25 +61,27 @@ shoot_simulator() {  # $1 = device udid, $2 = output subdir, $3 = app path
         sleep 1
         xcrun simctl launch "$udid" "$BUNDLE_ID" -screenshotMode -ui.selectedTab "$idx" >/dev/null 2>&1
         sleep 4
-        xcrun simctl io "$udid" screenshot "$OUT/$dir/$name.png" >/dev/null 2>&1 \
-            && echo "  $dir/$name.png"
+        snap "$udid" "$OUT/$dir/$name.png" && echo "  $dir/$name.png"
     done
     # Chart view of the scorecard.
     xcrun simctl terminate "$udid" "$BUNDLE_ID" >/dev/null 2>&1
     sleep 1
     xcrun simctl launch "$udid" "$BUNDLE_ID" -screenshotMode -ui.selectedTab 2 -showChart >/dev/null 2>&1
     sleep 4
-    xcrun simctl io "$udid" screenshot "$OUT/$dir/4-chart.png" >/dev/null 2>&1 \
-        && echo "  $dir/4-chart.png"
+    snap "$udid" "$OUT/$dir/4-chart.png" && echo "  $dir/4-chart.png"
     # Two more themes to show off the theming system.
     for themed in "gaslight:0:6-theme-gaslight" "azul:2:7-theme-azul"; do
-        local theme="${themed%%:*}" rest="${themed#*:}" tab="${rest%%:*}" shot="${rest##*:}"
+        # `local a=x b=$a` expands every argument before assigning any, so these
+        # must be separate statements.
+        local theme="${themed%%:*}"
+        local rest="${themed#*:}"
+        local tab="${rest%%:*}"
+        local shot="${rest##*:}"
         xcrun simctl terminate "$udid" "$BUNDLE_ID" >/dev/null 2>&1
         sleep 1
         xcrun simctl launch "$udid" "$BUNDLE_ID" -screenshotMode -ui.selectedTab "$tab" -ui.theme "$theme" >/dev/null 2>&1
         sleep 4
-        xcrun simctl io "$udid" screenshot "$OUT/$dir/$shot.png" >/dev/null 2>&1 \
-            && echo "  $dir/$shot.png"
+        snap "$udid" "$OUT/$dir/$shot.png" && echo "  $dir/$shot.png"
     done
     xcrun simctl terminate "$udid" "$BUNDLE_ID" >/dev/null 2>&1
 }

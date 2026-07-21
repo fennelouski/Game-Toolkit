@@ -36,6 +36,9 @@ struct TurnTimerView: View {
                             }
                             .padding(.horizontal)
                             .padding(.vertical, 8)
+                            // Keeps cards hand-sized and clustered in wide windows.
+                            .frame(maxWidth: 880)
+                            .frame(maxWidth: .infinity)
                             // Centers the cards when there are only a few, instead of
                             // stranding them at the top of a tall screen.
                             .frame(minHeight: geo.size.height, alignment: .center)

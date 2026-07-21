@@ -29,6 +29,7 @@ struct DiceRollerView: View {
             VStack(spacing: 14) {
                 diceTray
                 controls
+                    .frame(maxWidth: 640)
             }
             .padding(.horizontal)
             .padding(.bottom, 8)
@@ -78,6 +79,8 @@ struct DiceRollerView: View {
                                 seed: index
                             )
                             .aspectRatio(1, contentMode: .fit)
+                            // Dice stay hand-sized even in a big Mac window or on iPad.
+                            .frame(maxWidth: 220, maxHeight: 220)
                             .onTapGesture { engine.toggleLock(die.id) }
                         }
                     }

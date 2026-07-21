@@ -94,6 +94,7 @@ struct ScorecardView: View {
                 }
 
                 addRoundButton
+                    .frame(maxWidth: 640)
                     .padding(.horizontal)
                     .padding(.bottom, 6)
             }
@@ -133,35 +134,38 @@ struct ScorecardView: View {
     // MARK: - Scorepad
 
     /// The paper pad: ruled rows, tabular numerals, a serif totals line. Sized to its
-    /// content so the pad ends where the writing ends.
+    /// content so the pad ends where the writing ends, and centered when the window is
+    /// wider than the pad (iPad, Mac).
     private var scorepad: some View {
-        ScrollView([.horizontal, .vertical]) {
-            VStack(spacing: 0) {
-                headerRow
-                rule(2)
-                ForEach(0..<rounds, id: \.self) { round in
-                    roundRow(round)
-                    if round < rounds - 1 { rule(0.8).opacity(0.5) }
+        GeometryReader { geo in
+            ScrollView([.horizontal, .vertical]) {
+                VStack(spacing: 0) {
+                    headerRow
+                    rule(2)
+                    ForEach(0..<rounds, id: \.self) { round in
+                        roundRow(round)
+                        if round < rounds - 1 { rule(0.8).opacity(0.5) }
+                    }
+                    rule(2)
+                    totalsRow
                 }
-                rule(2)
-                totalsRow
+                .padding(.horizontal, 14)
+                .padding(.vertical, 6)
+                .background {
+                    let shape = RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    shape
+                        .fill(palette.surface)
+                        .overlay { shape.strokeBorder(.white.opacity(0.25), lineWidth: 0.8).blendMode(.overlay) }
+                        .shadow(color: .black.opacity(0.10), radius: 10, y: 5)
+                        .shadow(color: .black.opacity(0.06), radius: 1.5, y: 1)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 4)
+                .frame(minWidth: geo.size.width)
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 6)
-            .background {
-                let shape = RoundedRectangle(cornerRadius: 18, style: .continuous)
-                shape
-                    .fill(palette.surface)
-                    .overlay { shape.strokeBorder(.white.opacity(0.25), lineWidth: 0.8).blendMode(.overlay) }
-                    .shadow(color: .black.opacity(0.10), radius: 10, y: 5)
-                    .shadow(color: .black.opacity(0.06), radius: 1.5, y: 1)
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 4)
-            .frame(maxWidth: .infinity)
+            .defaultScrollAnchor(.topLeading)
+            .scrollBounceBehavior(.basedOnSize, axes: [.horizontal, .vertical])
         }
-        .defaultScrollAnchor(.topLeading)
-        .scrollBounceBehavior(.basedOnSize, axes: [.horizontal, .vertical])
     }
 
     /// A horizontal pad rule, drawn in the ink color.
