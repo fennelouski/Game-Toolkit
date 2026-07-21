@@ -12,11 +12,17 @@ final class ThemeManager {
     private(set) var availableThemes: [AppTheme]
 
     @ObservationIgnored private let defaults: UserDefaults
+    /// Mirrors the choice through iCloud so game night looks the same on every device.
+    /// `nil` in tests, where the shared key-value store must stay untouched.
+    @ObservationIgnored private let cloudStore: NSUbiquitousKeyValueStore?
 
     var selectedThemeID: String {
         didSet {
             guard oldValue != selectedThemeID else { return }
             defaults.set(selectedThemeID, forKey: SettingsKey.themeID)
+            if cloudStore?.string(forKey: SettingsKey.themeID) != selectedThemeID {
+                cloudStore?.set(selectedThemeID, forKey: SettingsKey.themeID)
+            }
         }
     }
 
@@ -27,12 +33,31 @@ final class ThemeManager {
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+        let isShared = defaults === UserDefaults.standard
+        self.cloudStore = isShared ? .default : nil
         availableThemes = BuiltInThemes.all
         // `-ui.theme <id>` (used by the screenshot script) lands in UserDefaults' argument
         // domain under the same key, so a plain read honors both the stored choice and the
-        // launch-argument override.
-        selectedThemeID = defaults.string(forKey: SettingsKey.themeID)
-            ?? BuiltInThemes.defaultTheme.id
+        // launch-argument override. A choice made on another device wins over an old local
+        // one, but never over an explicit launch argument.
+        let launchOrLocal = defaults.string(forKey: SettingsKey.themeID)
+        let cloud = cloudStore?.string(forKey: SettingsKey.themeID)
+        selectedThemeID = launchOrLocal ?? cloud ?? BuiltInThemes.defaultTheme.id
+
+        if let cloudStore {
+            NotificationCenter.default.addObserver(
+                forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
+                object: cloudStore, queue: .main
+            ) { [weak self] _ in
+                MainActor.assumeIsolated {
+                    guard let self, let remote = cloudStore.string(forKey: SettingsKey.themeID) else { return }
+                    self.selectedThemeID = remote
+                    // The other device may have picked a game theme we haven't registered yet.
+                    GameThemeService.shared.restoreSelectedThemeIfNeeded(in: self)
+                }
+            }
+            cloudStore.synchronize()
+        }
     }
 
     func select(_ theme: AppTheme) {
