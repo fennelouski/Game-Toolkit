@@ -20,6 +20,7 @@ struct SettingsView: View {
     @AppStorage(SettingsKey.hapticsEnabled) private var hapticsEnabled = true
     @AppStorage(SettingsKey.soundEnabled) private var soundEnabled = true
     @AppStorage(SettingsKey.appearance) private var appearanceRaw = AppearanceMode.system.rawValue
+    @AppStorage(SettingsKey.externalScoreboard) private var externalScoreboard = true
 
     @State private var themeManager = ThemeManager.shared
     @State private var showResetAlert = false
@@ -44,6 +45,7 @@ struct SettingsView: View {
                 iCloudSection
                 diceSection
                 timerSection
+                externalDisplaySection
                 feedbackSection
                 funSection
                 dataSection
@@ -207,6 +209,20 @@ struct SettingsView: View {
             }
             .listRowBackground(palette.surface)
         }
+    }
+
+    @ViewBuilder
+    private var externalDisplaySection: some View {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        Section {
+            Toggle("TV scoreboard", isOn: $externalScoreboard)
+                .listRowBackground(palette.surface)
+        } header: {
+            Text("Apple TV & External Screens")
+        } footer: {
+            Text("While mirroring to an Apple TV or a connected screen, show everyone a big live scoreboard instead of a copy of your phone. Turn off to mirror normally.")
+        }
+        #endif
     }
 
     private var feedbackSection: some View {

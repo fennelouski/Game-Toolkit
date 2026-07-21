@@ -59,6 +59,13 @@ struct RootView: View {
         .environment(\.palette, palette)
         .animation(.easeInOut(duration: 0.35), value: themeManager.selectedThemeID)
         .preferredColorScheme(appearance.colorScheme)
+        #if DEBUG
+        // `-ui.externalPreview` renders the TV scoreboard in-app so it can be checked
+        // (and screenshotted) without a physical external display.
+        .fullScreenCover(isPresented: .constant(ProcessInfo.processInfo.arguments.contains("-ui.externalPreview"))) {
+            ExternalScoreboardRoot()
+        }
+        #endif
         .fullScreenCover(isPresented: $showOnboarding) {
             OnboardingView()
                 .environment(\.palette, palette)

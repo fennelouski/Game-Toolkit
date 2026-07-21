@@ -85,6 +85,13 @@ cd server && node scripts/build.mjs      # emits public/api/v1/** (validates fir
   button or menu item, since Mac and Vision Pro cannot shake.
 - **Timer correctness.** `TimerEngine` derives remaining time from `Date` deltas rather than
   counting ticks, so a delayed timer never causes drift. Keep that property.
+- **External-display scoreboard** (`App/ExternalDisplay.swift`, iOS only): AirPlay/HDMI
+  screens get a scoreboard window instead of mirroring. This requires
+  `UIApplicationSupportsMultipleScenes` in `Config/Info.plist` (which also makes the app
+  multi-windowable on iPad — intended). The window is created/destroyed to follow the
+  `settings.externalScoreboard` toggle; with no window attached the system mirrors.
+  `-ui.externalPreview` (DEBUG) renders the scoreboard in-app since simulators can't
+  attach external displays; real AirPlay behavior needs hardware.
 - Player color is stored as a hex string (`colorHex`); `Color(hex:)` and `.hexString` in
   `Color+Hex.swift` are the only conversion points.
 - Tests share the main actor. Don't assert on async engine state after a fixed `Task.sleep` —

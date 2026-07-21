@@ -8,5 +8,13 @@
 	<array>
 		<string>remote-notification</string>
 	</array>
+	<!-- Required for the external-display scoreboard: without multiple-scene support,
+	     UIKit never delivers the windowExternalDisplayNonInteractive scene session.
+	     Side effect: the app also becomes multi-windowable on iPad, which is fine. -->
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<true/>
+	</dict>
 </dict>
 </plist>
