@@ -5,6 +5,9 @@
   "functions": {
     "api/v1/search.js": {
       "includeFiles": "data/themes/**"
+    },
+    "api/v1/games.js": {
+      "includeFiles": "data/games.json"
     }
   },
   "rewrites": [

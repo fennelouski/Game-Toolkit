@@ -15,7 +15,7 @@ struct TurnOrderSheet: View {
                     ForEach(Array(order.enumerated()), id: \.element.id) { index, player in
                         HStack(spacing: 14) {
                             ZStack {
-                                Circle().fill(player.color(in: palette).gradient)
+                                Circle().fill(player.fill(in: palette))
                                 Text("\(index + 1)")
                                     .font(.headline.weight(.bold))
                                     .foregroundStyle(player.color(in: palette).readableForeground)

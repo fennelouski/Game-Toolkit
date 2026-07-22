@@ -41,6 +41,9 @@ enum SettingsKey {
     static let onboardingCompleted = "onboarding.completed"
     /// Show the big scoreboard on AirPlay/HDMI screens instead of mirroring. Default true.
     static let externalScoreboard = "settings.externalScoreboard"
+    /// `PlayerGroup.groupID` of the game night in play; "" is the built-in table.
+    /// Per-device on purpose: two phones can run different game nights off one iCloud store.
+    static let activeGroupID = "roster.activeGroupID"
 }
 
 /// The original app replaced every "P" with "π" on 14 March. Kept as an opt-out easter egg.

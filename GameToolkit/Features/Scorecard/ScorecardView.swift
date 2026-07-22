@@ -5,6 +5,7 @@ struct ScorecardView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.palette) private var palette
     @Query(sort: \Player.sortIndex) private var players: [Player]
+    @AppStorage(SettingsKey.activeGroupID) private var activeGroupID = ""
 
     @State private var mode: Mode = ScorecardView.initialMode
 
@@ -31,10 +32,16 @@ struct ScorecardView: View {
     private let roundColumnWidth: CGFloat = 46
     private let playerColumnWidth: CGFloat = 92
 
-    private var rounds: Int { Roster.roundCount(players) }
+    /// Everyone seated at the active game night, and the subset actually playing tonight.
+    /// The pad shows and edits the playing subset; destructive round operations apply to
+    /// every member so score arrays stay aligned when someone rejoins.
+    private var members: [Player] { Roster.members(players, inGroup: activeGroupID) }
+    private var playing: [Player] { members.filter { !$0.isSittingOut } }
+
+    private var rounds: Int { Roster.roundCount(playing) }
     private var leadingTotal: Int? {
         guard rounds > 0 else { return nil }
-        return players.map(\.total).max()
+        return playing.map(\.total).max()
     }
 
     var body: some View {
@@ -47,22 +54,22 @@ struct ScorecardView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { toolbarContent }
             .sheet(item: $roundEdit) { edit in
-                RoundEntrySheet(players: players, round: edit.id) { values in
+                RoundEntrySheet(players: playing, round: edit.id) { values in
                     apply(values, toRound: edit.id)
                 }
             }
             .sheet(isPresented: $showTurnOrder) {
-                TurnOrderSheet(players: players)
+                TurnOrderSheet(players: playing)
                     .presentationDetents([.medium, .large])
             }
             // The original app shuffled the turn order when you shook the scorecard.
             .onShake {
-                guard !players.isEmpty else { return }
+                guard !playing.isEmpty else { return }
                 showTurnOrder = true
             }
             .alert("Reset all scores?", isPresented: $showResetAlert) {
                 Button("Reset", role: .destructive) {
-                    Roster.resetScores(context, players: players)
+                    Roster.resetScores(context, players: members)
                     Haptics.notify(.warning)
                 }
                 Button("Cancel", role: .cancel) {}
@@ -74,11 +81,17 @@ struct ScorecardView: View {
 
     @ViewBuilder
     private var content: some View {
-        if players.isEmpty {
+        if members.isEmpty {
             ContentUnavailableView {
                 Label("No Players", systemImage: "person.2")
             } description: {
                 Text("Add players on the Players tab to start scoring.")
+            }
+        } else if playing.isEmpty {
+            ContentUnavailableView {
+                Label("Everyone's Sitting Out", systemImage: "moon.zzz")
+            } description: {
+                Text("Mark who's playing on the Players tab to start scoring.")
             }
         } else {
             VStack(spacing: 12) {
@@ -88,7 +101,7 @@ struct ScorecardView: View {
                 case .table:
                     if rounds == 0 { emptyRounds } else { scorepad }
                 case .chart:
-                    ScoreChartView(players: players)
+                    ScoreChartView(players: playing)
                         .padding(.horizontal)
                         .frame(maxHeight: .infinity)
                 }
@@ -182,15 +195,9 @@ struct ScorecardView: View {
                 .foregroundStyle(palette.textSecondary)
                 .frame(width: roundColumnWidth, alignment: .leading)
 
-            ForEach(players) { player in
+            ForEach(playing) { player in
                 VStack(spacing: 5) {
-                    ZStack {
-                        Circle().fill(player.color(in: palette).gradient)
-                        Text(String((player.name.isEmpty ? "?" : player.name).prefix(1)).uppercased())
-                            .font(.caption2.weight(.bold))
-                            .foregroundStyle(player.color(in: palette).readableForeground)
-                    }
-                    .frame(width: 22, height: 22)
+                    PlayerAvatarView(player: player, size: 22)
                     Text(PiDay.decorate(player.name.isEmpty ? "—" : player.name))
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(palette.textPrimary)
@@ -214,7 +221,7 @@ struct ScorecardView: View {
                     .foregroundStyle(palette.textSecondary)
                     .frame(width: roundColumnWidth, alignment: .leading)
 
-                ForEach(players) { player in
+                ForEach(playing) { player in
                     Text("\(player.score(inRound: round))")
                         .font(.body.weight(.medium))
                         .monospacedDigit()
@@ -231,7 +238,7 @@ struct ScorecardView: View {
                 Label("Edit Round \(round + 1)", systemImage: "pencil")
             }
             Button(role: .destructive) {
-                Roster.deleteRound(context, players: players, at: round)
+                Roster.deleteRound(context, players: members, at: round)
                 Haptics.impact(.rigid)
             } label: {
                 Label("Delete Round \(round + 1)", systemImage: "trash")
@@ -246,7 +253,7 @@ struct ScorecardView: View {
                 .foregroundStyle(palette.textSecondary)
                 .frame(width: roundColumnWidth, alignment: .leading)
 
-            ForEach(players) { player in
+            ForEach(playing) { player in
                 let isLeader = rounds > 0 && player.total == leadingTotal
                 VStack(spacing: 1) {
                     if isLeader {
@@ -293,7 +300,7 @@ struct ScorecardView: View {
                 }
                 if rounds > 0 {
                     Button(role: .destructive) {
-                        Roster.deleteRound(context, players: players, at: rounds - 1)
+                        Roster.deleteRound(context, players: members, at: rounds - 1)
                         Haptics.impact(.rigid)
                     } label: {
                         Label("Delete Last Round", systemImage: "minus.circle")
@@ -312,10 +319,10 @@ struct ScorecardView: View {
     // MARK: - Editing
 
     private func apply(_ values: [Int], toRound round: Int) {
-        for (index, player) in players.enumerated() where index < values.count {
+        for (index, player) in playing.enumerated() where index < values.count {
             player.setScore(values[index], inRound: round)
         }
-        Roster.normalizeRounds(context, players: players, to: Swift.max(rounds, round + 1))
+        Roster.normalizeRounds(context, players: playing, to: Swift.max(rounds, round + 1))
         Haptics.notify(.success)
     }
 }

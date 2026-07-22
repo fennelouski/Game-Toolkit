@@ -27,6 +27,39 @@ final class Player {
     /// One entry per completed round. Index 0 is round 1. Kept in sync across players by the scorecard.
     var scores: [Int] = []
 
+    /// The game night this player sits at. `nil` is the built-in table that exists before
+    /// the user ever creates a group. The inverse lives on `PlayerGroup.players`.
+    var group: PlayerGroup? = nil
+    /// Links copies of the same person across game nights so name/color edits can follow
+    /// them. `nil` until the person is first added to a second game night.
+    var personID: UUID? = nil
+    /// Sitting out keeps the seat but skips the player in the timer and scorecard.
+    var isSittingOut: Bool = false
+    /// When true (the default), name/color edits propagate between this person's copies
+    /// in other game nights. The per-player opt-out for "consistent settings".
+    var syncsPreferences: Bool = true
+
+    // MARK: Appearance
+    // All optional or defaulted so the schema stays CloudKit-compatible, and all raw
+    // scalars/blobs so older app versions sharing the store simply ignore them.
+
+    /// Which avatar face to show; see `AvatarKind`. Unknown or unbacked values fall back
+    /// to the initial letter, so a bad sync can never blank an avatar.
+    var avatarKindRaw: String = ""
+    /// Downscaled selfie / library photo / Image Playground output. External storage
+    /// keeps the CloudKit record itself small.
+    @Attribute(.externalStorage) var avatarImageData: Data? = nil
+    /// The player's chosen avatar emoji (used when `avatarKind == .emoji`).
+    var avatarEmoji: String? = nil
+    /// JSON-encoded `PlayerMonogramStyle` (letters + typography + shape).
+    var monogramData: Data? = nil
+    /// Optional second and third colors; together with `colorHex`/`paletteIndex` they
+    /// form the player's gradient.
+    var colorHex2: String? = nil
+    var colorHex3: String? = nil
+    /// JSON dictionary of `ReactionKind` raw value → emoji, for reaction animations.
+    var reactionEmojiData: Data? = nil
+
     init(name: String, colorHex: String = "#4D96FF", paletteIndex: Int? = nil, sortIndex: Int = 0) {
         self.name = name
         self.colorHex = colorHex

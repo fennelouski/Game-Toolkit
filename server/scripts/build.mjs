@@ -46,4 +46,8 @@ const index = {
 };
 writeFileSync(join(outDir, "index.json"), JSON.stringify(index) + "\n");
 
-console.log(`✓ built API for ${themes.length} theme(s) into public/api/v1/`);
+// The curated games repository, served as-is; /api/v1/games (function) layers BGG on top.
+const games = JSON.parse(readFileSync(join(root, "data", "games.json"), "utf8"));
+writeFileSync(join(outDir, "games.json"), JSON.stringify(games) + "\n");
+
+console.log(`✓ built API for ${themes.length} theme(s) and ${games.length} game(s) into public/api/v1/`);

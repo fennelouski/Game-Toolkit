@@ -82,7 +82,11 @@ struct ExternalScoreboardRoot: View {
 /// Read-only by design — the phone stays the controller.
 struct ExternalScoreboardView: View {
     @Environment(\.palette) private var palette
-    @Query(sort: \Player.sortIndex) private var players: [Player]
+    @Query(sort: \Player.sortIndex) private var allPlayers: [Player]
+    @AppStorage(SettingsKey.activeGroupID) private var activeGroupID = ""
+
+    /// The TV mirrors what the phone is scoring: the active game night's playing members.
+    private var players: [Player] { Roster.playing(allPlayers, inGroup: activeGroupID) }
 
     private var rounds: Int { Roster.roundCount(players) }
     private var leadingTotal: Int? {
@@ -155,7 +159,6 @@ struct ExternalScoreboardView: View {
     }
 
     private func playerCard(_ player: Player) -> some View {
-        let color = player.color(in: palette)
         let isLeader = rounds > 0 && player.total == leadingTotal
         return VStack(spacing: 14) {
             if isLeader {
@@ -168,13 +171,7 @@ struct ExternalScoreboardView: View {
             }
 
             HStack(spacing: 12) {
-                ZStack {
-                    Circle().fill(color.gradient)
-                    Text(String((player.name.isEmpty ? "?" : player.name).prefix(1)).uppercased())
-                        .font(.display(26))
-                        .foregroundStyle(color.readableForeground)
-                }
-                .frame(width: 52, height: 52)
+                PlayerAvatarView(player: player, size: 52)
 
                 Text(PiDay.decorate(player.name.isEmpty ? "Unnamed" : player.name))
                     .font(.system(size: 32, weight: .semibold))

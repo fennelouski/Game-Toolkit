@@ -331,6 +331,8 @@ struct TimerSettingsView: View {
 /// Per-player display style and alarm sound, both defaulting to the global choice.
 struct PlayerTimerOptionsView: View {
     @Environment(\.palette) private var palette
+    @Environment(\.modelContext) private var context
+    @Query(sort: \Player.sortIndex) private var allPlayers: [Player]
     @Bindable var player: Player
     let isFixedLength: Bool
 
@@ -359,6 +361,11 @@ struct PlayerTimerOptionsView: View {
         }
         .scrollContentBackground(.hidden)
         .background(palette.background.ignoresSafeArea())
+        // Runs on every close path (Done or swipe-down), so timer style and sound follow
+        // the person to their synced seats in other game nights, like colors do.
+        .onDisappear {
+            Roster.propagatePreferences(context, from: player, players: allPlayers)
+        }
         .navigationTitle(PiDay.decorate(player.name))
         .navigationBarTitleDisplayMode(.inline)
     }

@@ -1,0 +1,82 @@
+[
+  {
+    "slug": "catan",
+    "name": "Catan",
+    "aliases": ["settlers of catan", "the settlers of catan"],
+    "bggId": 13,
+    "players": { "min": 3, "max": 4 },
+    "playtimeMinutes": 120,
+    "secondsPerTurn": 90,
+    "themeId": "catan"
+  },
+  {
+    "slug": "carcassonne",
+    "name": "Carcassonne",
+    "aliases": ["carcasonne", "carcassone"],
+    "bggId": 822,
+    "players": { "min": 2, "max": 5 },
+    "playtimeMinutes": 45,
+    "secondsPerTurn": 45,
+    "themeId": "carcassonne"
+  },
+  {
+    "slug": "ticket-to-ride",
+    "name": "Ticket to Ride",
+    "aliases": ["ttr", "ticket 2 ride"],
+    "bggId": 9209,
+    "players": { "min": 2, "max": 5 },
+    "playtimeMinutes": 60,
+    "secondsPerTurn": 45,
+    "themeId": "ticket-to-ride"
+  },
+  {
+    "slug": "wingspan",
+    "name": "Wingspan",
+    "aliases": ["wing span"],
+    "bggId": 266192,
+    "players": { "min": 1, "max": 5 },
+    "playtimeMinutes": 70,
+    "secondsPerTurn": 90,
+    "themeId": "wingspan"
+  },
+  {
+    "slug": "azul",
+    "name": "Azul",
+    "aliases": ["azul stained glass", "azul summer pavilion"],
+    "bggId": 230802,
+    "players": { "min": 2, "max": 4 },
+    "playtimeMinutes": 45,
+    "secondsPerTurn": 45,
+    "themeId": "azul"
+  },
+  {
+    "slug": "root",
+    "name": "Root",
+    "aliases": ["root board game", "root woodland"],
+    "bggId": 237182,
+    "players": { "min": 2, "max": 4 },
+    "playtimeMinutes": 90,
+    "secondsPerTurn": 120,
+    "themeId": "root"
+  },
+  {
+    "slug": "gloomhaven",
+    "name": "Gloomhaven",
+    "aliases": ["frosthaven", "jaws of the lion"],
+    "bggId": 174430,
+    "players": { "min": 1, "max": 4 },
+    "playtimeMinutes": 120,
+    "secondsPerTurn": 120,
+    "themeId": "gloomhaven"
+  },
+  {
+    "slug": "terraforming-mars",
+    "name": "Terraforming Mars",
+    "aliases": ["tfm", "mars"],
+    "bggId": 167791,
+    "players": { "min": 1, "max": 5 },
+    "playtimeMinutes": 120,
+    "secondsPerTurn": 120,
+    "themeId": "terraforming-mars"
+  }
+]

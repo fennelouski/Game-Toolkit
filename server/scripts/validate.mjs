@@ -93,9 +93,54 @@ for (const file of files) {
   validateTheme(file, doc);
 }
 
+// --- Curated games repository (data/games.json) ---
+
+function validateGames() {
+  const file = "games.json";
+  let games;
+  try {
+    games = JSON.parse(readFileSync(join(themesDir, "..", "games.json"), "utf8"));
+  } catch (error) {
+    return fail(file, `invalid JSON: ${error.message}`);
+  }
+  if (!Array.isArray(games)) return fail(file, "must be an array");
+
+  const slugs = new Set();
+  const bggIds = new Set();
+  for (const g of games) {
+    const where = `${file} (${g.slug ?? "?"})`;
+    if (!/^[a-z0-9-]+$/.test(g.slug ?? "")) fail(where, `slug must be kebab-case, got ${g.slug}`);
+    if (slugs.has(g.slug)) fail(where, "duplicate slug");
+    slugs.add(g.slug);
+    if (!g.name || typeof g.name !== "string") fail(where, "missing name");
+    if (!Array.isArray(g.aliases) || g.aliases.some((a) => typeof a !== "string")) {
+      fail(where, "aliases must be an array of strings");
+    }
+    if (!Number.isInteger(g.bggId) || g.bggId <= 0) fail(where, `bad bggId ${g.bggId}`);
+    if (bggIds.has(g.bggId)) fail(where, "duplicate bggId");
+    bggIds.add(g.bggId);
+    const { min, max } = g.players ?? {};
+    if (!Number.isInteger(min) || !Number.isInteger(max) || min < 1 || max < min || max > 20) {
+      fail(where, `implausible players ${min}–${max}`);
+    }
+    if (!Number.isInteger(g.playtimeMinutes) || g.playtimeMinutes < 5 || g.playtimeMinutes > 600) {
+      fail(where, `implausible playtimeMinutes ${g.playtimeMinutes}`);
+    }
+    if (g.secondsPerTurn !== null &&
+        (!Number.isInteger(g.secondsPerTurn) || g.secondsPerTurn < 10 || g.secondsPerTurn > 600)) {
+      fail(where, `implausible secondsPerTurn ${g.secondsPerTurn}`);
+    }
+    if (g.themeId !== null && !ids.has(g.themeId)) {
+      fail(where, `themeId ${g.themeId} does not match any theme`);
+    }
+  }
+  return games.length;
+}
+const gameCount = validateGames();
+
 if (failures.length > 0) {
   console.error(`✗ ${failures.length} problem(s):`);
   for (const f of failures) console.error("  " + f);
   process.exit(1);
 }
-console.log(`✓ ${files.length} theme(s) valid`);
+console.log(`✓ ${files.length} theme(s) and ${gameCount} game(s) valid`);

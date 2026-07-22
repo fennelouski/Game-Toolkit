@@ -8,6 +8,9 @@
 	<array>
 		<string>remote-notification</string>
 	</array>
+	<!-- Player avatars: the selfie option opens the system camera. -->
+	<key>NSCameraUsageDescription</key>
+	<string>Take a selfie to use as your player avatar.</string>
 	<!-- The app uses only standard HTTPS/ATS encryption, which is exempt from export
 	     compliance documentation. Declaring it here skips the question on every upload. -->
 	<key>ITSAppUsesNonExemptEncryption</key>

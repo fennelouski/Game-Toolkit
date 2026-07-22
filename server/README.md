@@ -11,7 +11,18 @@ GET /api/v1/index.json          lightweight manifest (id, name, game, tags, prev
 GET /api/v1/themes.json         every full theme document (what the app syncs)
 GET /api/v1/themes/:id          one full theme document
 GET /api/v1/search?q=wingspan   fuzzy search over names, aliases, and tags
+GET /api/v1/games.json          the curated games repository (settings the app uses)
+GET /api/v1/games?q=catan       curated games merged with live BoardGameGeek results
 ```
+
+`/games` layers BoardGameGeek's XML API under our own schema: curated entries win, unknown
+games come from BGG (top 10, two upstream calls), and Vercel's edge cache means BGG sees at
+most one request per distinct query per cache window — that cache *is* the third-party
+caching layer, no database involved. BGG requires registered API access: set `BGG_API_TOKEN`
+in the Vercel project env (register at boardgamegeek.com/using_the_xml_api). Without the
+token the endpoint serves curated data only. Curated games live in `data/games.json`
+(validated by `npm run validate`; `scripts/check-games-api.mjs` self-checks the function
+offline in `npm test`).
 
 Everything except `/search` is a static file — CDN-cached with automatic `ETag`s, so clients
 revalidate with `If-None-Match` for free. `/search` exists for other clients and for a future

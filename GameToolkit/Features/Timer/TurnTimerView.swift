@@ -10,6 +10,7 @@ struct TurnTimerView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Query(sort: \Player.sortIndex) private var players: [Player]
 
+    @AppStorage(SettingsKey.activeGroupID) private var activeGroupID = ""
     @AppStorage(SettingsKey.timerMode) private var modeRaw = TimerMode.chessClock.rawValue
     @AppStorage(SettingsKey.timerScope) private var scopeRaw = TimerScope.perPlayer.rawValue
     @AppStorage(SettingsKey.timerTapBehavior) private var tapBehaviorRaw = TapBehavior.pause.rawValue
@@ -29,6 +30,12 @@ struct TurnTimerView: View {
     private let columns = [GridItem(.adaptive(minimum: 156), spacing: 14)]
 
     private var mode: TimerMode { TimerMode(rawValue: modeRaw) ?? .chessClock }
+
+    /// Tonight's clocks: the active game night's members who aren't sitting out.
+    private var roster: [Player] { Roster.playing(players, inGroup: activeGroupID) }
+    /// Changes when the roster's composition changes — switching game nights, adding or
+    /// removing players, or someone sitting out — so the engine can re-sync its slots.
+    private var rosterIDs: [PersistentIdentifier] { roster.map(\.persistentModelID) }
 
     private var configuration: TimerConfiguration {
         TimerConfiguration(
@@ -116,13 +123,13 @@ struct TurnTimerView: View {
         .onAppear {
             effects.reduceMotion = reduceMotion
             engine.configure(configuration)
-            engine.sync(with: players)
+            engine.sync(with: roster)
         }
         .onChange(of: configuration) { _, config in
             engine.configure(config)
-            engine.sync(with: players)
+            engine.sync(with: roster)
         }
-        .onChange(of: players.count) { _, _ in engine.sync(with: players) }
+        .onChange(of: rosterIDs) { _, _ in engine.sync(with: roster) }
         .onChange(of: reduceMotion) { _, value in effects.reduceMotion = value }
         .onChange(of: engine.lastEvent) { _, stamped in
             guard let stamped else { return }
@@ -143,7 +150,8 @@ struct TurnTimerView: View {
                         TimerSlotCard(
                             slot: slot,
                             model: displayModel(for: slot),
-                            style: style(for: slot)
+                            style: style(for: slot),
+                            fill: fill(for: slot)
                         )
                         .onTapGesture {
                             engine.handleTap(on: slot.id)
@@ -282,6 +290,12 @@ struct TurnTimerView: View {
         return palette.accent
     }
 
+    /// The player's gradient for the card dot; same fallbacks as `color(for:)`.
+    private func fill(for slot: TimerEngine.Slot) -> AnyShapeStyle {
+        if let player = player(for: slot) { return player.fill(in: palette) }
+        return AnyShapeStyle(color(for: slot).gradient)
+    }
+
     private func applyDuration(_ seconds: Double) {
         switch mode {
         case .chessClock: chessSeconds = seconds
@@ -354,11 +368,13 @@ private struct TimerSlotCard: View {
     let slot: TimerEngine.Slot
     let model: TimerDisplayModel
     let style: TimerDisplayStyle
+    /// The player's gradient; matches `model.playerColor` for single-color players.
+    let fill: AnyShapeStyle
 
     var body: some View {
         VStack(spacing: 8) {
             HStack(spacing: 8) {
-                Circle().fill(model.playerColor).frame(width: 12, height: 12)
+                Circle().fill(fill).frame(width: 12, height: 12)
                 Text(PiDay.decorate(slot.name))
                     .font(.headline)
                     .foregroundStyle(palette.textPrimary)

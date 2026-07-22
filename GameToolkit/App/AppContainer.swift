@@ -4,7 +4,7 @@ import SwiftData
 /// scoreboard so both windows show the same live data.
 enum AppContainer {
     static let shared: ModelContainer = {
-        let schema = Schema([Player.self])
+        let schema = Schema([Player.self, PlayerGroup.self])
         // Primary configuration syncs through CloudKit automatically when the iCloud
         // entitlement is present (the default `cloudKitDatabase` is `.automatic`).
         do {

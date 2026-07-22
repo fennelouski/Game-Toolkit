@@ -5,6 +5,8 @@ struct RootView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.colorScheme) private var systemColorScheme
     @Query private var players: [Player]
+    @Query private var groups: [PlayerGroup]
+    @AppStorage(SettingsKey.activeGroupID) private var activeGroupID = ""
     @AppStorage(SettingsKey.appearance) private var appearanceRaw = AppearanceMode.system.rawValue
     /// Remembers the last tab the player was on between launches.
     @AppStorage(SettingsKey.selectedTab) private var selectedTab = 0
@@ -79,12 +81,26 @@ struct RootView: View {
                 ScreenshotSupport.seed(context, existing: players)
                 return
             }
+            if ScreenshotSupport.demoGroupsEnabled {
+                ScreenshotSupport.seedDemoGroups(context)
+            }
             #endif
             Roster.seedIfNeeded(context, existing: players)
             Roster.adoptPaletteIndices(context, players: players)
+            validateActiveGroup()
             if !onboardingCompleted {
                 showOnboarding = true
             }
+        }
+        .onChange(of: groups.count) { _, _ in validateActiveGroup() }
+    }
+
+    /// Falls back to the built-in table when the selected game night no longer exists
+    /// (deleted here or on another device).
+    private func validateActiveGroup() {
+        guard !activeGroupID.isEmpty else { return }
+        if !groups.contains(where: { $0.groupID.uuidString == activeGroupID }) {
+            activeGroupID = ""
         }
     }
 }
