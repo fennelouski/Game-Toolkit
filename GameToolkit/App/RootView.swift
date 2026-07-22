@@ -79,6 +79,9 @@ struct RootView: View {
             #if DEBUG
             if ScreenshotSupport.isEnabled {
                 ScreenshotSupport.seed(context, existing: players)
+                if ScreenshotSupport.demoGroupsEnabled {
+                    ScreenshotSupport.seedDemoGroups(context)
+                }
                 return
             }
             if ScreenshotSupport.demoGroupsEnabled {

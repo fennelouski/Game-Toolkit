@@ -12,8 +12,13 @@ struct HourglassStyle: View {
     let model: TimerDisplayModel
 
     @State private var simulation = SandSimulation()
+    /// Accumulated flip rotation in degrees; a reset flips the glass upside down.
+    @State private var flip = 0.0
 
     private var isLive: Bool { model.isActive && !model.isPreview && !reduceMotion }
+
+    /// True whenever the top bulb is (back to) full — the signal that a reset refilled it.
+    private var isRefilled: Bool { model.fraction >= 0.999 }
 
     var body: some View {
         GeometryReader { geo in
@@ -44,7 +49,19 @@ struct HourglassStyle: View {
                         .frame(width: width, height: height)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .rotationEffect(.degrees(flip))
             }
+        }
+        // Resetting refills the top bulb in the model. Visually, the glass turns
+        // over instead: snap to 180° with the (now-full) top bulb reading as the
+        // old full bottom bulb — pixel-identical to the pre-reset frame — then
+        // animate the flip upright, sand on top, ready to run.
+        .onChange(of: isRefilled) { was, now in
+            guard now, !was, !model.isPreview, !reduceMotion else { return }
+            var snap = Transaction()
+            snap.disablesAnimations = true
+            withTransaction(snap) { flip = 180 }
+            withAnimation(.spring(response: 0.8, dampingFraction: 0.82)) { flip = 360 }
         }
         .onAppear { if isLive { MotionService.shared.acquire() } }
         .onDisappear { if isLive { MotionService.shared.release() } }

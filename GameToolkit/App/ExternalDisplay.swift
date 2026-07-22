@@ -18,6 +18,16 @@ final class ExternalDisplayAppDelegate: NSObject, UIApplicationDelegate {
         }
         return configuration
     }
+
+    #if DEBUG
+    /// `-ui.lockPortrait` pins the phone UI portrait during screenshot runs: other
+    /// automation on a shared machine can rotate a simulator mid-run, and a landscape
+    /// frame ruins the capture. DEBUG-only, so shipping behavior keeps the plist mask.
+    func application(_ application: UIApplication,
+                     supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        ProcessInfo.processInfo.arguments.contains("-ui.lockPortrait") ? .portrait : .all
+    }
+    #endif
 }
 
 final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
@@ -145,9 +155,9 @@ struct ExternalScoreboardView: View {
                 FeltSurface(felt: palette.table, cornerRadius: 30)
                     .frame(width: 420, height: 240)
                 HStack(spacing: 24) {
-                    DieView(value: 5, sides: 6, spin: 0, face: palette.diceFace, pip: palette.dicePip, seed: 0)
+                    DieView(value: 5, sides: 6, face: palette.diceFace, pip: palette.dicePip, seed: 0)
                         .frame(width: 110, height: 110)
-                    DieView(value: 3, sides: 6, spin: 0, face: palette.diceFace, pip: palette.dicePip, seed: 5)
+                    DieView(value: 3, sides: 6, face: palette.diceFace, pip: palette.dicePip, seed: 5)
                         .frame(width: 110, height: 110)
                 }
             }

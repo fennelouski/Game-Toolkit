@@ -13,7 +13,7 @@ struct PlayersView: View {
     @State private var showAddPlayer = false
     @State private var showRenameGroup = false
     @State private var showDeleteGroup = false
-    @State private var showGallery = false
+    @State private var showGallery = ProcessInfo.processInfo.arguments.contains("-showGallery")
     @State private var renameText = ""
 
     private var activeGroup: PlayerGroup? {

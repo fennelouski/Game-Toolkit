@@ -142,47 +142,100 @@ struct TurnTimerView: View {
 
     // MARK: - Layouts
 
+    /// Sizes the cards to the roster: one timer fills the screen, two split it in
+    /// half, four make a 2×2 grid, and so on — cells always fill the available
+    /// space in the most card-shaped arrangement. Only when cells would get
+    /// cramped (big rosters, small screens) does it fall back to a scrolling grid.
     private var gridLayout: some View {
         GeometryReader { geo in
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 14) {
-                    ForEach(engine.slots) { slot in
-                        TimerSlotCard(
-                            slot: slot,
-                            model: displayModel(for: slot),
-                            style: style(for: slot),
-                            fill: fill(for: slot)
-                        )
-                        .onTapGesture {
-                            engine.handleTap(on: slot.id)
-                            Haptics.impact(.medium)
-                        }
-                        .contextMenu {
-                            if case let .player(pid) = slot.id,
-                               let player = players.first(where: { $0.persistentModelID == pid }) {
-                                Button {
-                                    customizingPlayer = player
-                                } label: {
-                                    Label("Style & Sound…", systemImage: "paintbrush")
-                                }
+            let slots = engine.slots
+            let spacing = 14.0
+            let usable = CGSize(width: geo.size.width - 32, height: geo.size.height - 8)
+            let cols = bestColumns(count: slots.count, in: usable, spacing: spacing)
+            let rows = max(1, (slots.count + cols - 1) / cols)
+            let cellHeight = (usable.height - spacing * Double(rows - 1)) / Double(rows)
+
+            if cellHeight >= 132 {
+                VStack(spacing: spacing) {
+                    ForEach(0..<rows, id: \.self) { row in
+                        HStack(spacing: spacing) {
+                            ForEach(slots[(row * cols)..<min((row + 1) * cols, slots.count)]) { slot in
+                                slotCard(slot)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .transition(.scale(scale: 0.8).combined(with: .opacity))
                             }
                         }
                     }
                 }
                 .padding(.horizontal)
-                .padding(.vertical, 8)
-                // Keeps cards hand-sized and clustered in wide windows.
-                .frame(maxWidth: 880)
-                .frame(maxWidth: .infinity)
-                // Centers the cards when there are only a few, instead of
-                // stranding them at the top of a tall screen.
-                .frame(minHeight: geo.size.height, alignment: .center)
+                .padding(.bottom, 8)
+                .animation(.spring(response: 0.4, dampingFraction: 0.75), value: slots.count)
                 .animation(.spring(response: 0.35, dampingFraction: 0.7), value: engine.activeID)
-                .animation(.spring(response: 0.4, dampingFraction: 0.75),
-                           value: engine.lastEvent?.id)
+            } else {
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: spacing) {
+                        ForEach(slots) { slot in slotCard(slot) }
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    // Keeps cards hand-sized and clustered in wide windows.
+                    .frame(maxWidth: 880)
+                    .frame(maxWidth: .infinity)
+                    // Centers the cards when there are only a few, instead of
+                    // stranding them at the top of a tall screen.
+                    .frame(minHeight: geo.size.height, alignment: .center)
+                    .animation(.spring(response: 0.35, dampingFraction: 0.7), value: engine.activeID)
+                    .animation(.spring(response: 0.4, dampingFraction: 0.75),
+                               value: engine.lastEvent?.id)
+                }
+                .scrollBounceBehavior(.basedOnSize)
             }
-            .scrollBounceBehavior(.basedOnSize)
         }
+    }
+
+    private func slotCard(_ slot: TimerEngine.Slot) -> some View {
+        TimerSlotCard(
+            slot: slot,
+            model: displayModel(for: slot),
+            style: style(for: slot),
+            fill: fill(for: slot)
+        )
+        .onTapGesture {
+            engine.handleTap(on: slot.id)
+            Haptics.impact(.medium)
+        }
+        .contextMenu {
+            if case let .player(pid) = slot.id,
+               let player = players.first(where: { $0.persistentModelID == pid }) {
+                Button {
+                    customizingPlayer = player
+                } label: {
+                    Label("Style & Sound…", systemImage: "paintbrush")
+                }
+            }
+        }
+    }
+
+    /// The column count whose cells land closest to a pleasantly card-shaped
+    /// aspect ratio for the current screen. Compared in log space so "twice as
+    /// wide" and "twice as tall" miss the ideal by the same amount.
+    private func bestColumns(count: Int, in size: CGSize, spacing: Double) -> Int {
+        guard count > 1, size.width > 0, size.height > 0 else { return 1 }
+        let idealAspect = 1.4
+        var best = 1
+        var bestScore = Double.infinity
+        for cols in 1...count {
+            let rows = (count + cols - 1) / cols
+            let w = (size.width - spacing * Double(cols - 1)) / Double(cols)
+            let h = (size.height - spacing * Double(rows - 1)) / Double(rows)
+            guard w > 0, h > 0 else { continue }
+            let score = abs(log((w / h) / idealAspect))
+            if score < bestScore {
+                bestScore = score
+                best = cols
+            }
+        }
+        return best
     }
 
     private var singleTimerLayout: some View {
@@ -395,10 +448,10 @@ private struct TimerSlotCard: View {
             }
 
             TimerStyleView(style: style, model: model)
-                .frame(minHeight: 84)
+                .frame(minHeight: 84, maxHeight: .infinity)
         }
         .padding(16)
-        .frame(minHeight: 118)
+        .frame(maxWidth: .infinity, minHeight: 118, maxHeight: .infinity)
         .background {
             let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
             shape

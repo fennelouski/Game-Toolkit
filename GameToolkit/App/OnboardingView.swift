@@ -93,9 +93,9 @@ struct OnboardingView: View {
             ZStack {
                 FeltSurface(felt: palette.table, cornerRadius: 22)
                 HStack(spacing: 16) {
-                    DieView(value: 5, sides: 6, spin: 0, face: palette.diceFace, pip: palette.dicePip, seed: 0)
+                    DieView(value: 5, sides: 6, face: palette.diceFace, pip: palette.dicePip, seed: 0)
                         .frame(width: 76, height: 76)
-                    DieView(value: 3, sides: 6, spin: 0, face: palette.diceFace, pip: palette.dicePip, seed: 5)
+                    DieView(value: 3, sides: 6, face: palette.diceFace, pip: palette.dicePip, seed: 5)
                         .frame(width: 76, height: 76)
                 }
             }

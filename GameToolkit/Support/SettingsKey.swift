@@ -7,6 +7,9 @@ enum SettingsKey {
     static let diceShowTotal = "settings.diceShowTotal"
     static let diceColorHex = "settings.diceColorHex"
     static let diceDotSize = "settings.diceDotSize"
+    /// The dice bag loaded in the roller ("builtin:…" or "custom:<uuid>"); empty
+    /// string means the classic uniform d4…d100 chips drive the tray.
+    static let diceSelectedBag = "settings.diceSelectedBag"
 
     static let secondsPerPlayer = "settings.secondsPerPlayer"
     /// Legacy: replaced by the `.sound` bit of `timerEndActions`. Read only by the migration.

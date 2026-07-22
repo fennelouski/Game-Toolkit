@@ -130,7 +130,7 @@ python3 Scripts/marketing.py    # captioned App Store marketing images
 ```
 
 Output lands in `Screenshots/` at exact App Store sizes — iPhone 6.9" (1320×2868),
-iPad 13" (2064×2752), Mac (1440×900). Demo data comes from a `-screenshotMode` launch argument
+iPad 13" (2064×2752), Mac (2560×1600). Demo data comes from a `-screenshotMode` launch argument
 that is compiled only into Debug builds, so it can never ship. `Scripts/marketing.py`
 (needs Pillow) composites the raw screenshots into captioned marketing images in
 `Screenshots/marketing/`, sized for App Store Connect.

@@ -1,5 +1,8 @@
 #!/bin/bash
-# Captures Mac Catalyst screenshots at 1440x900 (an accepted Mac App Store size).
+# Captures Mac Catalyst screenshots at 1280x800 points. On a Retina display that
+# yields 2560x1600 pixels — an accepted Mac App Store size. (1440x900 points does
+# not fit this machine's 1352x853-point built-in display; screencapture clamps the
+# region and produces an unusable 2704x1706.)
 # Requires Screen Recording permission for the terminal running this script.
 set -uo pipefail
 
@@ -7,8 +10,8 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="$ROOT/Screenshots/mac"
 APP_NAME="Game Toolkit"
 BUNDLE_ID="com.nathanfennel.Game-Toolkit"
-W=1440
-H=900
+W=1280
+H=800
 TOP=25          # leave the menu bar out of the capture
 cd "$ROOT" || exit 1
 mkdir -p "$OUT"
@@ -58,11 +61,21 @@ shoot() {   # $1 = tab index, $2 = name, $3... = extra args
     screencapture -x -R "0,$TOP,$W,$H" "$OUT/$name.png" && echo "  mac/$name.png"
 }
 
-shoot 0 1-dice
-shoot 1 2-timer
-shoot 2 3-scores
-shoot 2 4-chart -showChart
-shoot 4 5-settings
+# -settings.appearance light everywhere the shot isn't deliberately dark: the app
+# follows the host Mac's system appearance otherwise, and this machine runs dark.
+shoot 0 1-dice -settings.appearance light
+shoot 1 2-timer -settings.appearance light
+shoot 2 3-scores -settings.appearance light
+shoot 2 4-chart -showChart -settings.appearance light
+shoot 4 5-settings -settings.appearance light
+shoot 0 6-theme-gaslight -ui.theme gaslight -settings.appearance dark
+shoot 2 7-theme-azul -ui.theme azul -settings.appearance light
+shoot 3 8-players -ui.demoGroups -showGallery -settings.appearance light
+shoot 1 9-timer-hourglass -timer.styleID hourglass -settings.appearance light
+shoot 1 10-timer-analog -timer.styleID analog -settings.appearance light
+shoot 0 11-dice-dark -settings.appearance dark
+shoot 1 12-theme-wingspan -ui.theme wingspan -settings.appearance light
+shoot 0 13-theme-catan -ui.theme catan -settings.appearance light
 
 pkill -f "$APP/Contents/MacOS/$APP_NAME" >/dev/null 2>&1
 echo "Done. See $OUT"

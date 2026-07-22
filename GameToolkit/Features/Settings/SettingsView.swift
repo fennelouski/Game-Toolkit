@@ -143,6 +143,22 @@ struct SettingsView: View {
     private var diceSection: some View {
         Section("Dice") {
             Group {
+                NavigationLink {
+                    DiceDesignerView()
+                } label: {
+                    Label {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Dice Designer")
+                            Text("Custom bags, boxes, and die colors")
+                                .font(.caption)
+                                .foregroundStyle(palette.textSecondary)
+                        }
+                    } icon: {
+                        Image(systemName: "bag.fill")
+                            .foregroundStyle(palette.accent)
+                    }
+                }
+
                 Stepper("Number of dice: \(diceCount)", value: $diceCount, in: 1...30)
 
                 Stepper("Sides per die: \(diceSides)", value: $diceSides, in: 2...100)

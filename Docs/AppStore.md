@@ -27,10 +27,10 @@ listed.
 
 ## Promotional text (170 chars max)
 
-> Dice, a turn timer, and a scorecard that syncs across your devices — with themes
-> inspired by tonight's game and a live scoreboard on your Apple TV.
+> Real 3D dice, ten clock faces, and a scorecard that syncs across your devices — with
+> themes inspired by tonight's game and a live scoreboard on your Apple TV.
 
-(147 characters.)
+(158 characters.)
 
 ## Description
 
@@ -38,18 +38,24 @@ listed.
 > proper scorecard, in one app that looks like it belongs on the table.
 >
 > DICE THAT FEEL LIKE DICE
-> Roll 1 to 30 dice with 2 to 100 sides on a green-felt tray. Tap a die to hold it out
-> of the next roll, Yahtzee-style, then shake to roll the rest. Seven pip sizes, from
-> Tiny to Comically Large.
+> Real 3D dice — cubes, d4s, d8s, d10s, d12s, d20s — that tumble when you roll and
+> lean as you tilt your phone. Roll 1 to 30 dice with 2 to 100 sides on a green-felt
+> tray. Tap a die to hold it out of the next roll, Yahtzee-style, then shake to roll
+> the rest. Build custom dice bags in the Dice Designer and keep them in named boxes.
 >
 > A CHESS CLOCK FOR TURNS
 > Everyone gets a bank of time. Tap a player to start their clock and pause everyone
-> else's; an alarm sounds when time runs out. The timer measures real elapsed time, so
-> it never drifts.
+> else's; an alarm sounds when time runs out. Ten clock faces — classic digits,
+> analog, hourglass, water clock, sundial, and more. The timer measures real elapsed
+> time, so it never drifts.
 >
 > A SCORECARD WORTH STARING AT
 > Round-by-round scores with running totals and a crown on the leader. Charts show the
 > whole table's race or one player's ups and downs. Shake to shuffle turn order.
+>
+> GAME NIGHTS THAT REMEMBER
+> Set up a table for each group you play with — Friday Catan, the family, the office
+> crew. Each game night keeps its own roster, avatars, and score history.
 >
 > A SCOREBOARD ON YOUR TV
 > Mirror to an Apple TV and the big screen becomes a live scoreboard — totals,
@@ -77,14 +83,20 @@ dice,board game,score,scorekeeper,turn timer,chess clock,game night,tabletop,d20
 
 ## Screenshots
 
-Upload from `Screenshots/marketing/` (captioned) — or `Screenshots/` for plain UI shots:
+Each device class has 20 marketing candidates in `Screenshots/marketing/` — 13 single-shot
+(named after their raw source) and 7 multi-shot fan/pair layouts (`m1`–`m7`). App Store
+Connect accepts up to 10 per device class; pick your favorites. Raw undecorated UI shots
+live in `Screenshots/<device>/` if you prefer them (Mac listings often favor plain UI).
 
 | Device class | Size | Files |
 | --- | --- | --- |
-| iPhone 6.9" | 1320×2868 | `Screenshots/marketing/iphone-6.9/*.png` (7, in numbered order) |
-| iPad 13" | 2064×2752 | `Screenshots/marketing/ipad-13/*.png` (7, in numbered order) |
-| Mac | 1440×900 | `Screenshots/mac/*.png` (5, plain — Mac listings favor undecorated UI) |
+| iPhone 6.9" | 1320×2868 | `Screenshots/marketing/iphone-6.9/*.png` (20 candidates) |
+| iPad 13" | 2064×2752 | `Screenshots/marketing/ipad-13/*.png` (20 candidates) |
+| Mac | 2560×1600 | `Screenshots/marketing/mac/*.png` (20 candidates) or `Screenshots/mac/*.png` (raw) |
 | Apple Vision Pro | — | None needed: Designed-for-iPad apps reuse the iPad screenshots |
+
+Suggested 10, in order: `m1-hero`, `1-dice`, `2-timer`, `3-scores`, `8-players`,
+`m2-themes`, `9-timer-hourglass`, `4-chart`, `6-theme-gaslight`, `m4-score-story`.
 
 Regenerate any time with `./Scripts/screenshots.sh` then `python3 Scripts/marketing.py`.
 

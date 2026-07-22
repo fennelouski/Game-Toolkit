@@ -96,6 +96,43 @@ struct DiceEngineTests {
         let engine = makeEngine(count: 3)
         #expect(engine.total == engine.dice.reduce(0) { $0 + $1.value })
     }
+
+    @Test("Loading a bag mixes side counts and keeps colors per die")
+    func bagConfiguration() {
+        let engine = DiceEngine()
+        let specs = [
+            DieSpec(sides: 4),
+            DieSpec(sides: 20, faceHex: "#3457D5", pipHex: "#FFFFFF"),
+            DieSpec(sides: 100),
+        ]
+        engine.configure(bag: specs)
+        #expect(engine.dice.count == 3)
+        #expect(engine.dice.map(\.sides) == [4, 20, 100])
+        #expect(engine.dice[1].faceHex == "#3457D5")
+        #expect(engine.dice[0].faceHex == nil)
+        #expect(zip(engine.dice, specs).allSatisfy { (1...$1.sides).contains($0.value) })
+    }
+
+    @Test("Reloading the same bag keeps values and held dice")
+    func bagReloadIsStable() {
+        let engine = DiceEngine()
+        let specs = [DieSpec(sides: 6), DieSpec(sides: 6)]
+        engine.configure(bag: specs)
+        engine.toggleLock(engine.dice[0].id)
+        let values = engine.dice.map(\.value)
+        engine.configure(bag: specs)
+        #expect(engine.dice.map(\.value) == values)
+        #expect(engine.lockedCount == 1)
+    }
+
+    @Test("Returning to uniform mode clears bag colors")
+    func uniformClearsBag() {
+        let engine = DiceEngine()
+        engine.configure(bag: [DieSpec(sides: 20, faceHex: "#112233")])
+        engine.configure(count: 2, sides: 6)
+        #expect(engine.dice.count == 2)
+        #expect(engine.dice.allSatisfy { $0.sides == 6 && $0.faceHex == nil })
+    }
 }
 
 @Suite("Dot size scale")

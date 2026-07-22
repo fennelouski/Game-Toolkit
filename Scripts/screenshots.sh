@@ -15,8 +15,23 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="$ROOT/Screenshots"
 cd "$ROOT" || exit 1
 
-# tab index -> file name
-TABS=("0:1-dice" "1:2-timer" "2:3-scores" "4:5-settings")
+# name|tab|extra launch args. Launch args live in NSArgumentDomain, so nothing persists
+# between shots. Appearance defaults to light via the status-bar override environment.
+SHOTS=(
+    "1-dice|0|"
+    "2-timer|1|"
+    "3-scores|2|"
+    "4-chart|2|-showChart"
+    "5-settings|4|"
+    "6-theme-gaslight|0|-ui.theme gaslight -settings.appearance dark"
+    "7-theme-azul|2|-ui.theme azul"
+    "8-players|3|-ui.demoGroups -showGallery"
+    "9-timer-hourglass|1|-timer.styleID hourglass"
+    "10-timer-analog|1|-timer.styleID analog"
+    "11-dice-dark|0|-settings.appearance dark"
+    "12-theme-wingspan|1|-ui.theme wingspan"
+    "13-theme-catan|0|-ui.theme catan"
+)
 
 build_sim() {   # $1 = sdk, $2 = destination
     xcodebuild -project "$PROJECT" -scheme "$SCHEME" -sdk "$1" \
@@ -45,46 +60,54 @@ snap() {  # $1 = udid, $2 = output path
     return 1
 }
 
+# Other automation on this machine sometimes opens apps on shared simulators, which
+# puts a "◀ SomeApp" back-breadcrumb in our status bar. The breadcrumb strip is flat
+# background in a clean shot, so any texture there means contamination.
+clean_bar() {  # $1 = png path, $2 = device dir (iphone-6.9 | ipad-13 | visionos)
+    python3 - "$1" "$2" <<'PY'
+import sys
+from PIL import Image
+path, dir = sys.argv[1], sys.argv[2]
+strips = {"iphone-6.9": (20, 118, 470, 168), "ipad-13": (330, 8, 760, 64)}
+box = strips.get(dir)
+if box is None:
+    sys.exit(0)
+px = list(Image.open(path).convert("L").crop(box).getdata())
+mean = sum(px) / len(px)
+var = sum((p - mean) ** 2 for p in px) / len(px)
+sys.exit(0 if var < 36 else 1)
+PY
+}
+
 shoot_simulator() {  # $1 = device udid, $2 = output subdir, $3 = app path
     local udid="$1" dir="$2" app="$3"
     mkdir -p "$OUT/$dir"
     xcrun simctl bootstatus "$udid" -b >/dev/null 2>&1
+    # Other processes on this machine leave shared simulators in dark mode; force light.
+    # Dark shots opt in per-launch via -settings.appearance instead.
+    xcrun simctl ui "$udid" appearance light >/dev/null 2>&1
     # Apple's canonical marketing status bar: 9:41, full signal, full battery.
     xcrun simctl status_bar "$udid" override --time "9:41" --batteryState charged \
         --batteryLevel 100 --cellularMode active --cellularBars 4 \
         --wifiMode active --wifiBars 3 --dataNetwork wifi >/dev/null 2>&1
     xcrun simctl uninstall "$udid" "$BUNDLE_ID" >/dev/null 2>&1
     xcrun simctl install "$udid" "$app" >/dev/null 2>&1 || { echo "  install failed"; return 1; }
-    for entry in "${TABS[@]}"; do
-        local idx="${entry%%:*}" name="${entry##*:}"
-        xcrun simctl terminate "$udid" "$BUNDLE_ID" >/dev/null 2>&1
-        sleep 1
-        xcrun simctl launch "$udid" "$BUNDLE_ID" -screenshotMode -ui.selectedTab "$idx" >/dev/null 2>&1
-        sleep 4
-        snap "$udid" "$OUT/$dir/$name.png" && echo "  $dir/$name.png"
-    done
-    # Chart view of the scorecard.
-    xcrun simctl terminate "$udid" "$BUNDLE_ID" >/dev/null 2>&1
-    sleep 1
-    xcrun simctl launch "$udid" "$BUNDLE_ID" -screenshotMode -ui.selectedTab 2 -showChart >/dev/null 2>&1
-    sleep 4
-    snap "$udid" "$OUT/$dir/4-chart.png" && echo "  $dir/4-chart.png"
-    # Two more themes to show off the theming system. Gaslight is captured in dark
-    # appearance — it's the "night mode" shot; Azul stays light.
-    for themed in "gaslight:0:6-theme-gaslight:dark" "azul:2:7-theme-azul:system"; do
-        # `local a=x b=$a` expands every argument before assigning any, so these
-        # must be separate statements.
-        local theme="${themed%%:*}"
-        local rest="${themed#*:}"
-        local tab="${rest%%:*}"
-        local shot_mode="${rest#*:}"
-        local shot="${shot_mode%%:*}"
-        local mode="${shot_mode##*:}"
-        xcrun simctl terminate "$udid" "$BUNDLE_ID" >/dev/null 2>&1
-        sleep 1
-        xcrun simctl launch "$udid" "$BUNDLE_ID" -screenshotMode -ui.selectedTab "$tab" -ui.theme "$theme" -settings.appearance "$mode" >/dev/null 2>&1
-        sleep 4
-        snap "$udid" "$OUT/$dir/$shot.png" && echo "  $dir/$shot.png"
+    local entry name tab extra try
+    for entry in "${SHOTS[@]}"; do
+        IFS='|' read -r name tab extra <<< "$entry"
+        for try in 1 2 3; do
+            xcrun simctl terminate "$udid" "$BUNDLE_ID" >/dev/null 2>&1
+            sleep 1
+            # $extra intentionally unquoted: it's a list of launch arguments.
+            xcrun simctl launch "$udid" "$BUNDLE_ID" -screenshotMode -ui.lockPortrait -ui.selectedTab "$tab" $extra >/dev/null 2>&1
+            sleep 4
+            snap "$udid" "$OUT/$dir/$name.png" || continue
+            if clean_bar "$OUT/$dir/$name.png" "$dir"; then
+                echo "  $dir/$name.png"
+                break
+            fi
+            echo "  $dir/$name.png contaminated status bar, retaking ($try)"
+        done
     done
     xcrun simctl terminate "$udid" "$BUNDLE_ID" >/dev/null 2>&1
 }
