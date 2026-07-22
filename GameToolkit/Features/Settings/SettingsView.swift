@@ -13,9 +13,7 @@ struct SettingsView: View {
     @AppStorage(SettingsKey.diceDotSize) private var dotSize = 3.0
     @AppStorage(SettingsKey.piDayEnabled) private var piDayEnabled = true
 
-    @AppStorage(SettingsKey.secondsPerPlayer) private var secondsPerPlayer = 90.0
-    @AppStorage(SettingsKey.alarmEnabled) private var alarmEnabled = true
-    @AppStorage(SettingsKey.alarmDuration) private var alarmDuration = 3.0
+    @AppStorage(SettingsKey.timerMode) private var timerModeRaw = TimerMode.chessClock.rawValue
 
     @AppStorage(SettingsKey.hapticsEnabled) private var hapticsEnabled = true
     @AppStorage(SettingsKey.soundEnabled) private var soundEnabled = true
@@ -179,33 +177,11 @@ struct SettingsView: View {
 
     private var timerSection: some View {
         Section("Turn Timer") {
-            Group {
-                VStack(alignment: .leading, spacing: 6) {
-                    HStack {
-                        Text("Time per player")
-                        Spacer()
-                        Text(secondsPerPlayer.clockString)
-                            .font(.body.monospacedDigit().weight(.semibold))
-                            .foregroundStyle(palette.textSecondary)
-                    }
-                    Slider(value: $secondsPerPlayer, in: 10...900, step: 5)
-                }
-                .padding(.vertical, 2)
-
-                Toggle("Play alarm when time runs out", isOn: $alarmEnabled)
-
-                if alarmEnabled {
-                    VStack(alignment: .leading, spacing: 6) {
-                        HStack {
-                            Text("Alarm length")
-                            Spacer()
-                            Text("\(Int(alarmDuration))s")
-                                .foregroundStyle(palette.textSecondary)
-                        }
-                        Slider(value: $alarmDuration, in: 1...10, step: 1)
-                    }
-                    .padding(.vertical, 2)
-                }
+            NavigationLink {
+                TimerSettingsView()
+            } label: {
+                LabeledContent("Timer",
+                               value: (TimerMode(rawValue: timerModeRaw) ?? .chessClock).label)
             }
             .listRowBackground(palette.surface)
         }

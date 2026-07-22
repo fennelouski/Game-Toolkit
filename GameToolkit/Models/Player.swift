@@ -17,6 +17,13 @@ final class Player {
     var sortIndex: Int = 0
     var createdAt: Date = Date.now
 
+    /// The player's own timer alarm sound (a `TimerSound` raw value); `nil` follows the
+    /// global choice. Optional keeps the schema CloudKit-compatible.
+    var timerSoundID: String? = nil
+    /// The player's own timer display style (a `TimerDisplayStyle` raw value); `nil`
+    /// follows the global choice. Optional keeps the schema CloudKit-compatible.
+    var timerStyleID: String? = nil
+
     /// One entry per completed round. Index 0 is round 1. Kept in sync across players by the scorecard.
     var scores: [Int] = []
 

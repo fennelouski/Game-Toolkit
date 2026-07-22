@@ -6,6 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		BB0000000000000000000009 /* GameToolkitWidgets.appex in Embed Foundation Extensions */ = {
+			isa = PBXBuildFile;
+			fileRef = BB0000000000000000000001 /* GameToolkitWidgets.appex */;
+			platformFilter = ios;
+			settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); };
+		};
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		AA000000000000000000001A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -14,17 +23,67 @@
 			remoteGlobalIDString = AA0000000000000000000004;
 			remoteInfo = "Game Toolkit";
 		};
+		BB000000000000000000000A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA0000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BB0000000000000000000004;
+			remoteInfo = GameToolkitWidgets;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BB0000000000000000000008 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				BB0000000000000000000009 /* GameToolkitWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		AA0000000000000000000005 /* Game Toolkit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Game Toolkit.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA0000000000000000000011 /* GameToolkitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GameToolkitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB0000000000000000000001 /* GameToolkitWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GameToolkitWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		BB000000000000000000000F /* Exceptions for "GameToolkitWidgets" folder in "GameToolkitWidgets" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = BB0000000000000000000004 /* GameToolkitWidgets */;
+		};
+		BB0000000000000000000010 /* Exceptions for "GameToolkit" folder in "GameToolkitWidgets" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Support/TimerActivityAttributes.swift,
+			);
+			target = BB0000000000000000000004 /* GameToolkitWidgets */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		AA000000000000000000000F /* GameToolkit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				BB0000000000000000000010 /* Exceptions for "GameToolkit" folder in "GameToolkitWidgets" target */,
+			);
 			path = GameToolkit;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000002 /* GameToolkitWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				BB000000000000000000000F /* Exceptions for "GameToolkitWidgets" folder in "GameToolkitWidgets" target */,
+			);
+			path = GameToolkitWidgets;
 			sourceTree = "<group>";
 		};
 		AA0000000000000000000018 /* GameToolkitTests */ = {
@@ -49,6 +108,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BB0000000000000000000006 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -56,6 +122,7 @@
 			isa = PBXGroup;
 			children = (
 				AA000000000000000000000F /* GameToolkit */,
+				BB0000000000000000000002 /* GameToolkitWidgets */,
 				AA0000000000000000000018 /* GameToolkitTests */,
 				AA0000000000000000000003 /* Products */,
 			);
@@ -66,6 +133,7 @@
 			children = (
 				AA0000000000000000000005 /* Game Toolkit.app */,
 				AA0000000000000000000011 /* GameToolkitTests.xctest */,
+				BB0000000000000000000001 /* GameToolkitWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -80,10 +148,12 @@
 				AA000000000000000000000C /* Sources */,
 				AA000000000000000000000D /* Frameworks */,
 				AA000000000000000000000E /* Resources */,
+				BB0000000000000000000008 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				BB000000000000000000000B /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				AA000000000000000000000F /* GameToolkit */,
@@ -113,6 +183,26 @@
 			productName = GameToolkitTests;
 			productReference = AA0000000000000000000011 /* GameToolkitTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		BB0000000000000000000004 /* GameToolkitWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BB000000000000000000000E /* Build configuration list for PBXNativeTarget "GameToolkitWidgets" */;
+			buildPhases = (
+				BB0000000000000000000005 /* Sources */,
+				BB0000000000000000000006 /* Frameworks */,
+				BB0000000000000000000007 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				BB0000000000000000000002 /* GameToolkitWidgets */,
+			);
+			name = GameToolkitWidgets;
+			productName = GameToolkitWidgets;
+			productReference = BB0000000000000000000001 /* GameToolkitWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -150,6 +240,7 @@
 			targets = (
 				AA0000000000000000000004 /* Game Toolkit */,
 				AA0000000000000000000010 /* GameToolkitTests */,
+				BB0000000000000000000004 /* GameToolkitWidgets */,
 			);
 		};
 /* End PBXProject section */
@@ -163,6 +254,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AA0000000000000000000017 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000000000000000000007 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -186,6 +284,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BB0000000000000000000005 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -193,6 +298,12 @@
 			isa = PBXTargetDependency;
 			target = AA0000000000000000000004 /* Game Toolkit */;
 			targetProxy = AA000000000000000000001A /* PBXContainerItemProxy */;
+		};
+		BB000000000000000000000B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilter = ios;
+			target = BB0000000000000000000004 /* GameToolkitWidgets */;
+			targetProxy = BB000000000000000000000A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -427,6 +538,60 @@
 			};
 			name = Release;
 		};
+	BB000000000000000000000C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EJLR2RPSV2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GameToolkitWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Game Toolkit Timers";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nathanfennel.Game-Toolkit.Widgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BB000000000000000000000D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EJLR2RPSV2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GameToolkitWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Game Toolkit Timers";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nathanfennel.Game-Toolkit.Widgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -453,6 +618,15 @@
 			buildConfigurations = (
 				AA0000000000000000000013 /* Debug */,
 				AA0000000000000000000014 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BB000000000000000000000E /* Build configuration list for PBXNativeTarget "GameToolkitWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB000000000000000000000C /* Debug */,
+				BB000000000000000000000D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

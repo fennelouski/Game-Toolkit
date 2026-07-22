@@ -12,6 +12,14 @@
 	     compliance documentation. Declaring it here skips the question on every upload. -->
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<!-- The turn timer can put a Live Activity countdown on the Lock Screen and in the
+	     Dynamic Island. Rendered by the GameToolkitWidgets extension. -->
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+	<!-- iOS 26+ AlarmKit: lets the timer ring a real system alarm that breaks through
+	     silent mode and Focus. Ignored harmlessly on earlier systems. -->
+	<key>NSAlarmKitUsageDescription</key>
+	<string>Game Toolkit rings a real alarm when a timer runs out, even if the app is closed or the phone is silenced.</string>
 	<!-- Required for the external-display scoreboard: without multiple-scene support,
 	     UIKit never delivers the windowExternalDisplayNonInteractive scene session.
 	     Side effect: the app also becomes multi-windowable on iPad, which is fine. -->

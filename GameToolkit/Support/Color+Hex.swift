@@ -37,6 +37,20 @@ extension Color {
                       Int(round(r * 255)), Int(round(g * 255)), Int(round(b * 255)))
     }
 
+    /// Linear RGBA blend between two colors (iOS 17 has no `Color.mix`).
+    static func lerp(_ from: Color, _ to: Color, t: Double) -> Color {
+        let clamped = t.clamped(to: 0...1)
+        var fr: CGFloat = 0, fg: CGFloat = 0, fb: CGFloat = 0, fa: CGFloat = 0
+        var tr: CGFloat = 0, tg: CGFloat = 0, tb: CGFloat = 0, ta: CGFloat = 0
+        UIColor(from).getRed(&fr, green: &fg, blue: &fb, alpha: &fa)
+        UIColor(to).getRed(&tr, green: &tg, blue: &tb, alpha: &ta)
+        return Color(.sRGB,
+                     red: Double(fr) + (Double(tr) - Double(fr)) * clamped,
+                     green: Double(fg) + (Double(tg) - Double(fg)) * clamped,
+                     blue: Double(fb) + (Double(tb) - Double(fb)) * clamped,
+                     opacity: Double(fa) + (Double(ta) - Double(fa)) * clamped)
+    }
+
     /// A readable foreground (black or white) for text drawn on top of this color.
     var readableForeground: Color {
         let ui = UIColor(self)

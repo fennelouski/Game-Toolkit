@@ -12,5 +12,9 @@
 	</array>
 	<key>com.apple.developer.ubiquity-kvstore-identifier</key>
 	<string>$(TeamIdentifierPrefix)com.nathanfennel.Game-Toolkit</string>
+	<!-- Lets the timer-expiry notification break through Focus on iOS 17-25
+	     (the AlarmKit path on iOS 26+ does this natively). -->
+	<key>com.apple.developer.usernotifications.time-sensitive</key>
+	<true/>
 </dict>
 </plist>

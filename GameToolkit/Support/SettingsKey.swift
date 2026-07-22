@@ -9,8 +9,27 @@ enum SettingsKey {
     static let diceDotSize = "settings.diceDotSize"
 
     static let secondsPerPlayer = "settings.secondsPerPlayer"
+    /// Legacy: replaced by the `.sound` bit of `timerEndActions`. Read only by the migration.
     static let alarmEnabled = "settings.alarmEnabled"
     static let alarmDuration = "settings.alarmDuration"
+
+    static let timerMode = "timer.mode"
+    static let timerScope = "timer.scope"
+    static let timerTapBehavior = "timer.tapBehavior"
+    static let timerColorPulseTarget = "timer.colorPulseTarget"
+    static let timerCountdownSeconds = "timer.countdownSeconds"
+    static let timerAutoSwitchSeconds = "timer.autoSwitchSeconds"
+    /// `TimerEndActions.rawValue`; what happens when a timer runs out.
+    static let timerEndActions = "timer.endActions"
+    /// `TimerEndActions.rawValue`; effects on each auto-switch turn change.
+    static let timerSwitchActions = "timer.switchActions"
+    static let timerHapticIntensity = "timer.hapticIntensity"
+    static let timerSoundID = "timer.soundID"
+    /// Seconds after a timer stops before it resets itself. Negative = off.
+    static let timerAutoResetDelay = "timer.autoResetDelay"
+    static let timerSystemAlarm = "timer.systemAlarm"
+    static let timerLiveActivity = "timer.liveActivity"
+    static let timerStyleID = "timer.styleID"
 
     static let hapticsEnabled = "settings.hapticsEnabled"
     static let soundEnabled = "settings.soundEnabled"

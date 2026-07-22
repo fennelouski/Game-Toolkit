@@ -10,6 +10,7 @@ struct GameToolkitApp: App {
 
     init() {
         Self.configureNavigationTypography()
+        TimerSettings.migrateIfNeeded()
     }
 
     var body: some Scene {
