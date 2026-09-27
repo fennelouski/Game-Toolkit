@@ -86,6 +86,26 @@ struct PlayerAppearanceTests {
         #expect("123".firstEmoji == nil)
     }
 
+    @Test("Emoji choices exclude alcohol, weapons and crude symbols, including saved values")
+    func cleanEmojiChoices() throws {
+        for emoji in ["🍺", "🍷", "🍾", "🥂", "🔫", "💣", "🏹", "⚔️", "💩", "🤬", "🖕🏽", "🤮", "🚬"] {
+            #expect(emoji.firstEmoji == nil)
+        }
+        #expect("🍺🎉".firstEmoji == "🎉")
+        for kind in ReactionKind.allCases {
+            #expect(kind.suggestions.allSatisfy { $0.firstEmoji == $0 })
+        }
+        let player = Player(name: "Maya")
+        player.avatarKindRaw = "emoji"
+        player.avatarEmoji = "🍺"
+        #expect(player.avatarKind == .initial)
+        player.reactionEmojiData = try JSONEncoder().encode(["celebration": "🥂"])
+        #expect(player.reactionEmoji(for: .celebration) == "🎉")
+        #expect(player.customReactionEmoji(for: .celebration) == nil)
+        player.setReactionEmoji("💩", for: .failure)
+        #expect(player.reactionEmoji(for: .failure) == ReactionKind.failure.defaultEmoji)
+    }
+
     @Test("The color list grows with the optional colors, third requiring a second")
     @MainActor
     func colorList() {

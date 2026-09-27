@@ -47,7 +47,7 @@ enum ReactionKind: String, CaseIterable, Identifiable {
         case .failure: return ["💥", "🙈", "😵", "🪦", "❌", "🥀"]
         case .joy: return ["😄", "🥳", "😂", "☀️", "🌈", "🕺"]
         case .sadness: return ["😢", "😭", "🥺", "🌧️", "💔", "🫠"]
-        case .celebration: return ["🎉", "🎊", "🍾", "🥂", "🎆", "👑"]
+        case .celebration: return ["🎉", "🎊", "✨", "🎈", "🎆", "👑"]
         }
     }
 }
@@ -128,7 +128,7 @@ extension Player {
         get {
             switch AvatarKind(rawValue: avatarKindRaw) {
             case .photo where avatarImageData != nil: return .photo
-            case .emoji where avatarEmoji?.isEmpty == false: return .emoji
+            case .emoji where avatarEmoji?.firstEmoji != nil: return .emoji
             case .monogram where monogramData != nil: return .monogram
             default: return .initial
             }
@@ -181,12 +181,12 @@ extension Player {
 
     /// The player's emoji for a moment, falling back to the app default.
     func reactionEmoji(for kind: ReactionKind) -> String {
-        reactionEmojiMap[kind.rawValue] ?? kind.defaultEmoji
+        customReactionEmoji(for: kind) ?? kind.defaultEmoji
     }
 
     /// The player's own pick, `nil` when they use the default.
     func customReactionEmoji(for kind: ReactionKind) -> String? {
-        reactionEmojiMap[kind.rawValue]
+        reactionEmojiMap[kind.rawValue]?.firstEmoji
     }
 
     func setReactionEmoji(_ emoji: String?, for kind: ReactionKind) {
@@ -202,7 +202,9 @@ extension Character {
     /// True for characters that render as emoji, including multi-scalar sequences
     /// (skin tones, flags, ZWJ families) — used to keep emoji fields emoji-only.
     var isRenderableEmoji: Bool {
-        guard let first = unicodeScalars.first else { return false }
+        let excluded = "🔫💣🏹🗡⚔🔪🪓🤬💩🤮🥴🖕🍶🍺🍻🥂🍷🥃🍸🍹🍾🚬"
+        guard !unicodeScalars.contains(where: { excluded.unicodeScalars.contains($0) }),
+              let first = unicodeScalars.first else { return false }
         return first.properties.isEmojiPresentation
             || unicodeScalars.contains { $0.properties.isEmojiPresentation }
             || (first.properties.isEmoji && first.value > 0x238C)

@@ -135,14 +135,14 @@ struct EmojiField: View {
     private let columns = [GridItem(.adaptive(minimum: 44), spacing: 8)]
 
     var body: some View {
-        TextField("Type any emoji", text: Binding(
-            get: { emoji ?? "" },
+        TextField("Choose an emoji", text: Binding(
+            get: { emoji?.firstEmoji ?? "" },
             set: { emoji = $0.firstEmoji }
         ))
         .font(.title2)
 
         LazyVGrid(columns: columns, spacing: 8) {
-            ForEach(suggestions, id: \.self) { candidate in
+            ForEach(suggestions.filter { $0.firstEmoji != nil }, id: \.self) { candidate in
                 Button {
                     emoji = candidate
                     Haptics.selection()

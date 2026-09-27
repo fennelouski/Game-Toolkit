@@ -27,7 +27,7 @@ struct PlayerAvatarView: View {
         case .emoji:
             ZStack {
                 Circle().fill(player.fill(in: palette))
-                Text(player.avatarEmoji ?? "🙂")
+                Text(player.avatarEmoji?.firstEmoji ?? "🙂")
                     .font(.system(size: size * 0.58))
                     .minimumScaleFactor(0.5)
             }
