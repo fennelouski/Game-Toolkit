@@ -1,25 +1,48 @@
 import SwiftData
+import SwiftUI
 
-/// The app's single ModelContainer, shared by the main scene and the external-display
-/// scoreboard so both windows show the same live data.
-enum AppContainer {
-    static let shared: ModelContainer = {
-        let schema = Schema([Player.self, PlayerGroup.self, DiceBag.self])
-        // Primary configuration syncs through CloudKit automatically when the iCloud
-        // entitlement is present (the default `cloudKitDatabase` is `.automatic`).
+/// Shares the persistent store, including recovery state, across both displays.
+@MainActor
+@Observable
+final class AppContainer {
+    static let shared = AppContainer()
+    private(set) var container: ModelContainer?
+    private let configuration: ModelConfiguration
+
+    init(configuration: ModelConfiguration = ModelConfiguration()) {
+        self.configuration = configuration
+        load()
+    }
+
+    func load() {
+        guard container == nil else { return }
         do {
-            return try ModelContainer(
-                for: schema,
-                configurations: [ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)]
+            container = try ModelContainer(
+                for: Schema([Player.self, PlayerGroup.self, DiceBag.self]),
+                configurations: [configuration]
             )
         } catch {
-            // If the on-disk (or CloudKit) store can't be opened for any reason, fall back to an
-            // in-memory store so the app always launches instead of crashing on first run.
-            print("⚠️ Falling back to in-memory store: \(error)")
-            return try! ModelContainer(
-                for: schema,
-                configurations: [ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)]
-            )
+            // Preserve the original store; a temporary store would silently lose new scores.
+            container = nil
         }
-    }()
+    }
+}
+
+struct StoredContent<Content: View>: View {
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        if let container = AppContainer.shared.container {
+            content().modelContainer(container)
+        } else {
+            ContentUnavailableView {
+                Label("Saved Games Unavailable", systemImage: "externaldrive.badge.exclamationmark")
+            } description: {
+                Text("Your saved data could not be opened. It has not been deleted. Check available storage, then try again.")
+            } actions: {
+                Button("Try Again") { AppContainer.shared.load() }
+                Link("Contact Support", destination: URL(string: "https://nathanfennel.com/contact")!)
+            }
+        }
+    }
 }

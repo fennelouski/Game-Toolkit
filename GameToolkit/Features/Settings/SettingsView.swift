@@ -271,6 +271,8 @@ struct SettingsView: View {
                 Button("Show Welcome Tour") { showOnboarding = true }
                 LabeledContent("Version", value: appVersion)
                 LabeledContent("Made by", value: "Nathan Fennel")
+                Link("Privacy Policy", destination: URL(string: "https://github.com/fennelouski/Game-Toolkit/blob/master/PRIVACY.md")!)
+                Link("Contact Support", destination: URL(string: "https://nathanfennel.com/contact")!)
             }
             .listRowBackground(palette.surface)
         }

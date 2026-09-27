@@ -82,9 +82,10 @@ struct ExternalScoreboardRoot: View {
     @State private var themeManager = ThemeManager.shared
 
     var body: some View {
-        ExternalScoreboardView()
-            .environment(\.palette, themeManager.current.palette(for: colorScheme))
-            .modelContainer(AppContainer.shared)
+        StoredContent {
+            ExternalScoreboardView()
+                .environment(\.palette, themeManager.current.palette(for: colorScheme))
+        }
     }
 }
 

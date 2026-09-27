@@ -15,9 +15,8 @@ struct GameToolkitApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView()
+            StoredContent { RootView() }
         }
-        .modelContainer(AppContainer.shared)
     }
 
     /// Navigation titles render in the serif display face (New York) app-wide, which is
