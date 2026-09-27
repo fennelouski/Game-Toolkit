@@ -1,3 +1,7 @@
+<!-- AWS migration policy -->
+Read the AWS migration deployment policy in the repository-root AGENTS.md
+before deployment work. It supersedes older Vercel-only deployment guidance.
+
 # Game Toolkit — working notes
 
 SwiftUI board-game companion (dice roller, chess-clock turn timer, scorecard) backed by
