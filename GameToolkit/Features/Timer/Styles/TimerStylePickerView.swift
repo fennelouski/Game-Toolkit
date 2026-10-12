@@ -82,7 +82,7 @@ struct TimerStylePickerView: View {
                 Text(label)
                     .font(.caption)
                     .foregroundStyle(isSelected ? palette.textPrimary : palette.textSecondary)
-                    .lineLimit(1)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .opacity(available ? 1 : 0.35)
         }

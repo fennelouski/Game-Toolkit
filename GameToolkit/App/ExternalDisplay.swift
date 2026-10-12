@@ -137,14 +137,12 @@ struct ExternalScoreboardView: View {
             Text("Scorecard")
                 .font(.display(52))
                 .foregroundStyle(palette.textPrimary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.5)
+                .fixedSize(horizontal: false, vertical: true)
             Spacer()
             Text(rounds == 0 ? "Waiting for the first round" : "After round \(rounds)")
                 .font(.system(size: 26, weight: .medium))
                 .foregroundStyle(palette.textSecondary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.5)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: 1500)
     }
@@ -203,8 +201,7 @@ struct ExternalScoreboardView: View {
                 Text(lastRoundSummary(player))
                     .font(.system(size: 20, weight: .medium))
                     .monospacedDigit()
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
+                    .fixedSize(horizontal: false, vertical: true)
                     .foregroundStyle(palette.textSecondary)
             }
         }
